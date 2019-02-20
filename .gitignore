@@ -1,0 +1,18 @@
+# Ignore bundler config.
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+
+# Ignore byebug history.
+.byebug_history
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+# Ignore files created by visual studio code.
+.vscode
+
+# Ignore files created by mac os.
+.DS_Store
