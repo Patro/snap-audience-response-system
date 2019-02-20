@@ -1,0 +1,15 @@
+inherit_gem:
+  rubocop-rails_config:
+    - config/rails.yml
+
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - '**/templates/**/*'
+    - '**/vendor/**/*'
+    - 'bin/**/*'
+    - 'db/schema.rb'
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
