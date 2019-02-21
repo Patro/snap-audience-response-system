@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_21_141943) do
+ActiveRecord::Schema.define(version: 2019_02_21_204245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,15 @@ ActiveRecord::Schema.define(version: 2019_02_21_141943) do
     t.index ["owner_id"], name: "index_interactive_sessions_on_owner_id"
   end
 
+  create_table "question_options", force: :cascade do |t|
+    t.bigint "question_id", null: false
+    t.text "text", null: false
+    t.boolean "correct", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_question_options_on_question_id"
+  end
+
   create_table "questions", force: :cascade do |t|
     t.string "type", null: false
     t.text "text", null: false
@@ -49,5 +58,6 @@ ActiveRecord::Schema.define(version: 2019_02_21_141943) do
   add_foreign_key "attendances", "interactive_sessions"
   add_foreign_key "attendances", "users", column: "attendee_id"
   add_foreign_key "interactive_sessions", "users", column: "owner_id"
+  add_foreign_key "question_options", "questions"
   add_foreign_key "questions", "interactive_sessions"
 end

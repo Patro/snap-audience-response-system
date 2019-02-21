@@ -3,6 +3,34 @@
 require 'rails_helper'
 
 RSpec.describe Question, type: :model do
+  describe '#options' do
+    subject { question.options }
+
+    context 'given question with two options' do
+      let(:question) { create(:dummy_question) }
+
+      before(:each) do
+        @options = create_list(:question_option, 2, question: question)
+      end
+
+      it 'should return options' do
+        is_expected.to match(@options)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    context 'given question with two options' do
+      let(:question) { create(:dummy_question) }
+
+      before(:each) { create_list(:question_option, 2, question: question) }
+
+      it 'should destroy options' do
+        expect { question.destroy }.to change { QuestionOption.count }.from(2).to(0)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { question.valid? }
 
