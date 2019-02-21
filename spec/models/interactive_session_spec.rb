@@ -3,6 +3,23 @@
 require 'rails_helper'
 
 RSpec.describe InteractiveSession, type: :model do
+  describe '#attendances' do
+    subject { interactive_session.attendances }
+
+    context 'given interactive session with two attendances' do
+      let(:interactive_session) { create(:interactive_session) }
+
+      before(:each) do
+        @attendances = create_list(:attendance, 2,
+                                   interactive_session: interactive_session)
+      end
+
+      it 'should return attendances' do
+        is_expected.to match(@attendances)
+      end
+    end
+  end
+
   describe '#create' do
     subject { create(:interactive_session, attendance_code: 'abcd') }
 
@@ -24,6 +41,23 @@ RSpec.describe InteractiveSession, type: :model do
 
       it 'should not be possible to create interactive session' do
         expect { subject }.to raise_error(ActiveRecord::RecordNotUnique)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    subject { -> { interactive_session.destroy } }
+
+    context 'given interactive session with attendances' do
+      let(:interactive_session) { create(:interactive_session) }
+
+      before(:each) do
+        @attendances = create_list(:attendance, 2,
+                                   interactive_session: interactive_session)
+      end
+
+      it 'should destroy attendances' do
+        is_expected.to change { Attendance.count }.from(2).to(0)
       end
     end
   end
