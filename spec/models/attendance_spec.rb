@@ -40,4 +40,17 @@ RSpec.describe Attendance, type: :model do
       end
     end
   end
+
+  # behaviour of #eql? differs from default active record implementation
+  # because of composite primary key
+  describe '#eql?' do
+    context 'given an attendance and a clone of it' do
+      let(:attendance) { create(:attendance) }
+      let(:clone) { attendance.clone }
+
+      it 'should recognize clone as eql' do
+        expect(attendance).to eql(clone)
+      end
+    end
+  end
 end
