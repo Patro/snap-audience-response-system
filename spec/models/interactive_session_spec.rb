@@ -78,6 +78,36 @@ RSpec.describe InteractiveSession, type: :model do
         is_expected.to change { Attendance.count }.from(2).to(0)
       end
     end
+
+    context 'given interactive session with two questions' do
+      let(:interactive_session) { create(:interactive_session) }
+
+      before(:each) do
+        create_list(:dummy_question, 2,
+                    interactive_session: interactive_session)
+      end
+
+      it 'should destroy questions' do
+        is_expected.to change { Question.count }.from(2).to(0)
+      end
+    end
+  end
+
+  describe '#questions' do
+    subject { interactive_session.questions }
+
+    context 'given interactive session with two questions' do
+      let(:interactive_session) { create(:interactive_session) }
+
+      before(:each) do
+        @questions = create_list(:dummy_question, 2,
+                                 interactive_session: interactive_session)
+      end
+
+      it 'should return questions' do
+        is_expected.to match(@questions)
+      end
+    end
   end
 
   describe '#valid?' do
