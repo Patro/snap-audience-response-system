@@ -20,6 +20,24 @@ RSpec.describe InteractiveSession, type: :model do
     end
   end
 
+  describe '#attendees' do
+    subject { interactive_session.attendees }
+
+    context 'given interactive session with two attendances' do
+      let(:interactive_session) { create(:interactive_session) }
+
+      before(:each) do
+        attendances = create_list(:attendance, 2,
+                                  interactive_session: interactive_session)
+        @attendees = attendances.map(&:attendee)
+      end
+
+      it 'should return two attendees' do
+        is_expected.to match(@attendees)
+      end
+    end
+  end
+
   describe '#create' do
     subject { create(:interactive_session, attendance_code: 'abcd') }
 
