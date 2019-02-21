@@ -37,6 +37,21 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#attended_interactive_sessions' do
+    subject { user.attended_interactive_sessions }
+
+    context 'given user with two attendances' do
+      before(:each) do
+        attendances = create_list(:attendance, 2, attendee: user)
+        @interactive_sessions = attendances.map(&:interactive_session)
+      end
+
+      it 'should return attended interactive sessions' do
+        is_expected.to match(@interactive_sessions)
+      end
+    end
+  end
+
   describe '#owned_interactive_sessions' do
     subject { user.owned_interactive_sessions }
 
