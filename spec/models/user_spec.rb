@@ -13,6 +13,28 @@ RSpec.describe User, type: :model do
         expect { user.destroy }.to change { InteractiveSession.count }.from(5).to(0)
       end
     end
+
+    context 'given user with attendances' do
+      before(:each) { create_list(:attendance, 2, attendee: user) }
+
+      it 'should destroy attendances' do
+        expect { user.destroy }.to change { Attendance.count }.from(2).to(0)
+      end
+    end
+  end
+
+  describe '#attendances' do
+    subject { user.attendances }
+
+    context 'given user with two attendances' do
+      before(:each) do
+        @attendances = create_list(:attendance, 2, attendee: user)
+      end
+
+      it 'should return attendances' do
+        is_expected.to match(@attendances)
+      end
+    end
   end
 
   describe '#owned_interactive_sessions' do
