@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_20_183958) do
+ActiveRecord::Schema.define(version: 2019_02_21_113439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "attendances", primary_key: ["attendee_id", "interactive_session_id"], force: :cascade do |t|
+    t.bigint "attendee_id", null: false
+    t.bigint "interactive_session_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["attendee_id"], name: "index_attendances_on_attendee_id"
+    t.index ["interactive_session_id"], name: "index_attendances_on_interactive_session_id"
+  end
 
   create_table "interactive_sessions", force: :cascade do |t|
     t.string "label"
@@ -29,5 +37,7 @@ ActiveRecord::Schema.define(version: 2019_02_20_183958) do
     t.datetime "created_at", null: false
   end
 
+  add_foreign_key "attendances", "interactive_sessions"
+  add_foreign_key "attendances", "users", column: "attendee_id"
   add_foreign_key "interactive_sessions", "users", column: "owner_id"
 end

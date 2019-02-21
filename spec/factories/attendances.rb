@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :user, aliases: [:attendee, :owner] do
+  factory :attendance do
+    attendee
+    interactive_session
   end
 end
