@@ -9,4 +9,5 @@ class User < ApplicationRecord
   has_many :owned_interactive_sessions,
            class_name: 'InteractiveSession', foreign_key: :owner_id,
            inverse_of: :owner, dependent: :destroy
+  has_many :responses, foreign_key: :respondent_id, inverse_of: :respondent, dependent: :destroy
 end

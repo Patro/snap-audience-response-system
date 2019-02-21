@@ -21,6 +21,14 @@ RSpec.describe User, type: :model do
         expect { user.destroy }.to change { Attendance.count }.from(2).to(0)
       end
     end
+
+    context 'given user with two responses' do
+      before(:each) { create_list(:response, 2, respondent: user) }
+
+      it 'should destroy responses' do
+        expect { user.destroy }.to change { Response.count }.from(2).to(0)
+      end
+    end
   end
 
   describe '#attendances' do
@@ -62,6 +70,20 @@ RSpec.describe User, type: :model do
 
       it 'should return owned interactive sessions' do
         is_expected.to match(@interactive_sessions)
+      end
+    end
+  end
+
+  describe '#responses' do
+    subject { user.responses }
+
+    context 'given user with two responses' do
+      before(:each) do
+        @responses = create_list(:response, 2, respondent: user)
+      end
+
+      it 'should return responses' do
+        is_expected.to match(@responses)
       end
     end
   end

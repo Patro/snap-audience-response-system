@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_21_212810) do
+ActiveRecord::Schema.define(version: 2019_02_24_181309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,16 @@ ActiveRecord::Schema.define(version: 2019_02_21_212810) do
     t.index ["interactive_session_id"], name: "index_questions_on_interactive_session_id"
   end
 
+  create_table "responses", primary_key: ["poll_id", "respondent_id", "picked_question_option_id"], force: :cascade do |t|
+    t.bigint "picked_question_option_id", null: false
+    t.bigint "poll_id", null: false
+    t.bigint "respondent_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["picked_question_option_id"], name: "index_responses_on_picked_question_option_id"
+    t.index ["poll_id"], name: "index_responses_on_poll_id"
+    t.index ["respondent_id"], name: "index_responses_on_respondent_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
   end
@@ -68,4 +78,7 @@ ActiveRecord::Schema.define(version: 2019_02_21_212810) do
   add_foreign_key "polls", "questions"
   add_foreign_key "question_options", "questions"
   add_foreign_key "questions", "interactive_sessions"
+  add_foreign_key "responses", "polls"
+  add_foreign_key "responses", "question_options", column: "picked_question_option_id"
+  add_foreign_key "responses", "users", column: "respondent_id"
 end

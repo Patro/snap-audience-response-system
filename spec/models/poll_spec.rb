@@ -3,6 +3,41 @@
 require 'rails_helper'
 
 RSpec.describe Poll, type: :model do
+  describe '#destroy' do
+    subject { -> { poll.destroy } }
+
+    context 'given poll with two responses' do
+      let(:poll) { create(:poll) }
+      let(:option) { create(:question_option, question: poll.question) }
+
+      before(:each) do
+        create_list(:response, 2, picked_question_option: option, poll: poll)
+      end
+
+      it 'should destroy responses' do
+        is_expected.to change { Response.count }.from(2).to(0)
+      end
+    end
+  end
+
+  describe '#responses' do
+    subject { poll.responses }
+
+    context 'given poll with two responses' do
+      let(:poll) { create(:poll) }
+      let(:option) { create(:question_option, question: poll.question) }
+
+      before(:each) do
+        @responses = create_list(:response, 2,
+                                 picked_question_option: option, poll: poll)
+      end
+
+      it 'should return responses' do
+        is_expected.to match(@responses)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { poll.valid? }
 
