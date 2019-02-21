@@ -9,6 +9,6 @@ class Question < ApplicationRecord
   private
 
     def available_types
-      %w[]
+      %w[MultipleChoiceQuestion]
     end
 end
