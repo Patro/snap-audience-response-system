@@ -18,5 +18,8 @@ FactoryBot.define do
 
     factory :multiple_choice_question, class: 'MultipleChoiceQuestion' do
     end
+
+    factory :single_choice_question, class: 'SingleChoiceQuestion' do
+    end
   end
 end
