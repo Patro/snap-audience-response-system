@@ -110,6 +110,25 @@ RSpec.describe InteractiveSession, type: :model do
     end
   end
 
+  describe '#polls' do
+    subject { interactive_session.polls }
+
+    context 'given interactive session with two polls' do
+      let(:interactive_session) { create(:interactive_session) }
+      let(:question) do
+        create(:dummy_question, interactive_session: interactive_session)
+      end
+
+      before(:each) do
+        @polls = create_list(:poll, 2, question: question)
+      end
+
+      it 'should return polls' do
+        is_expected.to match(@polls)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { interactive_session.valid? }
 

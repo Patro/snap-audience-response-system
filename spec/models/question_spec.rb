@@ -19,14 +19,42 @@ RSpec.describe Question, type: :model do
     end
   end
 
+  describe '#polls' do
+    subject { question.polls }
+
+    context 'given question with two polls' do
+      let(:question) { create(:dummy_question) }
+
+      before(:each) do
+        @polls = create_list(:poll, 2, question: question)
+      end
+
+      it 'should return polls' do
+        is_expected.to match(@polls)
+      end
+    end
+  end
+
   describe '#destroy' do
+    subject { -> { question.destroy } }
+
     context 'given question with two options' do
       let(:question) { create(:dummy_question) }
 
       before(:each) { create_list(:question_option, 2, question: question) }
 
       it 'should destroy options' do
-        expect { question.destroy }.to change { QuestionOption.count }.from(2).to(0)
+        is_expected.to change { QuestionOption.count }.from(2).to(0)
+      end
+    end
+
+    context 'given question with two polls' do
+      let(:question) { create(:dummy_question) }
+
+      before(:each) { create_list(:poll, 2, question: question) }
+
+      it 'should destroy polls' do
+        is_expected.to change { Poll.count }.from(2).to(0)
       end
     end
   end
