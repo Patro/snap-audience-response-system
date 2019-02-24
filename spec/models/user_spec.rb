@@ -5,32 +5,6 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
 
-  describe '#destroy' do
-    context 'given user with owned interactive sessions' do
-      before(:each) { create_list(:interactive_session, 5, owner: user) }
-
-      it 'should destroy owned interactive sessions' do
-        expect { user.destroy }.to change { InteractiveSession.count }.from(5).to(0)
-      end
-    end
-
-    context 'given user with attendances' do
-      before(:each) { create_list(:attendance, 2, attendee: user) }
-
-      it 'should destroy attendances' do
-        expect { user.destroy }.to change { Attendance.count }.from(2).to(0)
-      end
-    end
-
-    context 'given user with two responses' do
-      before(:each) { create_list(:response, 2, respondent: user) }
-
-      it 'should destroy responses' do
-        expect { user.destroy }.to change { Response.count }.from(2).to(0)
-      end
-    end
-  end
-
   describe '#attendances' do
     subject { user.attendances }
 
@@ -56,6 +30,32 @@ RSpec.describe User, type: :model do
 
       it 'should return attended interactive sessions' do
         is_expected.to match(@interactive_sessions)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    context 'given user with owned interactive sessions' do
+      before(:each) { create_list(:interactive_session, 5, owner: user) }
+
+      it 'should destroy owned interactive sessions' do
+        expect { user.destroy }.to change { InteractiveSession.count }.from(5).to(0)
+      end
+    end
+
+    context 'given user with attendances' do
+      before(:each) { create_list(:attendance, 2, attendee: user) }
+
+      it 'should destroy attendances' do
+        expect { user.destroy }.to change { Attendance.count }.from(2).to(0)
+      end
+    end
+
+    context 'given user with two responses' do
+      before(:each) { create_list(:response, 2, respondent: user) }
+
+      it 'should destroy responses' do
+        expect { user.destroy }.to change { Response.count }.from(2).to(0)
       end
     end
   end

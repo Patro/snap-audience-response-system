@@ -3,6 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
+  # behaviour of #eql? differs from default active record implementation
+  # because of composite primary key
+  describe '#eql?' do
+    context 'given an attendance and a clone of it' do
+      let(:attendance) { create(:attendance) }
+      let(:clone) { attendance.clone }
+
+      it 'should recognize clone as eql' do
+        expect(attendance).to eql(clone)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { attendance.valid? }
 
@@ -37,19 +50,6 @@ RSpec.describe Attendance, type: :model do
 
       it 'should not be valid' do
         is_expected.to be false
-      end
-    end
-  end
-
-  # behaviour of #eql? differs from default active record implementation
-  # because of composite primary key
-  describe '#eql?' do
-    context 'given an attendance and a clone of it' do
-      let(:attendance) { create(:attendance) }
-      let(:clone) { attendance.clone }
-
-      it 'should recognize clone as eql' do
-        expect(attendance).to eql(clone)
       end
     end
   end

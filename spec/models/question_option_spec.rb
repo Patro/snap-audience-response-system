@@ -17,6 +17,22 @@ RSpec.describe QuestionOption, type: :model do
     end
   end
 
+  describe '#responses' do
+    subject { option.responses }
+
+    context 'given option with two responses' do
+      let(:option) { create(:question_option) }
+
+      before(:each) do
+        @responses = create_list(:response, 2, picked_question_option: option)
+      end
+
+      it 'should return responses' do
+        is_expected.to match(@responses)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { option.valid? }
 
@@ -81,22 +97,6 @@ RSpec.describe QuestionOption, type: :model do
 
       it 'should not be valid' do
         is_expected.to be false
-      end
-    end
-  end
-
-  describe '#responses' do
-    subject { option.responses }
-
-    context 'given option with two responses' do
-      let(:option) { create(:question_option) }
-
-      before(:each) do
-        @responses = create_list(:response, 2, picked_question_option: option)
-      end
-
-      it 'should return responses' do
-        is_expected.to match(@responses)
       end
     end
   end

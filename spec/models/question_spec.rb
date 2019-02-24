@@ -3,6 +3,30 @@
 require 'rails_helper'
 
 RSpec.describe Question, type: :model do
+  describe '#destroy' do
+    subject { -> { question.destroy } }
+
+    context 'given question with two options' do
+      let(:question) { create(:dummy_question) }
+
+      before(:each) { create_list(:question_option, 2, question: question) }
+
+      it 'should destroy options' do
+        is_expected.to change { QuestionOption.count }.from(2).to(0)
+      end
+    end
+
+    context 'given question with two polls' do
+      let(:question) { create(:dummy_question) }
+
+      before(:each) { create_list(:poll, 2, question: question) }
+
+      it 'should destroy polls' do
+        is_expected.to change { Poll.count }.from(2).to(0)
+      end
+    end
+  end
+
   describe '#options' do
     subject { question.options }
 
@@ -31,30 +55,6 @@ RSpec.describe Question, type: :model do
 
       it 'should return polls' do
         is_expected.to match(@polls)
-      end
-    end
-  end
-
-  describe '#destroy' do
-    subject { -> { question.destroy } }
-
-    context 'given question with two options' do
-      let(:question) { create(:dummy_question) }
-
-      before(:each) { create_list(:question_option, 2, question: question) }
-
-      it 'should destroy options' do
-        is_expected.to change { QuestionOption.count }.from(2).to(0)
-      end
-    end
-
-    context 'given question with two polls' do
-      let(:question) { create(:dummy_question) }
-
-      before(:each) { create_list(:poll, 2, question: question) }
-
-      it 'should destroy polls' do
-        is_expected.to change { Poll.count }.from(2).to(0)
       end
     end
   end

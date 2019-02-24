@@ -93,23 +93,6 @@ RSpec.describe InteractiveSession, type: :model do
     end
   end
 
-  describe '#questions' do
-    subject { interactive_session.questions }
-
-    context 'given interactive session with two questions' do
-      let(:interactive_session) { create(:interactive_session) }
-
-      before(:each) do
-        @questions = create_list(:dummy_question, 2,
-                                 interactive_session: interactive_session)
-      end
-
-      it 'should return questions' do
-        is_expected.to match(@questions)
-      end
-    end
-  end
-
   describe '#polls' do
     subject { interactive_session.polls }
 
@@ -125,6 +108,23 @@ RSpec.describe InteractiveSession, type: :model do
 
       it 'should return polls' do
         is_expected.to match(@polls)
+      end
+    end
+  end
+
+  describe '#questions' do
+    subject { interactive_session.questions }
+
+    context 'given interactive session with two questions' do
+      let(:interactive_session) { create(:interactive_session) }
+
+      before(:each) do
+        @questions = create_list(:dummy_question, 2,
+                                 interactive_session: interactive_session)
+      end
+
+      it 'should return questions' do
+        is_expected.to match(@questions)
       end
     end
   end
