@@ -38,4 +38,25 @@ class ApplicationController < ActionController::API
       end
       render json: ErrorSerializer.new(errors), status: :unprocessable_entity
     end
+
+    def serializer_class
+      raise NotImplementedError
+    end
+
+    def render_collection(records:, **options)
+      serializer = serializer_class.new(
+        records,
+        params: { current_user: current_user },
+        meta: { total: records.count }
+      )
+      render json: serializer, **options.except(:records)
+    end
+
+    def render_record(record:, **options)
+      serializer = serializer_class.new(
+        record,
+        params: { current_user: current_user }
+      )
+      render json: serializer, **options.except(:record)
+    end
 end
