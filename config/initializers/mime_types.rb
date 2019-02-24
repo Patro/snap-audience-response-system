@@ -1,4 +1,8 @@
 # frozen_string_literal: true
 
-# Add new mime types for use in respond_to blocks:
-# Mime::Type.register "text/richtext", :rtf
+api_mime_types = %W(
+  application/json
+  text/x-json
+  application/jsonrequest
+)
+Mime::Type.register 'application/vnd.api+json', :json, api_mime_types
