@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class DummyQuestion < Question
+  def self.policy_class
+    QuestionPolicy
+  end
+
   private
 
     def available_types
