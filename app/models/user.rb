@@ -10,4 +10,10 @@ class User < ApplicationRecord
            class_name: 'InteractiveSession', foreign_key: :owner_id,
            inverse_of: :owner, dependent: :destroy
   has_many :responses, foreign_key: :respondent_id, inverse_of: :respondent, dependent: :destroy
+
+  def interactive_sessions
+    owned_interactive_sessions.or(
+      InteractiveSession.where(id: attended_interactive_sessions)
+    )
+  end
 end
