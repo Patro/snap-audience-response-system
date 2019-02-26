@@ -12,6 +12,7 @@ gem 'redis', '~> 4.0' # for Action Cable in production
 gem 'bootsnap', '>= 1.1.0', require: false # reduces boot time
 gem 'composite_primary_keys', '~> 11.0' # composite primary keys support for Active Record
 gem 'pundit' # authorization system
+gem 'fast_jsonapi' # JSON:API serializer
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw] # debugger console
