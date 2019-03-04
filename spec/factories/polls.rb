@@ -3,6 +3,13 @@
 FactoryBot.define do
   factory :poll do
     association :question, factory: :dummy_question
-    closed { false }
+    open
+
+    trait :open do
+      closed { false }
+    end
+    trait :closed do
+      closed { true }
+    end
   end
 end
