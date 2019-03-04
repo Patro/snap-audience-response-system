@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe QuestionSerializer do
+RSpec.describe QuestionOptionSerializer do
   let(:question) { create(:single_choice_question) }
   let(:question_option) do
     create(:question_option, question: question, text: '42', correct: true)
