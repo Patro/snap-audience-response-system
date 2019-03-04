@@ -71,12 +71,14 @@ RSpec.describe QuestionOptionPolicy do
 
     context 'given question option without poll' do
       it { is_expected.to permit(:show) }
+      it { is_expected.to permit(:show_correct_flag) }
     end
 
     context 'given question option with poll' do
       before { create(:poll, question: question_option.question) }
 
       it { is_expected.to permit(:show) }
+      it { is_expected.to permit(:show_correct_flag) }
     end
   end
 
@@ -90,12 +92,14 @@ RSpec.describe QuestionOptionPolicy do
 
     context 'given question option without poll' do
       it { is_expected.not_to permit(:show) }
+      it { is_expected.not_to permit(:show_correct_flag) }
     end
 
     context 'given question option with poll' do
       before { create(:poll, question: question_option.question) }
 
       it { is_expected.to permit(:show) }
+      it { is_expected.not_to permit(:show_correct_flag) }
     end
   end
 
@@ -105,6 +109,7 @@ RSpec.describe QuestionOptionPolicy do
     it { is_expected.to permit(:index) }
     it { is_expected.not_to permit(:create) }
     it { is_expected.not_to permit(:show) }
+    it { is_expected.not_to permit(:show_correct_flag) }
     it { is_expected.not_to permit(:update) }
     it { is_expected.not_to permit(:destroy) }
   end

@@ -25,6 +25,10 @@ class QuestionOptionPolicy < ApplicationPolicy
     question_policy.show?
   end
 
+  def show_correct_flag?
+    owner_of_session?
+  end
+
   def update?
     question_policy.update?
   end
