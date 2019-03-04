@@ -6,9 +6,10 @@ RSpec.describe InteractiveSessionSerializer do
   let(:interactive_session) { create(:interactive_session) }
   let(:params) { { current_user: create(:user) } }
   let(:serializer) { InteractiveSessionSerializer.new(interactive_session, params: params) }
+  let(:data) { serializer.serializable_hash[:data] }
 
   describe 'data' do
-    subject { serializer.serializable_hash[:data] }
+    subject { data }
 
     it 'should serialize id' do
       is_expected.to include(id: interactive_session.id.to_s)
@@ -19,7 +20,7 @@ RSpec.describe InteractiveSessionSerializer do
     end
 
     describe 'attributes' do
-      subject { serializer.serializable_hash[:data][:attributes] }
+      subject { data[:attributes] }
 
       context 'given interactive session with label' do
         let(:interactive_session) { create(:interactive_session, label: 'ABC') }
@@ -49,6 +50,53 @@ RSpec.describe InteractiveSessionSerializer do
             .and_return(false)
 
             is_expected.not_to include(attendance_code: 'abcd')
+          end
+        end
+      end
+    end
+
+    describe 'relationships' do
+      describe 'questions' do
+        subject { data[:relationships][:questions][:data] }
+
+        context 'given interactive session without questions' do
+          it 'should serialize empty array' do
+            is_expected.to be_empty
+          end
+        end
+
+        context 'given interactive session with question' do
+          let!(:question) do
+            create(
+              :single_choice_question,
+              interactive_session: interactive_session
+            )
+          end
+          let(:question_reference) do
+            {
+              id: question.id.to_s,
+              type: :single_choice_question,
+            }
+          end
+
+          context 'given policy scope that permits access' do
+            it 'should include reference to question' do
+              allow_any_instance_of(QuestionPolicy::Scope)
+              .to receive(:resolve)
+              .and_return(Question.all)
+
+              is_expected.to include(question_reference)
+            end
+          end
+
+          context 'given policy scope that denies access' do
+            it 'should not include reference to question' do
+              allow_any_instance_of(QuestionPolicy::Scope)
+              .to receive(:resolve)
+              .and_return(Question.none)
+
+              is_expected.not_to include(question_reference)
+            end
           end
         end
       end
