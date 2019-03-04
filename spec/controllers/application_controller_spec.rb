@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationController, type: :controller do
-  controller do
-    def index; end
-  end
-
   describe 'session management' do
-    def fire_get
+    controller do
+      def index; end
+    end
+
+    def fire_request
       get 'index', session: given_session
     end
 
@@ -17,13 +17,13 @@ RSpec.describe ApplicationController, type: :controller do
       let(:created_user) { User.last }
 
       it 'should create a new user' do
-        expect { fire_get }.to change { User.count }.by(1)
+        expect { fire_request }.to change { User.count }.by(1)
       end
 
       describe '#session' do
         subject { session.to_h }
 
-        before(:each) { fire_get }
+        before(:each) { fire_request }
 
         it 'should include id of created user' do
           is_expected.to include('user_id' => created_user.id)
@@ -38,7 +38,7 @@ RSpec.describe ApplicationController, type: :controller do
         end
         subject { response.body }
 
-        before(:each) { fire_get }
+        before(:each) { fire_request }
 
         it 'should return id of created user' do
           is_expected.to eql(created_user.id.to_s)
@@ -51,13 +51,13 @@ RSpec.describe ApplicationController, type: :controller do
       let(:given_session) { { 'user_id' => given_user.id } }
 
       it 'should not create a new user' do
-        expect { fire_get }.not_to change { User.count }
+        expect { fire_request }.not_to change { User.count }
       end
 
       describe '#session' do
         subject { session.to_h }
 
-        before(:each) { fire_get }
+        before(:each) { fire_request }
 
         it 'should include id of given user' do
           is_expected.to include('user_id' => given_user.id)
@@ -72,11 +72,38 @@ RSpec.describe ApplicationController, type: :controller do
         end
         subject { response.body }
 
-        before(:each) { fire_get }
+        before(:each) { fire_request }
 
         it 'should return id of given user' do
           is_expected.to eql(given_user.id.to_s)
         end
+      end
+    end
+  end
+
+  describe 'unauthorized error' do
+    controller do
+      def index
+        raise Pundit::NotAuthorizedError
+      end
+    end
+
+    before(:each) { get 'index' }
+
+    describe 'response' do
+      let(:json) { JSON.parse(response.body) }
+
+      subject { response }
+
+      it { is_expected.to have_http_status(:forbidden) }
+      it { is_expected.to have_json_api_content_type }
+
+      describe 'first error' do
+        subject { json['errors'].first }
+
+        it { is_expected.to include('status' => '403') }
+        it { is_expected.to include('title' => 'Non authorized action') }
+        it { is_expected.to include('detail' => 'The current user is not authorized to perform this action.') }
       end
     end
   end

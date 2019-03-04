@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
   include Pundit
 
   before_action :initialize_session
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   private
 
@@ -16,5 +17,10 @@ class ApplicationController < ActionController::API
       return if session[:user_id].present?
 
       session[:user_id] = User.create.id
+    end
+
+    def user_not_authorized
+      error = Errors::NotAuthorizedError.new
+      render json: ErrorSerializer.new(error), status: :forbidden
     end
 end
