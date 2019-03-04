@@ -16,73 +16,52 @@ RSpec.describe QuestionSerializer do
   describe 'data' do
     subject { data }
 
-    it 'should serialize id' do
-      is_expected.to include(id: "#{question.id}")
-    end
+    it { is_expected.to include(id: "#{question.id}") }
+    it { is_expected.to include(type: :question) }
 
-    it 'should serialize type' do
-      is_expected.to include(type: :question)
-    end
-
-    describe 'attributes' do
+    describe '> attributes' do
       subject { data[:attributes] }
 
-      it 'should serialize text' do
-        is_expected.to include(text: 'What is the answer of everything?')
-      end
+      it { is_expected.to include(text: 'What is the answer of everything?') }
     end
 
-    describe 'relationships' do
-      describe 'interactive session' do
+    describe '> relationships' do
+      describe '> interactive session' do
         subject { data[:relationships][:interactive_session][:data] }
 
-        it 'should serialize id' do
-          is_expected.to include(id: interactive_session.id.to_s)
-        end
-
-        it 'should serialize type' do
-          is_expected.to include(type: :interactive_session)
-        end
+        it { is_expected.to include_identifier_of(interactive_session) }
       end
 
-      describe 'options' do
+      describe '> options' do
         subject { data[:relationships][:options][:data] }
 
         context 'given question without options' do
-          it 'should serialize empty array' do
-            is_expected.to be_empty
-          end
+          it { is_expected.to be_empty }
         end
 
         context 'given question with option' do
           let!(:question_option) do
             create(:question_option, question: question)
           end
-          let(:question_option_reference) do
-            {
-              id: question_option.id.to_s,
-              type: :question_option,
-            }
-          end
 
           context 'given policy scope that permits access' do
-            it 'should include reference to question option' do
+            before(:each) do
               allow_any_instance_of(QuestionOptionPolicy::Scope)
               .to receive(:resolve)
               .and_return(QuestionOption.all)
-
-              is_expected.to include(question_option_reference)
             end
+
+            it { is_expected.to include_identifier_of(question_option) }
           end
 
           context 'given policy scope that denies access' do
-            it 'should not include reference to question option' do
+            before(:each) do
               allow_any_instance_of(QuestionOptionPolicy::Scope)
               .to receive(:resolve)
               .and_return(QuestionOption.none)
-
-              is_expected.not_to include(question_option_reference)
             end
+
+            it { is_expected.not_to include_identifier_of(question_option) }
           end
         end
       end

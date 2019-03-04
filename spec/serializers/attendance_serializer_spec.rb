@@ -13,29 +13,15 @@ RSpec.describe AttendanceSerializer do
   describe 'data' do
     subject { data }
 
-    it 'should serialize id' do
-      is_expected.to include(id: "#{attendance.attendee.id},#{interactive_session.id}")
-    end
+    it { is_expected.to include(id: attendance.id.join(',')) }
+    it { is_expected.to include(type: :attendance) }
+    it { is_expected.not_to include(:attributes) }
 
-    it 'should serialize type' do
-      is_expected.to include(type: :attendance)
-    end
-
-    it 'should not serialize attributes' do
-      is_expected.not_to include(:attributes)
-    end
-
-    describe 'relationships' do
-      describe 'interactive session' do
+    describe '> relationships' do
+      describe '> interactive session' do
         subject { data[:relationships][:interactive_session][:data] }
 
-        it 'should serialize id' do
-          is_expected.to include(id: interactive_session.id.to_s)
-        end
-
-        it 'should serialize type' do
-          is_expected.to include(type: :interactive_session)
-        end
+        it { is_expected.to include_identifier_of(interactive_session) }
       end
     end
   end

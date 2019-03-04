@@ -18,53 +18,40 @@ RSpec.describe QuestionSerializer do
   describe 'data' do
     subject { data }
 
-    it 'should serialize id' do
-      is_expected.to include(id: "#{question_option.id}")
-    end
+    it { is_expected.to include(id: "#{question_option.id}") }
+    it { is_expected.to include(type: :question_option) }
 
-    it 'should serialize type' do
-      is_expected.to include(type: :question_option)
-    end
-
-    describe 'attributes' do
+    describe '> attributes' do
       subject { data[:attributes] }
 
-      it 'should serialize text' do
-        is_expected.to include(text: '42')
-      end
+      it { is_expected.to include(text: '42') }
 
       context 'given policy with show correct flag set to true' do
-        it 'should serialize correct flag' do
+        before(:each) do
           allow_any_instance_of(QuestionOptionPolicy)
           .to receive(:show_correct_flag?)
           .and_return(true)
-
-          is_expected.to include(correct: true)
         end
+
+        it { is_expected.to include(correct: true) }
       end
 
       context 'given policy with show correct flag set to false' do
-        it 'should not serialize correct flag' do
+        before(:each) do
           allow_any_instance_of(QuestionOptionPolicy)
           .to receive(:show_correct_flag?)
           .and_return(false)
-
-          is_expected.not_to include(:correct)
         end
+
+        it { is_expected.not_to include(:correct) }
       end
     end
 
-    describe 'relationships' do
-      describe 'question' do
+    describe '> relationships' do
+      describe '> question' do
         subject { data[:relationships][:question][:data] }
 
-        it 'should serialize id' do
-          is_expected.to include(id: question.id.to_s)
-        end
-
-        it 'should serialize type' do
-          is_expected.to include(type: :single_choice_question)
-        end
+        it { is_expected.to include_identifier_of(question) }
       end
     end
   end

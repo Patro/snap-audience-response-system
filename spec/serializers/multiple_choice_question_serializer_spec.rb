@@ -22,8 +22,6 @@ RSpec.describe MultipleChoiceQuestionSerializer do
   describe 'data' do
     subject { data }
 
-    it 'should serialize type' do
-      is_expected.to include(type: :multiple_choice_question)
-    end
+    it { is_expected.to include(type: :multiple_choice_question) }
   end
 end

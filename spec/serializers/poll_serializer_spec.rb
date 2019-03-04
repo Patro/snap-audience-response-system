@@ -13,33 +13,20 @@ RSpec.describe PollSerializer do
   describe 'data' do
     subject { data }
 
-    it 'should serialize id' do
-      is_expected.to include(id: "#{poll.id}")
-    end
+    it { is_expected.to include(id: "#{poll.id}") }
+    it { is_expected.to include(type: :poll) }
 
-    it 'should serialize type' do
-      is_expected.to include(type: :poll)
-    end
-
-    describe 'attributes' do
+    describe '> attributes' do
       subject { data[:attributes] }
 
-      it 'should serialize closed' do
-        is_expected.to include(closed: false)
-      end
+      it { is_expected.to include(closed: false) }
     end
 
-    describe 'relationships' do
-      describe 'question' do
+    describe '> relationships' do
+      describe '> question' do
         subject { data[:relationships][:question][:data] }
 
-        it 'should serialize id' do
-          is_expected.to include(id: question.id.to_s)
-        end
-
-        it 'should serialize type' do
-          is_expected.to include(type: :single_choice_question)
-        end
+        it { is_expected.to include_identifier_of(question) }
       end
     end
   end

@@ -17,42 +17,21 @@ RSpec.describe ResponseSerializer do
   describe 'data' do
     subject { data }
 
-    it 'should serialize id' do
-      id_parts = [poll.id, response.respondent.id, question_option.id]
-      is_expected.to include(id: id_parts.join(','))
-    end
+    it { is_expected.to include(id: response.id.join(',')) }
+    it { is_expected.to include(type: :response) }
+    it { is_expected.not_to include(:attributes) }
 
-    it 'should serialize type' do
-      is_expected.to include(type: :response)
-    end
-
-    it 'should not serialize attributes' do
-      is_expected.not_to include(:attributes)
-    end
-
-    describe 'relationships' do
-      describe 'poll' do
+    describe '> relationships' do
+      describe '> poll' do
         subject { data[:relationships][:poll][:data] }
 
-        it 'should serialize id' do
-          is_expected.to include(id: poll.id.to_s)
-        end
-
-        it 'should serialize type' do
-          is_expected.to include(type: :poll)
-        end
+        it { is_expected.to include_identifier_of(poll) }
       end
 
-      describe 'question_option' do
+      describe '> question_option' do
         subject { data[:relationships][:picked_question_option][:data] }
 
-        it 'should serialize id' do
-          is_expected.to include(id: question_option.id.to_s)
-        end
-
-        it 'should serialize type' do
-          is_expected.to include(type: :question_option)
-        end
+        it { is_expected.to include_identifier_of(question_option) }
       end
     end
   end
