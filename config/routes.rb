@@ -6,5 +6,8 @@ Rails.application.routes.draw do
     resources :attendances, only: [:index]
     resources :questions, only: [:index, :create]
   end
-  resources :questions
+  resources :question_options
+  resources :questions do
+    resources :question_options, only: [:index, :create]
+  end
 end

@@ -249,7 +249,7 @@ RSpec.shared_examples 'update resource' do |model_class:, expect_changes: true|
 
       unless expect_changes
         it 'should not change attributes of record' do
-          expect { fire_patch }.not_to change { record.attributes }
+          expect { fire_patch }.not_to change { record.reload.attributes }
         end
       end
 
