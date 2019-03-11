@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class QuestionsController < ApplicationController
+  include Relatable
+
   def index
     records = policy_scope(Question)
     filtered_records = apply_query_filters(records)
@@ -65,31 +67,9 @@ class QuestionsController < ApplicationController
       Question.find(params[:id])
     end
 
-    def interactive_session_id_from_query_params
-      params[:interactive_session_id]
-    end
-
-    def interactive_session_id_from_relationships
-      params.dig(:data, :relationships, :interactive_session, :data, :id)
-    end
-
-    def interactive_session_id
-      unique_candidates = [
-        interactive_session_id_from_query_params,
-        interactive_session_id_from_relationships,
-      ].compact.uniq
-
-      if unique_candidates.count > 1
-        raise Errors::UnprocessableEntityError,
-              error_message: 'Given interactive session id is ambiguous.'
-      end
-
-      unique_candidates.first
-    end
-
     def mapped_params
       {
-        interactive_session_id: interactive_session_id,
+        interactive_session_id: id_of_related_resource(:interactive_session),
         type: params.dig(:data, :type)&.camelize,
         text: params.dig(:data, :attributes, :text)
       }.compact

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class QuestionOptionsController < ApplicationController
+  include Relatable
+
   def index
     records = policy_scope(QuestionOption)
     filtered_records = apply_query_filters(records)
@@ -57,31 +59,9 @@ class QuestionOptionsController < ApplicationController
       QuestionOption.find(params[:id])
     end
 
-    def question_id_from_query_params
-      params[:question_id]
-    end
-
-    def question_id_from_relationships
-      params.dig(:data, :relationships, :question, :data, :id)
-    end
-
-    def question_id
-      unique_candidates = [
-        question_id_from_query_params,
-        question_id_from_relationships,
-      ].compact.uniq
-
-      if unique_candidates.count > 1
-        raise Errors::UnprocessableEntityError,
-              error_message: 'Given question id is ambiguous.'
-      end
-
-      unique_candidates.first
-    end
-
     def mapped_params
       {
-        question_id: question_id,
+        question_id: id_of_related_resource(:question),
         text: params.dig(:data, :attributes, :text),
         correct: params.dig(:data, :attributes, :correct),
       }.compact
