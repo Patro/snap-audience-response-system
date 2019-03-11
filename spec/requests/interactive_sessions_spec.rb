@@ -51,6 +51,7 @@ RSpec.describe 'Interactive Sessions API', type: :request do
 
   describe 'PATCH /interactive_sessions/:id' do
     let!(:record) { create(:interactive_session, label: 'My Session') }
+    let(:updated_record) { InteractiveSession.find(record.id) }
 
     def fire_patch
       params = { data: data }

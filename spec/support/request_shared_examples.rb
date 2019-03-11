@@ -227,7 +227,7 @@ RSpec.shared_examples 'get resource' do |model_class:|
   end
 end
 
-RSpec.shared_examples 'update resource' do |model_class:|
+RSpec.shared_examples 'update resource' do |model_class:, expect_changes: true|
   context 'given non existing id' do
     let(:id) { 1234 }
 
@@ -247,6 +247,12 @@ RSpec.shared_examples 'update resource' do |model_class:|
     context 'given policy that permits access' do
       permit_action(model_class, :update?)
 
+      unless expect_changes
+        it 'should not change attributes of record' do
+          expect { fire_patch }.not_to change { record.attributes }
+        end
+      end
+
       describe 'response' do
         subject { response }
 
@@ -258,16 +264,18 @@ RSpec.shared_examples 'update resource' do |model_class:|
         describe 'data' do
           subject { json['data'] }
 
-          it { is_expected.to include_identifier_of(record) }
+          it { is_expected.to include_identifier_of(updated_record) }
         end
       end
 
       describe 'updated record' do
-        subject { record.reload }
+        subject { updated_record }
 
         before(:each) { fire_patch }
 
-        it { is_expected.to have_attributes(expected_record_attributes) }
+        if expect_changes
+          it { is_expected.to have_attributes(expected_record_attributes) }
+        end
       end
     end
 
