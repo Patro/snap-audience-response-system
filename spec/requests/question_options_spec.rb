@@ -45,23 +45,19 @@ RSpec.describe 'Question Options API', type: :request do
 
   describe 'POST /question_options' do
     let(:question) { create(:dummy_question) }
-    let(:data_without_relationship) do
+    let(:option_data) do
       {
         type: 'QuestionOption',
         attributes: {
           text: 'My Option',
           correct: false,
         },
-      }
-    end
-    let(:data_with_relationship) do
-      data_without_relationship.merge(
         relationships: {
           question: {
-            data: { id: question.id, type: :dummy_question }
-          }
-        }
-      )
+            data: { id: question.id, type: :dummy_question },
+          },
+        },
+      }
     end
     let(:created_record) { QuestionOption.last }
     let(:query_params) { '' }
@@ -79,14 +75,16 @@ RSpec.describe 'Question Options API', type: :request do
     end
 
     context 'given data object with text' do
-      let(:data) { data_with_relationship.merge(text: 'My Option') }
-      let(:expected_record_attributes) { { text: 'My Option' } }
+      let(:data) do
+        option_data.deep_merge(attributes: { text: 'My fancy Option' })
+      end
+      let(:expected_record_attributes) { { text: 'My fancy Option' } }
 
       include_examples 'create resource', model_class: QuestionOption
     end
 
     context 'given data object with missing text' do
-      let(:data) { data_with_relationship.deep_merge(attributes: { text: nil }) }
+      let(:data) { option_data.deep_merge(attributes: { text: nil }) }
 
       include_examples 'fail to create resource',
                        model_class: QuestionOption,
@@ -94,18 +92,14 @@ RSpec.describe 'Question Options API', type: :request do
     end
 
     context 'given data object with correct flag' do
-      let(:data) do
-        data_with_relationship.deep_merge(attributes: { correct: 'true' })
-      end
+      let(:data) { option_data.deep_merge(attributes: { correct: 'true' }) }
       let(:expected_record_attributes) { { correct: true } }
 
       include_examples 'create resource', model_class: QuestionOption
     end
 
     context 'given data object with missing correct flag' do
-      let(:data) do
-        data_with_relationship.deep_merge(attributes: { correct: nil })
-      end
+      let(:data) { option_data.deep_merge(attributes: { correct: nil }) }
 
       include_examples 'fail to create resource',
                        model_class: QuestionOption,
@@ -113,37 +107,17 @@ RSpec.describe 'Question Options API', type: :request do
     end
 
     describe 'question' do
+      let(:data_with_relationship) { option_data }
+      let(:data_without_relationship) do
+        option_data.deep_merge(relationships: { question: nil })
+      end
+      let(:related_record) { question }
+      let(:other_record) { create(:dummy_question) }
+      let(:query_key) { 'question_id' }
       let(:expected_record_attributes) { { question: question } }
 
-      context 'given question as relationship only' do
-        let(:data) { data_with_relationship }
-
-        include_examples 'create resource', model_class: QuestionOption
-      end
-
-      context 'given question as query param only' do
-        let(:data) { data_without_relationship }
-        let(:query_params) { "question_id=#{question.id}" }
-
-        include_examples 'create resource', model_class: QuestionOption
-      end
-
-      context 'given question as relationship and query param' do
-        let(:data) { data_with_relationship }
-        let(:query_params) { "question_id=#{question.id}" }
-
-        include_examples 'create resource', model_class: QuestionOption
-      end
-
-      context 'given different question as relationship and query param' do
-        let(:other) { create(:dummy_question) }
-        let(:data) { data_with_relationship }
-        let(:query_params) { "question_id=#{other.id}" }
-
-        include_examples 'fail to create resource',
-                         model_class: QuestionOption,
-                         status: :unprocessable_entity
-      end
+      include_examples 'create resource with relationship',
+                       model_class: QuestionOption
     end
   end
 

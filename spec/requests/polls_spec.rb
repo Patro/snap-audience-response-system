@@ -69,22 +69,18 @@ RSpec.describe 'Polls API', type: :request do
 
   describe 'POST /polls' do
     let(:question) { create(:dummy_question) }
-    let(:data_without_relationship) do
+    let(:poll_data) do
       {
         type: 'Poll',
         attributes: {
           closed: 'false',
-        }
-      }
-    end
-    let(:data_with_relationship) do
-      data_without_relationship.merge(
+        },
         relationships: {
           question: {
-            data: { id: question.id, type: :dummy_question }
+            data: { id: question.id, type: :dummy_question },
           },
-        }
-      )
+        },
+      }
     end
     let(:created_record) { Poll.last }
     let(:query_params) { '' }
@@ -102,55 +98,31 @@ RSpec.describe 'Polls API', type: :request do
     end
 
     context 'given data object with closed flag' do
-      let(:data) do
-        data_with_relationship.deep_merge(attributes: { closed: 'true' })
-      end
+      let(:data) { poll_data.deep_merge(attributes: { closed: 'true' }) }
       let(:expected_record_attributes) { { closed: true } }
 
       include_examples 'create resource', model_class: Poll
     end
 
     context 'given data object with missing closed flag' do
-      let(:data) do
-        data_with_relationship.deep_merge(attributes: { closed: nil })
-      end
+      let(:data) { poll_data.deep_merge(attributes: { closed: nil }) }
       let(:expected_record_attributes) { { closed: false } }
 
       include_examples 'create resource', model_class: Poll
     end
 
     describe 'question' do
+      let(:data_with_relationship) { poll_data }
+      let(:data_without_relationship) do
+        poll_data.deep_merge(relationships: { question: nil })
+      end
+      let(:related_record) { question }
+      let(:other_record) { create(:dummy_question) }
+      let(:query_key) { 'question_id' }
       let(:expected_record_attributes) { { question: question } }
 
-      context 'given question as relationship only' do
-        let(:data) { data_with_relationship }
-
-        include_examples 'create resource', model_class: Poll
-      end
-
-      context 'given question as query param only' do
-        let(:data) { data_without_relationship }
-        let(:query_params) { "question_id=#{question.id}" }
-
-        include_examples 'create resource', model_class: Poll
-      end
-
-      context 'given question as relationship and query param' do
-        let(:data) { data_with_relationship }
-        let(:query_params) { "question_id=#{question.id}" }
-
-        include_examples 'create resource', model_class: Poll
-      end
-
-      context 'given different question as relationship and query param' do
-        let(:other) { create(:dummy_question) }
-        let(:data) { data_with_relationship }
-        let(:query_params) { "question_id=#{other.id}" }
-
-        include_examples 'fail to create resource',
-                         model_class: Poll,
-                         status: :unprocessable_entity
-      end
+      include_examples 'create resource with relationship',
+                       model_class: Poll
     end
   end
 

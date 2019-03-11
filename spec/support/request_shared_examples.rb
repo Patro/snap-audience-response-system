@@ -141,6 +141,37 @@ RSpec.shared_examples 'create resource' do |model_class:|
   end
 end
 
+RSpec.shared_examples 'create resource with relationship' do |model_class:|
+  context 'given resource as relationship only' do
+    let(:data) { data_with_relationship }
+
+    include_examples 'create resource', model_class: model_class
+  end
+
+  context 'given resource as query param only' do
+    let(:data) { data_without_relationship }
+    let(:query_params) { "#{query_key}=#{related_record.id}" }
+
+    include_examples 'create resource', model_class: model_class
+  end
+
+  context 'given resource as relationship and query param' do
+    let(:data) { data_with_relationship }
+    let(:query_params) { "#{query_key}=#{related_record.id}" }
+
+    include_examples 'create resource', model_class: model_class
+  end
+
+  context 'given different resource as relationship and query param' do
+    let(:data) { data_with_relationship }
+    let(:query_params) { "#{query_key}=#{other_record.id}" }
+
+    include_examples 'fail to create resource',
+                     model_class: model_class,
+                     status: :unprocessable_entity
+  end
+end
+
 RSpec.shared_examples 'fail to create resource' do |model_class:, status:|
   context 'given policy that permits access' do
     permit_action(model_class, :create?)
