@@ -145,4 +145,41 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
   end
+
+  describe 'validation error' do
+    before(:each) do
+      stub_const('TestModel', Class.new)
+      TestModel.class_eval do
+        include ActiveModel::Model
+        attr_accessor :name
+        validates :name, presence: true
+      end
+    end
+
+    controller do
+      def index
+        invalid_model = TestModel.new(name: nil)
+        invalid_model.validate!
+      end
+    end
+
+    before(:each) { get 'index' }
+
+    describe 'response' do
+      let(:json) { JSON.parse(response.body) }
+
+      subject { response }
+
+      it { is_expected.to have_http_status(:unprocessable_entity) }
+      it { is_expected.to have_json_api_content_type }
+
+      describe 'first error' do
+        subject { json['errors'].first }
+
+        it { is_expected.to include('status' => '422') }
+        it { is_expected.to include('title' => 'Resource can not be processed') }
+        it { is_expected.to include('detail' => 'Name can\'t be blank.') }
+      end
+    end
+  end
 end

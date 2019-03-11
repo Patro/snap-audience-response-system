@@ -8,6 +8,7 @@ class ApplicationController < ActionController::API
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+  rescue_from ActiveModel::ValidationError, with: :validation_error
 
   private
 
@@ -32,7 +33,17 @@ class ApplicationController < ActionController::API
     end
 
     def record_invalid(record_invalid_error)
-      error_messages = record_invalid_error.record.errors.full_messages
+      errors = record_invalid_error.record.errors
+      render_unprocessable_entity_errors_for(errors)
+    end
+
+    def validation_error(validation_error)
+      errors = validation_error.model.errors
+      render_unprocessable_entity_errors_for(errors)
+    end
+
+    def render_unprocessable_entity_errors_for(model_errors)
+      error_messages = model_errors.full_messages
       errors = error_messages.map do |message|
         Errors::UnprocessableEntityError.new(error_message: message + '.')
       end
