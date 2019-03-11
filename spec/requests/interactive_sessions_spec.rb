@@ -7,6 +7,8 @@ RSpec.describe 'Interactive Sessions API', type: :request do
   include RequestHelpers
 
   describe 'GET /interactive_sessions' do
+    let!(:records) { create_list(:interactive_session, 2) }
+
     def fire_get
       get '/interactive_sessions'
     end

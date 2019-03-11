@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'get collection of resources' do |model_class:|
+RSpec.shared_examples 'get collection of resources' do |model_class:, with_filter: false|
   context 'given no records' do
+    let!(:records) { }
+
     before(:each) { fire_get }
 
     describe 'response' do
@@ -24,9 +26,7 @@ RSpec.shared_examples 'get collection of resources' do |model_class:|
     end
   end
 
-  context 'given two records' do
-    let!(:records) { create_list(model_class.to_s.underscore, 2) }
-
+  context 'given records' do
     context 'given scope that permits access' do
       unlock_scope(model_class)
 
@@ -41,13 +41,16 @@ RSpec.shared_examples 'get collection of resources' do |model_class:|
         describe 'meta' do
           subject { json['meta'] }
 
-          it { is_expected.to include('total' => 2) }
+          it { is_expected.to include('total' => records.length) }
         end
 
         describe 'data' do
           subject { json['data'] }
 
           it { is_expected.to include_identifier_of(records) }
+          if with_filter
+            it { is_expected.not_to include_identifier_of(non_matching_records) }
+          end
         end
       end
     end
@@ -73,6 +76,9 @@ RSpec.shared_examples 'get collection of resources' do |model_class:|
           subject { json['data'] }
 
           it { is_expected.not_to include_identifier_of(records) }
+          if with_filter
+            it { is_expected.not_to include_identifier_of(non_matching_records) }
+          end
         end
       end
     end
@@ -130,6 +136,25 @@ RSpec.shared_examples 'create resource' do |model_class:|
       before(:each) { fire_post }
 
       it { is_expected.to have_http_status(:forbidden) }
+      it { is_expected.to have_json_api_content_type }
+    end
+  end
+end
+
+RSpec.shared_examples 'fail to create resource' do |model_class:, status:|
+  context 'given policy that permits access' do
+    permit_action(model_class, :create?)
+
+    it 'should not change number of records' do
+      expect { fire_post }.not_to change { model_class.count }
+    end
+
+    describe 'response' do
+      subject { response }
+
+      before(:each) { fire_post }
+
+      it { is_expected.to have_http_status(:unprocessable_entity) }
       it { is_expected.to have_json_api_content_type }
     end
   end
