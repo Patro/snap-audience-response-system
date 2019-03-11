@@ -1,48 +1,12 @@
 # frozen_string_literal: true
 
 class PollsController < ApplicationController
+  include Creatable # create action
+  include Destroyable # destroy action
+  include Listable # index action
   include Relatable
-
-  def index
-    records = policy_scope(Poll)
-    filtered_records = apply_query_filters(records)
-    render_collection records: filtered_records
-  end
-
-  def create
-    record = Poll.new(mapped_params)
-    record.validate!
-    authorize record
-
-    record.save!
-
-    render_record record: record, status: :created, location: poll_url(record)
-  end
-
-  def show
-    record = policy_scope(Poll).find(params[:id])
-    authorize record
-
-    render_record record: record
-  end
-
-  def update
-    record = find_poll
-    authorize record
-
-    record.update!(mapped_params.slice(:closed))
-
-    render_record record: record
-  end
-
-  def destroy
-    record = find_poll
-    authorize record
-
-    record.destroy
-
-    head :no_content
-  end
+  include Updatable # update action
+  include Viewable # show action
 
   private
 
@@ -71,8 +35,12 @@ class PollsController < ApplicationController
       records
     end
 
-    def find_poll
-      Poll.find(params[:id])
+    def params_for_creation
+      mapped_params
+    end
+
+    def params_for_update
+      mapped_params.slice(:closed)
     end
 
     def mapped_params
@@ -82,7 +50,7 @@ class PollsController < ApplicationController
       }.compact
     end
 
-    def serializer_class
-      PollSerializer
+    def record_class
+      Poll
     end
 end

@@ -1,49 +1,12 @@
 # frozen_string_literal: true
 
 class QuestionOptionsController < ApplicationController
+  include Creatable # create action
+  include Destroyable # destroy action
+  include Listable # index action
   include Relatable
-
-  def index
-    records = policy_scope(QuestionOption)
-    filtered_records = apply_query_filters(records)
-    render_collection records: filtered_records
-  end
-
-  def create
-    record = QuestionOption.new(mapped_params)
-    record.validate!
-    authorize record
-
-    record.save!
-
-    render_record record: record, status: :created,
-                  location: question_option_url(record)
-  end
-
-  def show
-    record = policy_scope(QuestionOption).find(params[:id])
-    authorize record
-
-    render_record record: record
-  end
-
-  def update
-    record = find_question_option
-    authorize record
-
-    record.update!(mapped_params.slice(:text, :correct))
-
-    render_record record: record
-  end
-
-  def destroy
-    record = find_question_option
-    authorize record
-
-    record.destroy
-
-    head :no_content
-  end
+  include Updatable # update action
+  include Viewable # show action
 
   private
 
@@ -55,8 +18,12 @@ class QuestionOptionsController < ApplicationController
       records
     end
 
-    def find_question_option
-      QuestionOption.find(params[:id])
+    def params_for_creation
+      mapped_params
+    end
+
+    def params_for_update
+      mapped_params.slice(:text, :correct)
     end
 
     def mapped_params
@@ -67,7 +34,7 @@ class QuestionOptionsController < ApplicationController
       }.compact
     end
 
-    def serializer_class
-      QuestionOptionSerializer
+    def record_class
+      QuestionOption
     end
 end

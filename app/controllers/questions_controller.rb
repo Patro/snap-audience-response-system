@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 class QuestionsController < ApplicationController
+  include Destroyable # destroy action
+  include Listable # index action
   include Relatable
-
-  def index
-    records = policy_scope(Question)
-    filtered_records = apply_query_filters(records)
-    render_collection records: filtered_records
-  end
+  include Viewable # show action
 
   def create
     # assign_attributes is used to bypass SubclassNotFound exception that
@@ -15,7 +12,7 @@ class QuestionsController < ApplicationController
     # The type of a question is checked by a model validation instead
     # to provide better error messages.
     record = Question.new
-    record.assign_attributes(mapped_params)
+    record.assign_attributes(params_for_creation)
     record.validate!
     authorize record
 
@@ -24,33 +21,17 @@ class QuestionsController < ApplicationController
     render_record record: record, status: :created, location: question_url(record)
   end
 
-  def show
-    record = policy_scope(Question).find(params[:id])
-    authorize record
-
-    render_record record: record
-  end
-
   def update
-    record = find_question
+    record = Question.find(record_id)
     authorize record
 
-    record.update!(mapped_params.slice(:type, :text))
+    record.update!(params_for_update)
 
     # After updating the record we are changing the class
     # of the question to match the given type attribute
     record = record.becomes(record.type.constantize)
 
     render_record record: record
-  end
-
-  def destroy
-    record = find_question
-    authorize record
-
-    record.destroy
-
-    head :no_content
   end
 
   private
@@ -63,8 +44,12 @@ class QuestionsController < ApplicationController
       records
     end
 
-    def find_question
-      Question.find(params[:id])
+    def params_for_creation
+      mapped_params
+    end
+
+    def params_for_update
+      mapped_params.slice(:type, :text)
     end
 
     def mapped_params
@@ -75,7 +60,7 @@ class QuestionsController < ApplicationController
       }.compact
     end
 
-    def serializer_class
-      QuestionSerializer
+    def record_class
+      Question
     end
 end

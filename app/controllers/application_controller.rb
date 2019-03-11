@@ -56,8 +56,16 @@ class ApplicationController < ActionController::API
              status: application_error.status
     end
 
-    def serializer_class
+    def record_id
+      params[:id]
+    end
+
+    def record_class
       raise NotImplementedError
+    end
+
+    def serializer_class
+      (record_class.to_s + 'Serializer').constantize
     end
 
     def render_collection(records:, **options)
