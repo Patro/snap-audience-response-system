@@ -7,6 +7,7 @@ class ApplicationController < ActionController::API
   before_action :initialize_session
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
   private
 
@@ -28,5 +29,13 @@ class ApplicationController < ActionController::API
     def record_not_found
       error = Errors::RecordNotFoundError.new
       render json: ErrorSerializer.new(error), status: :not_found
+    end
+
+    def record_invalid(record_invalid_error)
+      error_messages = record_invalid_error.record.errors.full_messages
+      errors = error_messages.map do |message|
+        Errors::UnprocessableEntityError.new(error_message: message + '.')
+      end
+      render json: ErrorSerializer.new(errors), status: :unprocessable_entity
     end
 end
