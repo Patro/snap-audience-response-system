@@ -77,7 +77,7 @@ RSpec.describe 'Questions API', type: :request do
     end
 
     context 'given data object with valid type' do
-      let(:data) { question_data.merge(type: 'MultipleChoiceQuestion') }
+      let(:data) { question_data.merge(type: 'multiple_choice_question') }
       let(:expected_record_attributes) { { type: 'MultipleChoiceQuestion' } }
 
       include_examples 'create resource', model_class: Question
@@ -91,7 +91,7 @@ RSpec.describe 'Questions API', type: :request do
     end
 
     context 'given data object with non existing type' do
-      let(:data) { question_data.merge(type: :non_existing_type) }
+      let(:data) { question_data.merge(type: 'non_existing_type') }
 
       include_examples 'fail to create resource',
                        model_class: Question, status: :unprocessable_entity
@@ -133,7 +133,7 @@ RSpec.describe 'Questions API', type: :request do
     let(:interactive_session) { create(:interactive_session) }
     let(:data) do
       {
-        type: 'SingleChoiceQuestion',
+        type: 'single_choice_question',
         attributes: {
           text: 'My Question'
         },
@@ -187,7 +187,7 @@ RSpec.describe 'Questions API', type: :request do
     end
 
     context 'given type' do
-      let(:data) { { type: 'SingleChoiceQuestion' } }
+      let(:data) { { type: 'single_choice_question' } }
       let(:expected_record_attributes) { { type: 'SingleChoiceQuestion' } }
 
       include_examples 'update resource', model_class: Question
