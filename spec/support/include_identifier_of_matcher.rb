@@ -42,6 +42,9 @@ RSpec::Matchers.define :include_identifier_of do |expected|
     end
 
     def to_array(obj)
-      obj.is_a?(Array) || obj.is_a?(ActiveRecord::Relation) ? obj : [obj]
+      return [] if obj.blank?
+      return obj if obj.is_a?(Array) || obj.is_a?(ActiveRecord::Relation)
+
+      [obj]
     end
 end
