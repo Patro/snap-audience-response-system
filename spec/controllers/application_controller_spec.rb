@@ -182,4 +182,33 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
   end
+
+  describe 'application error' do
+    controller do
+      def index
+        raise Errors::CustomError, title: 'App Error',
+                                   detail: 'An error occured.',
+                                   status: :server_error
+      end
+    end
+
+    before(:each) { get 'index' }
+
+    describe 'response' do
+      let(:json) { JSON.parse(response.body) }
+
+      subject { response }
+
+      it { is_expected.to have_http_status(:server_error) }
+      it { is_expected.to have_json_api_content_type }
+
+      describe 'first error' do
+        subject { json['errors'].first }
+
+        it { is_expected.to include('status' => '500') }
+        it { is_expected.to include('title' => 'App Error') }
+        it { is_expected.to include('detail' => 'An error occured.') }
+      end
+    end
+  end
 end

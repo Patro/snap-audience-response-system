@@ -9,6 +9,7 @@ class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
   rescue_from ActiveModel::ValidationError, with: :validation_error
+  rescue_from Errors::ApplicationError, with: :application_error
 
   private
 
@@ -48,6 +49,11 @@ class ApplicationController < ActionController::API
         Errors::UnprocessableEntityError.new(error_message: message + '.')
       end
       render json: ErrorSerializer.new(errors), status: :unprocessable_entity
+    end
+
+    def application_error(application_error)
+      render json: ErrorSerializer.new(application_error),
+             status: application_error.status
     end
 
     def serializer_class
