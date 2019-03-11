@@ -28,7 +28,7 @@ class AttendancesController < ApplicationController
     end
 
     def attendance_code
-      params.fetch(:data, {}).fetch(:attributes, {}).fetch(:attendance_code)
+      params.dig(:data, :attributes, :attendance_code)
     end
 
     def record_id

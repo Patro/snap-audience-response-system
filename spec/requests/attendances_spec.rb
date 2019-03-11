@@ -55,6 +55,14 @@ RSpec.describe 'Attendances API', type: :request do
       post '/attendances', params: { data: data }
     end
 
+    context 'given empty data object' do
+      let(:data) { {} }
+
+      include_examples 'fail to create resource',
+                       model_class: Poll,
+                       status: :unprocessable_entity
+    end
+
     context 'given valid attendance code' do
       let(:data) { { attributes: { attendance_code: 'ABCD' } } }
       let(:expected_record_attributes) do
