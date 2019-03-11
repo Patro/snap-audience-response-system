@@ -65,7 +65,7 @@ RSpec.describe 'Interactive Sessions API', type: :request do
     end
 
     context 'given label' do
-      let(:data) { { attributes: { label: 'My Great Session' }} }
+      let(:data) { { attributes: { label: 'My Great Session' } } }
       let(:expected_record_attributes) { { label: 'My Great Session' } }
 
       include_examples 'update resource', model_class: InteractiveSession

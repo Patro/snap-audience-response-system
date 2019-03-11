@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ResponseSerializer do
   let(:question) { create(:single_choice_question) }
-  let(:question_option) { create(:question_option, question: question)}
+  let(:question_option) { create(:question_option, question: question) }
   let(:poll) { create(:poll, question: question) }
   let(:response) do
     create(:response, poll: poll, picked_question_option: question_option)
