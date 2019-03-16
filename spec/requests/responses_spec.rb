@@ -74,7 +74,7 @@ RSpec.describe 'Responses API', type: :request do
                        model_class: Response, status: :unprocessable_entity
     end
 
-    describe 'poll' do
+    describe 'given relationship to poll' do
       let(:data_with_relationship) { response_data }
       let(:data_without_relationship) do
         response_data.deep_merge(relationships: { poll: nil })
@@ -88,7 +88,7 @@ RSpec.describe 'Responses API', type: :request do
                        model_class: Response
     end
 
-    describe 'picked question option' do
+    describe 'given relationship to picked question option' do
       let(:data_with_relationship) { response_data }
       let(:data_without_relationship) do
         response_data.deep_merge(

@@ -111,7 +111,7 @@ RSpec.describe 'Polls API', type: :request do
       include_examples 'create resource', model_class: Poll
     end
 
-    describe 'question' do
+    describe 'given relationship to question' do
       let(:data_with_relationship) { poll_data }
       let(:data_without_relationship) do
         poll_data.deep_merge(relationships: { question: nil })

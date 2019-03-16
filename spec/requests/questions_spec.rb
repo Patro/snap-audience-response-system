@@ -113,7 +113,7 @@ RSpec.describe 'Questions API', type: :request do
                        model_class: Question, status: :unprocessable_entity
     end
 
-    describe 'interactive session' do
+    describe 'given relationship to interactive session' do
       let(:data_with_relationship) { question_data }
       let(:data_without_relationship) do
         question_data.deep_merge(relationships: { interactive_session: nil })

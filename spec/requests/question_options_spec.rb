@@ -106,7 +106,7 @@ RSpec.describe 'Question Options API', type: :request do
                        status: :unprocessable_entity
     end
 
-    describe 'question' do
+    describe 'given relationship to question' do
       let(:data_with_relationship) { option_data }
       let(:data_without_relationship) do
         option_data.deep_merge(relationships: { question: nil })
