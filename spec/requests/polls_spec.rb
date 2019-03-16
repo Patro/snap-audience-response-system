@@ -102,6 +102,23 @@ RSpec.describe 'Polls API', type: :request do
       let(:expected_record_attributes) { { closed: true } }
 
       include_examples 'create resource', model_class: Poll
+
+      context 'given policy that permits access' do
+        permit_action(Poll, :create?)
+
+        it 'should broadcast poll created event' do
+          expect { fire_post }
+          .to have_broadcasted_to(question.interactive_session)
+          .from_channel(ApplicationCable::InteractiveSessionChannel)
+          .with(an_object_satisfying { |message|
+            message.deep_symbolize_keys
+            .eql?(event: {
+              type: 'POLL_CREATED',
+              poll_id: json['data']['id']
+            })
+          })
+        end
+      end
     end
 
     context 'given data object with missing closed flag' do
@@ -173,6 +190,19 @@ RSpec.describe 'Polls API', type: :request do
       let(:expected_record_attributes) { { closed: true } }
 
       include_examples 'update resource', model_class: Poll
+
+      context 'given policy that permits access' do
+        permit_action(Poll, :update?)
+
+        let(:id) { record.id }
+
+        it 'should broadcast poll updated event' do
+          expect { fire_patch }
+          .to have_broadcasted_to(record.interactive_session)
+          .from_channel(ApplicationCable::InteractiveSessionChannel)
+          .with(event: { type: 'POLL_UPDATED', poll_id: id.to_s })
+        end
+      end
     end
 
     context 'given question' do
@@ -193,5 +223,18 @@ RSpec.describe 'Polls API', type: :request do
     end
 
     include_examples 'delete resource', model_class: Poll
+
+    context 'given policy that permits access' do
+      permit_action(Poll, :destroy?)
+
+      let(:id) { record.id }
+
+      it 'should broadcast poll detroyed event' do
+        expect { fire_delete }
+        .to have_broadcasted_to(record.interactive_session)
+        .from_channel(ApplicationCable::InteractiveSessionChannel)
+        .with(event: { type: 'POLL_DESTROYED', poll_id: id.to_s })
+      end
+    end
   end
 end
