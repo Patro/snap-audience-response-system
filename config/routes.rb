@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   resources :polls do
     resources :responses, only: [:index, :create]
+    resources :question_option_counts, only: [:index]
   end
   resources :question_options
   resources :questions do
