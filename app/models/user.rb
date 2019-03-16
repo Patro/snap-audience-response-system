@@ -16,4 +16,8 @@ class User < ApplicationRecord
       InteractiveSession.where(id: attended_interactive_sessions)
     )
   end
+
+  def to_gid_param
+    id
+  end
 end
