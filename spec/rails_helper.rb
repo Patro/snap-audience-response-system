@@ -8,6 +8,7 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
+require 'action_cable/testing/rspec'
 require 'support/have_json_api_content_type_matcher'
 require 'support/include_identifier_of_matcher'
 require 'support/policy_helpers'

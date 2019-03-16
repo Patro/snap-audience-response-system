@@ -17,6 +17,7 @@ gem 'fast_jsonapi' # JSON:API serializer
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw] # debugger console
   gem 'rspec-rails', '~> 3.8' # RSpec testing framework
+  gem 'action-cable-testing' # Action Cable testing utils
   gem 'factory_bot_rails' # to setup ruby objects for testing
 end
 
