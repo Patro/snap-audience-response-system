@@ -1,9 +1,16 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import App from './App';
+import JoinSessionForm from './JoinSessionForm';
 
 describe('App', () => {
   it('renders without crashing', () => {
-    mount(<App />)
+    mount(<App/>)
+  });
+
+  it('renders join form', () => {
+    const wrapper = shallow(<App />);
+    const form = wrapper.find(JoinSessionForm);
+    expect(form.length).toBe(1);
   });
 });
