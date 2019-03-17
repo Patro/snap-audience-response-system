@@ -21,6 +21,7 @@ group :development, :test do
   gem 'capybara' # acceptance test framework
   gem 'selenium-webdriver' # W3C WebDriver client
   gem 'factory_bot_rails' # to setup ruby objects for testing
+  gem 'database_cleaner' # set of strategies for cleaning databases
 end
 
 group :development do
