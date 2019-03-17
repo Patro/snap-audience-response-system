@@ -1,0 +1,11 @@
+{
+  "name": "audience-response-system",
+  "engines": {
+    "node": "11.4",
+    "yarn": "1.12"
+  },
+  "scripts": {
+    "build": "yarn --cwd frontend install && yarn --cwd frontend build",
+    "heroku-postbuild": "yarn build"
+  }
+}
