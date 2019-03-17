@@ -6,44 +6,44 @@ require 'support/request_shared_examples'
 RSpec.describe 'Question Options API', type: :request do
   include RequestHelpers
 
-  describe 'GET /question_options' do
+  describe 'GET /api/question_options' do
     let!(:records) { create_list(:question_option, 2) }
 
     def fire_get
-      get '/question_options'
+      get '/api/question_options'
     end
 
     include_examples 'get collection of resources',
                       model_class: QuestionOption
   end
 
-  describe 'GET /question_options?question=' do
+  describe 'GET /api/question_options?question=' do
     let(:question) { create(:dummy_question) }
     let!(:records) { create_list(:question_option, 2, question: question) }
     let!(:non_matching_records) { create_list(:question_option, 2) }
 
     def fire_get
-      get "/question_options?question_id=#{question.id}"
+      get "/api/question_options?question_id=#{question.id}"
     end
 
     include_examples 'get collection of resources',
                       model_class: QuestionOption, with_filter: true
   end
 
-  describe 'GET /questions/:id/question_options' do
+  describe 'GET /api/questions/:id/question_options' do
     let(:question) { create(:dummy_question) }
     let!(:records) { create_list(:question_option, 2, question: question) }
     let!(:non_matching_records) { create_list(:question_option, 2) }
 
     def fire_get
-      get "/questions/#{question.id}/question_options"
+      get "/api/questions/#{question.id}/question_options"
     end
 
     include_examples 'get collection of resources',
                       model_class: QuestionOption, with_filter: true
   end
 
-  describe 'POST /question_options' do
+  describe 'POST /api/question_options' do
     let(:question) { create(:dummy_question) }
     let(:option_data) do
       {
@@ -63,7 +63,7 @@ RSpec.describe 'Question Options API', type: :request do
     let(:query_params) { '' }
 
     def fire_post
-      post "/question_options?#{query_params}", params: { data: data }
+      post "/api/question_options?#{query_params}", params: { data: data }
     end
 
     context 'given empty data object' do
@@ -121,7 +121,7 @@ RSpec.describe 'Question Options API', type: :request do
     end
   end
 
-  describe 'POST /questions/:id/question_options' do
+  describe 'POST /api/questions/:id/question_options' do
     let(:question) { create(:dummy_question) }
     let(:data) do
       {
@@ -138,31 +138,31 @@ RSpec.describe 'Question Options API', type: :request do
     end
 
     def fire_post
-      post "/questions/#{question.id}/question_options",
+      post "/api/questions/#{question.id}/question_options",
            params: { data: data }
     end
 
     include_examples 'create resource', model_class: QuestionOption
   end
 
-  describe 'GET /question_options/:id' do
+  describe 'GET /api/question_options/:id' do
     let!(:record) { create(:question_option) }
 
     def fire_get
-      get "/question_options/#{id}"
+      get "/api/question_options/#{id}"
     end
 
     include_examples 'get resource', model_class: QuestionOption
   end
 
-  describe 'PATCH /question_optionss/:id' do
+  describe 'PATCH /api/question_optionss/:id' do
     let!(:record) { create(:question_option) }
     let(:updated_record) { QuestionOption.find(record.id) }
     let(:query_params) { '' }
 
     def fire_patch
       params = { data: data }
-      patch "/question_options/#{id}?#{query_params}", params: params
+      patch "/api/question_options/#{id}?#{query_params}", params: params
     end
 
     context 'given empty data object' do
@@ -196,11 +196,11 @@ RSpec.describe 'Question Options API', type: :request do
     end
   end
 
-  describe 'DELETE /question_options/:id' do
+  describe 'DELETE /api/question_options/:id' do
     let!(:record) { create(:question_option) }
 
     def fire_delete
-      delete "/question_options/#{id}"
+      delete "/api/question_options/#{id}"
     end
 
     include_examples 'delete resource', model_class: QuestionOption

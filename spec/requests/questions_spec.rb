@@ -6,18 +6,18 @@ require 'support/request_shared_examples'
 RSpec.describe 'Questions API', type: :request do
   include RequestHelpers
 
-  describe 'GET /questions' do
+  describe 'GET /api/questions' do
     let!(:records) { create_list(:dummy_question, 2) }
 
     def fire_get
-      get '/questions'
+      get '/api/questions'
     end
 
     include_examples 'get collection of resources',
                       model_class: Question
   end
 
-  describe 'GET /questions?interactive_session_id=' do
+  describe 'GET /api/questions?interactive_session_id=' do
     let(:interactive_session) { create(:interactive_session) }
     let!(:records) do
       create_list(:dummy_question, 2, interactive_session: interactive_session)
@@ -25,14 +25,14 @@ RSpec.describe 'Questions API', type: :request do
     let!(:non_matching_records) { create_list(:dummy_question, 2) }
 
     def fire_get
-      get "/questions?interactive_session_id=#{interactive_session.id}"
+      get "/api/questions?interactive_session_id=#{interactive_session.id}"
     end
 
     include_examples 'get collection of resources',
                       model_class: Question, with_filter: true
   end
 
-  describe 'GET /interactive_sessions/:id/questions' do
+  describe 'GET /api/interactive_sessions/:id/questions' do
     let(:interactive_session) { create(:interactive_session) }
     let!(:records) do
       create_list(:dummy_question, 2, interactive_session: interactive_session)
@@ -40,14 +40,14 @@ RSpec.describe 'Questions API', type: :request do
     let!(:non_matching_records) { create_list(:dummy_question, 2) }
 
     def fire_get
-      get "/interactive_sessions/#{interactive_session.id}/questions"
+      get "/api/interactive_sessions/#{interactive_session.id}/questions"
     end
 
     include_examples 'get collection of resources',
                       model_class: Question, with_filter: true
   end
 
-  describe 'POST /questions' do
+  describe 'POST /api/questions' do
     let(:interactive_session) { create(:interactive_session) }
     let(:question_data) do
       {
@@ -66,7 +66,7 @@ RSpec.describe 'Questions API', type: :request do
     let(:query_params) { '' }
 
     def fire_post
-      post "/questions?#{query_params}", params: { data: data }
+      post "/api/questions?#{query_params}", params: { data: data }
     end
 
     context 'given empty data object' do
@@ -129,7 +129,7 @@ RSpec.describe 'Questions API', type: :request do
     end
   end
 
-  describe 'POST /interactive_sessions/:id/questions' do
+  describe 'POST /api/interactive_sessions/:id/questions' do
     let(:interactive_session) { create(:interactive_session) }
     let(:data) do
       {
@@ -145,31 +145,31 @@ RSpec.describe 'Questions API', type: :request do
     end
 
     def fire_post
-      post "/interactive_sessions/#{interactive_session.id}/questions",
+      post "/api/interactive_sessions/#{interactive_session.id}/questions",
            params: { data: data }
     end
 
     include_examples 'create resource', model_class: Question
   end
 
-  describe 'GET /questions/:id' do
+  describe 'GET /api/questions/:id' do
     let!(:record) { create(:dummy_question) }
 
     def fire_get
-      get "/questions/#{id}"
+      get "/api/questions/#{id}"
     end
 
     include_examples 'get resource', model_class: Question
   end
 
-  describe 'PATCH /questions/:id' do
+  describe 'PATCH /api/questions/:id' do
     let!(:record) { create(:dummy_question, text: 'My Question') }
     let(:updated_record) { Question.find(record.id) }
     let(:query_params) { '' }
 
     def fire_patch
       params = { data: data }
-      patch "/questions/#{id}?#{query_params}", params: params
+      patch "/api/questions/#{id}?#{query_params}", params: params
     end
 
     context 'given empty data object' do
@@ -203,11 +203,11 @@ RSpec.describe 'Questions API', type: :request do
     end
   end
 
-  describe 'DELETE /questions/:id' do
+  describe 'DELETE /api/questions/:id' do
     let!(:record) { create(:dummy_question) }
 
     def fire_delete
-      delete "/questions/#{id}"
+      delete "/api/questions/#{id}"
     end
 
     include_examples 'delete resource', model_class: Question

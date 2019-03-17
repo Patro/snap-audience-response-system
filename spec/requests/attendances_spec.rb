@@ -6,18 +6,18 @@ require 'support/request_shared_examples'
 RSpec.describe 'Attendances API', type: :request do
   include RequestHelpers
 
-  describe 'GET /attendances' do
+  describe 'GET /api/attendances' do
     let!(:records) { create_list(:attendance, 2) }
 
     def fire_get
-      get '/attendances'
+      get '/api/attendances'
     end
 
     include_examples 'get collection of resources',
                       model_class: Attendance
   end
 
-  describe 'GET /attendances?interactive_session_id=' do
+  describe 'GET /api/attendances?interactive_session_id=' do
     let(:interactive_session) { create(:interactive_session) }
     let!(:records) do
       create_list(:attendance, 2, interactive_session: interactive_session)
@@ -25,14 +25,14 @@ RSpec.describe 'Attendances API', type: :request do
     let!(:non_matching_records) { create_list(:attendance, 2) }
 
     def fire_get
-      get "/attendances?interactive_session_id=#{interactive_session.id}"
+      get "/api/attendances?interactive_session_id=#{interactive_session.id}"
     end
 
     include_examples 'get collection of resources',
                       model_class: Attendance, with_filter: true
   end
 
-  describe 'GET /interactive_sessions/:id/attendances' do
+  describe 'GET /api/interactive_sessions/:id/attendances' do
     let(:interactive_session) { create(:interactive_session) }
     let!(:records) do
       create_list(:attendance, 2, interactive_session: interactive_session)
@@ -40,19 +40,19 @@ RSpec.describe 'Attendances API', type: :request do
     let!(:non_matching_records) { create_list(:attendance, 2) }
 
     def fire_get
-      get "/interactive_sessions/#{interactive_session.id}/attendances"
+      get "/api/interactive_sessions/#{interactive_session.id}/attendances"
     end
 
     include_examples 'get collection of resources',
                       model_class: Attendance, with_filter: true
   end
 
-  describe 'POST /attendances' do
+  describe 'POST /api/attendances' do
     let!(:interactive_session) { create(:interactive_session, attendance_code: 'ABCD') }
     let(:created_record) { Attendance.last }
 
     def fire_post
-      post '/attendances', params: { data: data }
+      post '/api/attendances', params: { data: data }
     end
 
     context 'given empty data object' do
@@ -83,21 +83,21 @@ RSpec.describe 'Attendances API', type: :request do
     end
   end
 
-  describe 'GET /attendances/:id' do
+  describe 'GET /api/attendances/:id' do
     let!(:record) { create(:attendance) }
 
     def fire_get
-      get "/attendances/#{id}"
+      get "/api/attendances/#{id}"
     end
 
     include_examples 'get resource', model_class: Attendance
   end
 
-  describe 'PATCH /attendances/:id' do
+  describe 'PATCH /api/attendances/:id' do
     let!(:record) { create(:attendance) }
 
     def fire_patch
-      patch "/attendances/#{record.id}"
+      patch "/api/attendances/#{record.id}"
     end
 
     it 'should raise routing error' do
@@ -105,11 +105,11 @@ RSpec.describe 'Attendances API', type: :request do
     end
   end
 
-  describe 'DELETE /attendances/:id' do
+  describe 'DELETE /api/attendances/:id' do
     let!(:record) { create(:attendance) }
 
     def fire_delete
-      delete "/attendances/#{id}"
+      delete "/api/attendances/#{id}"
     end
 
     include_examples 'delete resource', model_class: Attendance

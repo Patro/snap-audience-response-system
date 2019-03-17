@@ -6,7 +6,7 @@ require 'support/request_shared_examples'
 RSpec.describe 'Question Option Counts API', type: :request do
   include RequestHelpers
 
-  describe 'GET /polls/:id/question_option_counts' do
+  describe 'GET /api/polls/:id/question_option_counts' do
     let(:question) { create(:dummy_question) }
     let(:question_option) { create(:question_option, question: question) }
     let(:poll) { create(:poll, question: question) }
@@ -23,7 +23,7 @@ RSpec.describe 'Question Option Counts API', type: :request do
     end
 
     def fire_get
-      get "/polls/#{poll.id}/question_option_counts"
+      get "/api/polls/#{poll.id}/question_option_counts"
     end
 
     context 'given policy that permits action' do

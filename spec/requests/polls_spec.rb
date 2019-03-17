@@ -6,68 +6,68 @@ require 'support/request_shared_examples'
 RSpec.describe 'Polls API', type: :request do
   include RequestHelpers
 
-  describe 'GET /polls' do
+  describe 'GET /api/polls' do
     let!(:records) { create_list(:poll, 2) }
 
     def fire_get
-      get '/polls'
+      get '/api/polls'
     end
 
     include_examples 'get collection of resources',
                       model_class: Poll
   end
 
-  describe 'GET /polls?question_id=' do
+  describe 'GET /api/polls?question_id=' do
     let(:question) { create(:dummy_question) }
     let!(:records) { create_list(:poll, 2, question: question) }
     let!(:non_matching_records) { create_list(:poll, 2) }
 
     def fire_get
-      get "/polls?question_id=#{question.id}"
+      get "/api/polls?question_id=#{question.id}"
     end
 
     include_examples 'get collection of resources',
                       model_class: Poll, with_filter: true
   end
 
-  describe 'GET /questions/:id/polls' do
+  describe 'GET /api/questions/:id/polls' do
     let(:question) { create(:dummy_question) }
     let!(:records) { create_list(:poll, 2, question: question) }
     let!(:non_matching_records) { create_list(:poll, 2) }
 
     def fire_get
-      get "/questions/#{question.id}/polls"
+      get "/api/questions/#{question.id}/polls"
     end
 
     include_examples 'get collection of resources',
                       model_class: Poll, with_filter: true
   end
 
-  describe 'GET /polls?status=open' do
+  describe 'GET /api/polls?status=open' do
     let!(:records) { create_list(:poll, 2, closed: false) }
     let!(:non_matching_records) { create_list(:poll, 2, closed: true) }
 
     def fire_get
-      get '/polls?status=open'
+      get '/api/polls?status=open'
     end
 
     include_examples 'get collection of resources',
                       model_class: Poll, with_filter: true
   end
 
-  describe 'GET /polls?status=closed' do
+  describe 'GET /api/polls?status=closed' do
     let!(:records) { create_list(:poll, 2, closed: true) }
     let!(:non_matching_records) { create_list(:poll, 2, closed: false) }
 
     def fire_get
-      get '/polls?status=closed'
+      get '/api/polls?status=closed'
     end
 
     include_examples 'get collection of resources',
                       model_class: Poll, with_filter: true
   end
 
-  describe 'POST /polls' do
+  describe 'POST /api/polls' do
     let(:question) { create(:dummy_question) }
     let(:poll_data) do
       {
@@ -86,7 +86,7 @@ RSpec.describe 'Polls API', type: :request do
     let(:query_params) { '' }
 
     def fire_post
-      post "/polls?#{query_params}", params: { data: data }
+      post "/api/polls?#{query_params}", params: { data: data }
     end
 
     context 'given empty data object' do
@@ -143,38 +143,38 @@ RSpec.describe 'Polls API', type: :request do
     end
   end
 
-  describe 'POST /questions/:id/polls' do
+  describe 'POST /api/questions/:id/polls' do
     let(:question) { create(:dummy_question) }
     let(:data) { { type: 'Poll' } }
     let(:created_record) { Poll.last }
     let(:expected_record_attributes) { { question: question } }
 
     def fire_post
-      post "/questions/#{question.id}/polls",
+      post "/api/questions/#{question.id}/polls",
            params: { data: data }
     end
 
     include_examples 'create resource', model_class: Poll
   end
 
-  describe 'GET /polls/:id' do
+  describe 'GET /api/polls/:id' do
     let!(:record) { create(:poll) }
 
     def fire_get
-      get "/polls/#{id}"
+      get "/api/polls/#{id}"
     end
 
     include_examples 'get resource', model_class: Poll
   end
 
-  describe 'PATCH /polls/:id' do
+  describe 'PATCH /api/polls/:id' do
     let!(:record) { create(:poll) }
     let(:updated_record) { Poll.find(record.id) }
     let(:query_params) { '' }
 
     def fire_patch
       params = { data: data }
-      patch "/polls/#{id}?#{query_params}", params: params
+      patch "/api/polls/#{id}?#{query_params}", params: params
     end
 
     context 'given empty data object' do
@@ -215,11 +215,11 @@ RSpec.describe 'Polls API', type: :request do
     end
   end
 
-  describe 'DELETE /polls/:id' do
+  describe 'DELETE /api/polls/:id' do
     let!(:record) { create(:poll) }
 
     def fire_delete
-      delete "/polls/#{id}"
+      delete "/api/polls/#{id}"
     end
 
     include_examples 'delete resource', model_class: Poll

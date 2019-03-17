@@ -6,22 +6,22 @@ require 'support/request_shared_examples'
 RSpec.describe 'Interactive Sessions API', type: :request do
   include RequestHelpers
 
-  describe 'GET /interactive_sessions' do
+  describe 'GET /api/interactive_sessions' do
     let!(:records) { create_list(:interactive_session, 2) }
 
     def fire_get
-      get '/interactive_sessions'
+      get '/api/interactive_sessions'
     end
 
     include_examples 'get collection of resources',
                       model_class: InteractiveSession
   end
 
-  describe 'POST /interactive_sessions' do
+  describe 'POST /api/interactive_sessions' do
     let(:created_record) { InteractiveSession.last }
 
     def fire_post
-      post '/interactive_sessions', params: { data: data }
+      post '/api/interactive_sessions', params: { data: data }
     end
 
     context 'given empty data object' do
@@ -39,23 +39,23 @@ RSpec.describe 'Interactive Sessions API', type: :request do
     end
   end
 
-  describe 'GET /interactive_sessions/:id' do
+  describe 'GET /api/interactive_sessions/:id' do
     let!(:record) { create(:interactive_session) }
 
     def fire_get
-      get "/interactive_sessions/#{id}"
+      get "/api/interactive_sessions/#{id}"
     end
 
     include_examples 'get resource', model_class: InteractiveSession
   end
 
-  describe 'PATCH /interactive_sessions/:id' do
+  describe 'PATCH /api/interactive_sessions/:id' do
     let!(:record) { create(:interactive_session, label: 'My Session') }
     let(:updated_record) { InteractiveSession.find(record.id) }
 
     def fire_patch
       params = { data: data }
-      patch "/interactive_sessions/#{id}", params: params
+      patch "/api/interactive_sessions/#{id}", params: params
     end
 
     context 'given empty data object' do
@@ -81,11 +81,11 @@ RSpec.describe 'Interactive Sessions API', type: :request do
     end
   end
 
-  describe 'DELETE /interactive_sessions/:id' do
+  describe 'DELETE /api/interactive_sessions/:id' do
     let!(:record) { create(:interactive_session) }
 
     def fire_delete
-      delete "/interactive_sessions/#{id}"
+      delete "/api/interactive_sessions/#{id}"
     end
 
     include_examples 'delete resource', model_class: InteractiveSession

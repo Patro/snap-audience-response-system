@@ -6,44 +6,44 @@ require 'support/request_shared_examples'
 RSpec.describe 'Responses API', type: :request do
   include RequestHelpers
 
-  describe 'GET /responses' do
+  describe 'GET /api/responses' do
     let!(:records) { create_list(:response, 2) }
 
     def fire_get
-      get '/responses'
+      get '/api/responses'
     end
 
     include_examples 'get collection of resources',
                       model_class: Response
   end
 
-  describe 'GET /responses?poll_id=' do
+  describe 'GET /api/responses?poll_id=' do
     let(:poll) { create(:poll) }
     let!(:records) { create_list(:response, 2, poll: poll) }
     let!(:non_matching_records) { create_list(:response, 2) }
 
     def fire_get
-      get "/responses?poll_id=#{poll.id}"
+      get "/api/responses?poll_id=#{poll.id}"
     end
 
     include_examples 'get collection of resources',
                       model_class: Response, with_filter: true
   end
 
-  describe 'GET /polls/:id/responses' do
+  describe 'GET /api/polls/:id/responses' do
     let(:poll) { create(:poll) }
     let!(:records) { create_list(:response, 2, poll: poll) }
     let!(:non_matching_records) { create_list(:response, 2) }
 
     def fire_get
-      get "/polls/#{poll.id}/responses"
+      get "/api/polls/#{poll.id}/responses"
     end
 
     include_examples 'get collection of resources',
                       model_class: Response, with_filter: true
   end
 
-  describe 'POST /responses' do
+  describe 'POST /api/responses' do
     let(:question) { create(:dummy_question) }
     let(:question_option) { create(:question_option, question: question) }
     let(:poll) { create(:poll, question: question) }
@@ -64,7 +64,7 @@ RSpec.describe 'Responses API', type: :request do
     let(:query_params) { '' }
 
     def fire_post
-      post "/responses?#{query_params}", params: { data: data }
+      post "/api/responses?#{query_params}", params: { data: data }
     end
 
     context 'given empty data object' do
@@ -107,7 +107,7 @@ RSpec.describe 'Responses API', type: :request do
     end
   end
 
-  describe 'POST /polls/:id/responses' do
+  describe 'POST /api/polls/:id/responses' do
     let(:question) { create(:dummy_question) }
     let(:question_option) { create(:question_option, question: question) }
     let(:poll) { create(:poll, question: question) }
@@ -127,28 +127,28 @@ RSpec.describe 'Responses API', type: :request do
     end
 
     def fire_post
-      post "/polls/#{poll.id}/responses", params: { data: data }
+      post "/api/polls/#{poll.id}/responses", params: { data: data }
     end
 
     include_examples 'create resource', model_class: Response
   end
 
-  describe 'GET /responses/:id' do
+  describe 'GET /api/responses/:id' do
     let!(:record) { create(:response) }
 
     def fire_get
-      get "/responses/#{id}"
+      get "/api/responses/#{id}"
     end
 
     include_examples 'get resource', model_class: Response
   end
 
-  describe 'PATCH /responses/:id' do
+  describe 'PATCH /api/responses/:id' do
     let!(:record) { create(:response) }
 
     def fire_patch
       params = { data: {} }
-      patch "/responses/#{record.id}", params: params
+      patch "/api/responses/#{record.id}", params: params
     end
 
     it 'should raise routing error' do
@@ -156,11 +156,11 @@ RSpec.describe 'Responses API', type: :request do
     end
   end
 
-  describe 'DELETE /responses/:id' do
+  describe 'DELETE /api/responses/:id' do
     let!(:record) { create(:response) }
 
     def fire_delete
-      delete "/responses/#{record.id}"
+      delete "/api/responses/#{record.id}"
     end
 
     it 'should raise routing error' do
