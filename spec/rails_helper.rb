@@ -58,3 +58,5 @@ end
 
 # Configure capybara to use selenium driving Firefox
 Capybara.default_driver = :selenium_headless
+Capybara.app_host = 'http://localhost:3001'
+Capybara.server_port = 3000
