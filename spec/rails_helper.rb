@@ -9,6 +9,7 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'action_cable/testing/rspec'
+require 'capybara/rails'
 require 'support/have_json_api_content_type_matcher'
 require 'support/include_identifier_of_matcher'
 require 'support/policy_helpers'
@@ -54,3 +55,6 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+# Configure capybara to use selenium driving Firefox
+Capybara.default_driver = :selenium_headless

@@ -18,6 +18,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw] # debugger console
   gem 'rspec-rails', '~> 3.8' # RSpec testing framework
   gem 'action-cable-testing' # Action Cable testing utils
+  gem 'capybara' # acceptance test framework
+  gem 'selenium-webdriver' # W3C WebDriver client
   gem 'factory_bot_rails' # to setup ruby objects for testing
 end
 
