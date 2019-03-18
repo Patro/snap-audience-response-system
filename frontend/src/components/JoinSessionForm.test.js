@@ -14,19 +14,19 @@ describe('JoinSessionForm', () => {
     wrapper.find(Button).filter('[htmlType="submit"]')
   );
 
-  it('should render input box for attendance code', () => {
+  it('renders input box for attendance code', () => {
     const wrapper = mount(<JoinSessionForm />);
     const input = getAttendanceCodeInput(wrapper);
     expect(input).toHaveLength(1);
   });
 
-  it('should render submit button', () => {
+  it('renders submit button', () => {
     const wrapper = mount(<JoinSessionForm />);
     const button = getSubmitButton(wrapper);
     expect(button).toHaveLength(1);
   });
 
-  it('should call on submit handler with attendance code on form submit', () => {
+  it('calls on submit handler with attendance code on form submit', () => {
     const onSubmit = jest.fn();
 
     const wrapper = mount(<JoinSessionForm onSubmit={onSubmit} />);
