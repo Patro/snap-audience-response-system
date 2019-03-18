@@ -1,16 +1,24 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store'
 import { mount, shallow } from 'enzyme';
 import App from './App';
-import JoinSessionForm from './JoinSessionForm';
+import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
+
+const setupStore = () => ( configureStore()() );
 
 describe('App', () => {
   it('renders without crashing', () => {
-    mount(<App/>)
+    mount(
+      <Provider store={setupStore()}>
+        <App />
+      </Provider>
+    )
   });
 
-  it('renders join form', () => {
+  it('renders join form container', () => {
     const wrapper = shallow(<App />);
-    const form = wrapper.find(JoinSessionForm);
+    const form = wrapper.find(JoinSessionFormContainer);
     expect(form.length).toBe(1);
   });
 });
