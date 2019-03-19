@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
+import Welcome from './Welcome';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <JoinSessionFormContainer />
+        <Welcome />
       </div>
     );
   }
