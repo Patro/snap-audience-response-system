@@ -2,16 +2,26 @@ import { of, throwError } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import joinSessionEpic from './joinSessionEpic';
 
-const mockResponse = { type: 'ATTENDANCE' };
 const action$ = of({ type: 'JOIN_SESSION', attendanceCode: 'ABCD' });
 const state$ = null;
 
-describe('join session epic', () => {
+const entity = {
+  id: 100,
+  type: 'ATTENDANCE'
+};
+const setupCreateMock = () => (jest.fn((_) => of(entity)));
+
+const callEpic = (createMock = setupCreateMock()) => {
+  const dependencies = { api: { entities: { create: createMock }} }
+  return joinSessionEpic(action$, state$, dependencies).pipe(toArray())
+};
+
+describe('joinSessionEpic', () => {
   it('triggers create request', (done) => {
-    const createMock = jest.fn((_) => of(mockResponse));
-    const dependencies = { api: { entities: { create: createMock }}};
-    const result$ = joinSessionEpic(action$, state$, dependencies).pipe(toArray());
-    result$.subscribe((_) => {
+    const createMock = setupCreateMock();
+
+    const result$ = callEpic(createMock);
+    result$.subscribe(_actions => {
       expect(createMock).toBeCalledWith({
         type: 'ATTENDANCE',
         attributes: { attendanceCode: 'ABCD' },
@@ -22,8 +32,7 @@ describe('join session epic', () => {
 
   describe('when request succeeds', () => {
     it('emits no action', (done) => {
-      const dependencies = { api: { entities: { create: (_) => of(mockResponse) }}};
-      const result$ = joinSessionEpic(action$, state$, dependencies).pipe(toArray());
+      const result$ = callEpic();
       result$.subscribe(actions => {
         expect(actions).toEqual([]);
         done();
@@ -33,8 +42,9 @@ describe('join session epic', () => {
 
   describe('when request fails', () => {
     it('emits no action', (done) => {
-      const dependencies = { api: { entities: { create: (_) => throwError(new Error()) }}};
-      const result$ = joinSessionEpic(action$, state$, dependencies).pipe(toArray());
+      const createMock = (_) => throwError(new Error());
+
+      const result$ = callEpic(createMock);
       result$.subscribe(actions => {
         expect(actions).toEqual([]);
         done();
