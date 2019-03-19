@@ -4,7 +4,8 @@ import { StaticRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import App from './App';
-import InteractiveSession from './InteractiveSession';
+import InteractiveSessionContainer
+  from './../containers/InteractiveSessionContainer';
 import Welcome from './Welcome';
 
 const setupStore = () => ( configureStore()() );
@@ -36,9 +37,9 @@ describe('App', () => {
   describe('given interactive session path', () => {
     const location = { pathname: '/interactive_sessions/12' };
 
-    it('renders interactive session component', () => {
+    it('renders interactive session container', () => {
       const wrapper = mountApp({ location });
-      const form = wrapper.find(InteractiveSession);
+      const form = wrapper.find(InteractiveSessionContainer);
       expect(form.length).toBe(1);
     });
   });
@@ -52,9 +53,9 @@ describe('App', () => {
       expect(form.length).toBe(0);
     });
 
-    it('does not render interactive session component', () => {
+    it('does not render interactive session container', () => {
       const wrapper = mountApp({ location });
-      const form = wrapper.find(InteractiveSession);
+      const form = wrapper.find(InteractiveSessionContainer);
       expect(form.length).toBe(0);
     });
   });
