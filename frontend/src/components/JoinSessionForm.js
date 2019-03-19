@@ -21,7 +21,7 @@ class JoinSessionForm extends Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div className="JoinSessionForm">
+      <div className="join_session_form">
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Attendance Code">
             { getFieldDecorator('attendance_code')(

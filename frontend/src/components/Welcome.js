@@ -4,7 +4,7 @@ import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 class Welcome extends Component {
   render() {
     return (
-      <div className="Welcome">
+      <div className="welcome">
         <JoinSessionFormContainer />
       </div>
     );

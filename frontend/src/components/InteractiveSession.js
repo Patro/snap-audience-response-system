@@ -10,7 +10,7 @@ class InteractiveSession extends Component {
 
   render() {
     return (
-      <div className="InteractiveSession">
+      <div className="interactive_session">
         <h1 className="interactive_session__label">{this.attributes.label}</h1>
       </div>
     );
