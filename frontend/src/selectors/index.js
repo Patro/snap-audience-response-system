@@ -1,3 +1,1 @@
-export const getEntity = (state, type, id) => (
-  undefined
-);
+export { default as getEntity } from './getEntity';
