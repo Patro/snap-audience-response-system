@@ -1,24 +1,44 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { StaticRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store'
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import App from './App';
 import Welcome from './Welcome';
 
 const setupStore = () => ( configureStore()() );
+const mountApp = ({ location = {}, context = {} } = {}) => (
+  mount(
+    <Provider store={setupStore()}>
+      <StaticRouter location={location} context={context}>
+        <App />
+      </StaticRouter>
+    </Provider>
+  )
+)
 
 describe('App', () => {
   it('renders without crashing', () => {
-    mount(
-      <Provider store={setupStore()}>
-        <App />
-      </Provider>
-    )
+    mountApp();
   });
 
-  it('renders welcome component', () => {
-    const wrapper = shallow(<App />);
-    const form = wrapper.find(Welcome);
-    expect(form.length).toBe(1);
+  describe('given root path', () => {
+    const location = { pathname: '/' };
+
+    it('renders welcome component', () => {
+      const wrapper = mountApp({ location });
+      const form = wrapper.find(Welcome);
+      expect(form.length).toBe(1);
+    });
+  });
+
+  describe('given phantasy path', () => {
+    const location = { pathname: '/spaceship' };
+
+    it('does not render welcome component', () => {
+      const wrapper = mountApp({ location });
+      const form = wrapper.find(Welcome);
+      expect(form.length).toBe(0);
+    });
   });
 });
