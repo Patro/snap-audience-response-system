@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 
 class InteractiveSession extends Component {
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
+  }
+
   get attributes() {
     if (this.props.interactiveSession === undefined) {
       return {};

@@ -15,4 +15,11 @@ describe('InteractiveSession', () => {
     const label = wrapper.find('.interactive_session__label');
     expect(label.text()).toEqual('My Event');
   });
+
+  it('calls on refresh handler on mount', () => {
+    const refreshHandler = jest.fn();
+    shallow(<InteractiveSession onRefresh={refreshHandler} />);
+
+    expect(refreshHandler).toBeCalled();
+  });
 });
