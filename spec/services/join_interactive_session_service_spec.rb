@@ -38,6 +38,22 @@ RSpec.describe JoinInteractiveSessionService do
         )
       end
     end
+
+    context 'given preexisting attendance for interactive session' do
+      let!(:given_attendance) do
+        create(:attendance, interactive_session: interactive_session,
+                            attendee: attendance_request.requester)
+      end
+
+      it 'should not create a new attendance' do
+        expect { service.call }
+        .not_to change { Attendance.count }
+      end
+
+      it 'should return preexisting attendance' do
+        is_expected.to eql(given_attendance)
+      end
+    end
   end
 
   context 'given non existing attendance code' do
