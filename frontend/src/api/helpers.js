@@ -1,4 +1,5 @@
 import camelCase from 'lodash/camelCase';
+import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import snakeCase from 'lodash/snakeCase';
 import toUpper from 'lodash/toUpper';
@@ -42,6 +43,30 @@ export const buildBody = ({ id, type, attributes }) => {
   return { data };
 };
 
+const mapResourceIdentifier = (resourceIdentifer) => ({
+  id: resourceIdentifer.id,
+  type: toUpper(resourceIdentifer.type),
+});
+
+const mapResourceObjectRelationship = (relationship) => {
+  if (isArray(relationship.data)) {
+    return relationship.data.map(mapResourceIdentifier);
+  }
+  else if (isObject(relationship.data)) {
+    return mapResourceIdentifier(relationship.data);
+  }
+}
+
+const mapResourceObjectRelationships = (relationships) => {
+  const keys = Object.keys(relationships);
+  const mapped = {};
+  keys.forEach(key => {
+    const relationship = relationships[key];
+    mapped[camelCase(key)] = mapResourceObjectRelationship(relationship);
+  });
+  return mapped;
+};
+
 export const mapResourceObjectToEntity = (resourceObject) => {
   const entity = {};
   const id = resourceObject.id;
@@ -55,6 +80,10 @@ export const mapResourceObjectToEntity = (resourceObject) => {
   const attributes = resourceObject.attributes;
   if (attributes !== undefined) {
     entity.attributes =  deepMapKeysToCamelCase(attributes);
+  }
+  const relationships = resourceObject.relationships;
+  if (relationships !== undefined) {
+    entity.relationships = mapResourceObjectRelationships(relationships);
   }
   return entity;
 };

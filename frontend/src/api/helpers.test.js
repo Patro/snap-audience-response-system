@@ -70,6 +70,50 @@ describe('mapResourceObjectToEntity', () => {
     });
   });
 
+  it('maps to one relationship', () => {
+    const entity = mapResourceObjectToEntity({
+      relationships: {
+        spaceship_engine: {
+          data: {
+            type: 'spaceship',
+            id: 430,
+          },
+        },
+      },
+    });
+
+    expect(entity).toEqual({
+      relationships: {
+        spaceshipEngine: {
+          type: 'SPACESHIP',
+          id: 430,
+        },
+      },
+    });
+  });
+
+  it('maps to many relationship', () => {
+    const entity = mapResourceObjectToEntity({
+      relationships: {
+        spaceship_engines: {
+          data: [
+            { type: 'spaceship', id: 430 },
+            { type: 'spaceship', id: 431 },
+          ],
+        },
+      },
+    });
+
+    expect(entity).toEqual({
+      relationships: {
+        spaceshipEngines: [
+          { type: 'SPACESHIP', id: 430 },
+          { type: 'SPACESHIP', id: 431 },
+        ],
+      },
+    });
+  });
+
   it('maps empty object', () => {
     const entity = mapResourceObjectToEntity({});
 
