@@ -56,6 +56,17 @@ RSpec.describe JoinInteractiveSessionService do
     end
   end
 
+  context 'given valid attendance code in lower case' do
+    let(:given_attendance_code) { 'abcd' }
+
+    subject { service.call }
+
+    it 'should create attendance' do
+      expect { service.call }
+      .to change { Attendance.count }.from(0).to(1)
+    end
+  end
+
   context 'given non existing attendance code' do
     let(:given_attendance_code) { 'AAAA' }
 

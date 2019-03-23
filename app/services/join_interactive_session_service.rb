@@ -26,12 +26,16 @@ class JoinInteractiveSessionService < ApplicationService
 
     def find_interactive_session!
       interactive_session = InteractiveSession.find_by(
-        attendance_code: attendance_request.attendance_code
+        attendance_code: attendance_code
       )
       if interactive_session.nil?
         raise Errors::UnprocessableEntityError,
               error_message: 'Attendance code does not match any interactive session.'
       end
       interactive_session
+    end
+
+    def attendance_code
+      attendance_request.attendance_code.upcase
     end
 end
