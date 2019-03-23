@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :interactive_sessions do
       resources :attendances, only: [:index]
       resources :questions, only: [:index, :create]
+      resources :polls, only: [:index]
     end
     resources :polls do
       resources :responses, only: [:index, :create]

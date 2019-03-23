@@ -10,6 +10,14 @@ class PollsController < ApplicationController
 
   private
 
+    def apply_interactive_session_filter(records)
+      return records unless params[:interactive_session_id].present?
+
+      records.joins(:question).merge(
+        Question.where(interactive_session_id: params[:interactive_session_id])
+      )
+    end
+
     def apply_question_filter(records)
       return records unless params[:question_id].present?
 
@@ -30,6 +38,7 @@ class PollsController < ApplicationController
     end
 
     def apply_query_filters(records)
+      records = apply_interactive_session_filter(records)
       records = apply_question_filter(records)
       records = apply_status_filter(records)
       records

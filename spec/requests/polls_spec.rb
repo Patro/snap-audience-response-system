@@ -17,6 +17,38 @@ RSpec.describe 'Polls API', type: :request do
                       model_class: Poll
   end
 
+  describe 'GET /api/polls?interactive_session_id=' do
+    let(:interactive_session) { create(:interactive_session) }
+    let(:question) do
+      create(:dummy_question, interactive_session: interactive_session)
+    end
+    let!(:records) { create_list(:poll, 2, question: question) }
+    let!(:non_matching_records) { create_list(:poll, 2) }
+
+    def fire_get
+      get "/api/polls?interactive_session_id=#{interactive_session.id}"
+    end
+
+    include_examples 'get collection of resources',
+                      model_class: Poll, with_filter: true
+  end
+
+  describe 'GET /api/interactive_sessions/:id/polls' do
+    let(:interactive_session) { create(:interactive_session) }
+    let(:question) do
+      create(:dummy_question, interactive_session: interactive_session)
+    end
+    let!(:records) { create_list(:poll, 2, question: question) }
+    let!(:non_matching_records) { create_list(:poll, 2) }
+
+    def fire_get
+      get "/api/interactive_sessions/#{interactive_session.id}/polls"
+    end
+
+    include_examples 'get collection of resources',
+                      model_class: Poll, with_filter: true
+  end
+
   describe 'GET /api/polls?question_id=' do
     let(:question) { create(:dummy_question) }
     let!(:records) { create_list(:poll, 2, question: question) }
