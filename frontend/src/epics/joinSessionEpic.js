@@ -1,12 +1,13 @@
 import { EMPTY } from 'rxjs';
 import { filter, mergeMap, skipWhile, catchError } from 'rxjs/operators';
 import { JOIN_SESSION } from '../actions';
+import { ATTENDANCE } from '../constants/entityTypes'
 
 const joinSessionEpic = (action$, _, { api }) => action$.pipe(
   filter(action => action.type === JOIN_SESSION),
   mergeMap(({ attendanceCode }) =>
     api.entities.create({
-      type: 'ATTENDANCE',
+      type: ATTENDANCE,
       attributes: { attendanceCode },
     }).pipe(
       skipWhile(() => true),

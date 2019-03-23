@@ -1,5 +1,6 @@
 import { of, throwError } from 'rxjs';
 import { toArray } from 'rxjs/operators';
+import { ATTENDANCE } from '../constants/entityTypes';
 import joinSessionEpic from './joinSessionEpic';
 
 const action$ = of({ type: 'JOIN_SESSION', attendanceCode: 'ABCD' });
@@ -7,7 +8,7 @@ const state$ = null;
 
 const entity = {
   id: 100,
-  type: 'ATTENDANCE'
+  type: ATTENDANCE
 };
 const setupCreateMock = () => (jest.fn((_) => of(entity)));
 
@@ -23,7 +24,7 @@ describe('joinSessionEpic', () => {
     const result$ = callEpic(createMock);
     result$.subscribe(_actions => {
       expect(createMock).toBeCalledWith({
-        type: 'ATTENDANCE',
+        type: ATTENDANCE,
         attributes: { attendanceCode: 'ABCD' },
       });
       done();
