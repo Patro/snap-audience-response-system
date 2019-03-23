@@ -4,12 +4,15 @@ import {
   buildURL, buildBody, mapSingleResourceDocumentToEntity
 } from './helpers'
 
+const JSON_API_MIME_TYPE = 'application/vnd.api+json';
+
 export const create = ({ type, attributes } = {}) => (
   ajax({
     url: buildURL({ type }),
     method: 'POST',
     headers: {
-      'Content-Type': 'application/vnd.api+json'
+      'Accept': JSON_API_MIME_TYPE,
+      'Content-Type': JSON_API_MIME_TYPE,
     },
     body: JSON.stringify(buildBody({ type, attributes }))
   }).pipe(
@@ -23,7 +26,7 @@ export const fetch = ({ id, type } = {}) => (
     url: buildURL({ id, type }),
     method: 'GET',
     headers: {
-      'Accept': 'application/vnd.api+json'
+      'Accept': JSON_API_MIME_TYPE,
     }
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),

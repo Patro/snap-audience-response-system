@@ -47,6 +47,7 @@ describe('entities', () => {
         method: 'POST',
         url: '/api/spaceships/',
         headers: {
+          'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json'
         },
         body: JSON.stringify({
