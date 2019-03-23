@@ -1,5 +1,8 @@
+import { map } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
-import { buildURL, buildBody } from './helpers'
+import {
+  buildURL, buildBody, mapSingleResourceDocumentToEntity
+} from './helpers'
 
 export const create = ({ type, attributes } = {}) => (
   ajax({
@@ -12,4 +15,17 @@ export const create = ({ type, attributes } = {}) => (
   })
 );
 
-export default { create }
+export const fetch = ({ id, type } = {}) => (
+  ajax({
+    url: buildURL({ id, type }),
+    method: 'GET',
+    headers: {
+      'Accept': 'application/vnd.api+json'
+    }
+  }).pipe(
+    map(ajaxResponse => ajaxResponse.response),
+    map(mapSingleResourceDocumentToEntity)
+  )
+);
+
+export default { create, fetch }
