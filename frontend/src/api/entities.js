@@ -1,10 +1,9 @@
 import { map } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
+import { JSON_API_MIME_TYPE } from './config';
 import {
   buildURL, buildBody, mapSingleResourceDocumentToEntity
 } from './helpers'
-
-const JSON_API_MIME_TYPE = 'application/vnd.api+json';
 
 export const create = ({ type, attributes } = {}) => (
   ajax({

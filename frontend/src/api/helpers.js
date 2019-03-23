@@ -2,6 +2,7 @@ import camelCase from 'lodash/camelCase';
 import isObject from 'lodash/isObject';
 import snakeCase from 'lodash/snakeCase';
 import toUpper from 'lodash/toUpper';
+import { API_ROOT_PATH } from './config';
 
 const deepMapKeys = (object, iteratee) => {
   const mapped = {}
@@ -23,10 +24,8 @@ const deepMapKeysToCamelCase = (object) => (
   deepMapKeys(object, camelCase)
 );
 
-export const ROOT_PATH = '/api/';
-
 export const buildURL = ({id = '', type }) => (
-  `${ROOT_PATH}${snakeCase(type)}s/${id}`
+  `${API_ROOT_PATH}${snakeCase(type)}s/${id}`
 );
 
 export const buildBody = ({ id, type, attributes }) => {
