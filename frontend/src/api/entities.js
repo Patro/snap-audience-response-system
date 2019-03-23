@@ -12,7 +12,10 @@ export const create = ({ type, attributes } = {}) => (
       'Content-Type': 'application/vnd.api+json'
     },
     body: JSON.stringify(buildBody({ type, attributes }))
-  })
+  }).pipe(
+    map(ajaxResponse => ajaxResponse.response),
+    map(mapSingleResourceDocumentToEntity)
+  )
 );
 
 export const fetch = ({ id, type } = {}) => (

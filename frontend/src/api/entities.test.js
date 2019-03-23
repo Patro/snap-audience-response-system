@@ -34,6 +34,8 @@ const itMapsResponse = (trigger) => {
 describe('entities', () => {
   describe('create', () => {
     it('configures post request', () => {
+      ajax.mockReturnValue(of({}));
+
       entities.create({
         type: 'SPACESHIP',
         attributes: {
@@ -57,6 +59,8 @@ describe('entities', () => {
         }),
       });
     });
+
+    itMapsResponse(entities.create);
   });
 
   describe('fetch', () => {
