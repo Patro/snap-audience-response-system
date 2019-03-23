@@ -4,11 +4,11 @@ import rootEpic from './epics';
 import rootReducer from './reducers';
 import api from './api';
 
-const epicMiddleware = createEpicMiddleware({
-  dependencies: { api }
-});
+const configureStore = (history) => {
+  const epicMiddleware = createEpicMiddleware({
+    dependencies: { api, history: { push: history.push } },
+  });
 
-export default () => {
   const store = createStore(
     rootReducer,
     applyMiddleware(epicMiddleware)
@@ -18,3 +18,5 @@ export default () => {
 
   return store;
 };
+
+export default configureStore;
