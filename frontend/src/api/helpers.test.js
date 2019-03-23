@@ -1,4 +1,8 @@
-import { buildURL, buildBody } from './helpers';
+import {
+  buildURL, buildBody,
+  mapResourceObjectToEntity,
+  mapSingleResourceDocumentToEntity
+} from './helpers';
 
 describe('buildURL', () => {
   it('builds URL of collection', () => {
@@ -36,5 +40,61 @@ describe('buildBody', () => {
       }
     };
     expect(body).toEqual(expectedBody);
+  });
+});
+
+describe('mapResourceObjectToEntity', () => {
+  it('maps id', () => {
+    const entity = mapResourceObjectToEntity({ id: 3 });
+
+    expect(entity).toEqual({ id: 3 });
+  });
+
+  it('maps type', () => {
+    const entity = mapResourceObjectToEntity({ type: 'spaceship_engine' });
+
+    expect(entity).toEqual({ type: 'SPACESHIP_ENGINE' });
+  });
+
+  it('maps attributes', () => {
+    const entity = mapResourceObjectToEntity({
+      attributes: {
+        max_speed: 100000,
+      },
+    });
+
+    expect(entity).toEqual({
+      attributes: {
+        maxSpeed: 100000,
+      },
+    });
+  });
+
+  it('maps empty object', () => {
+    const entity = mapResourceObjectToEntity({});
+
+    expect(entity).toEqual({});
+  });
+});
+
+describe('mapSingleResourceDocumentToEntity', () => {
+  it('maps document to entity', () => {
+    const entity = mapSingleResourceDocumentToEntity({
+      data: {
+        id: 100,
+        type: 'spaceship',
+        attributes: {
+          max_speed: 100,
+        },
+      }
+    });
+
+    expect(entity).toEqual({
+      id: 100,
+      type: 'SPACESHIP',
+      attributes: {
+        maxSpeed: 100,
+      },
+    });
   });
 });
