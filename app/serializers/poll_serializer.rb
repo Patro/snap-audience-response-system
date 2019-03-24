@@ -2,5 +2,5 @@
 
 class PollSerializer < ApplicationSerializer
   belongs_to :question, polymorphic: true
-  attributes :closed
+  attributes :status
 end

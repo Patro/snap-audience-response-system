@@ -19,7 +19,7 @@ RSpec.describe PollSerializer do
     describe '> attributes' do
       subject { data[:attributes] }
 
-      it { is_expected.to include(closed: false) }
+      it { is_expected.to include(status: :open) }
     end
 
     describe '> relationships' do
