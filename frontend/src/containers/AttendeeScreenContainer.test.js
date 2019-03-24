@@ -54,7 +54,7 @@ describe('AttendeeScreenContainer', () => {
       const wrapped = wrapper.find(AttendeeScreen);
       wrapped.props().onRefresh();
 
-      const action = store.getActions()[0];
+      const action = store.getActions().slice(-1)[0];
       const expectedAction = {
         type: FETCH_COLLECTION,
         entityType: POLL,

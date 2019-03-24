@@ -46,7 +46,7 @@ describe('SessionScreenContainer', () => {
       const wrapped = wrapper.find(SessionScreen);
       wrapped.props().onRefresh();
 
-      const action = store.getActions()[0];
+      const action = store.getActions().slice(-1)[0];
       const expectedAction = {
         type: FETCH_ENTITY, entityType: INTERACTIVE_SESSION, entityId: '100'
       };
