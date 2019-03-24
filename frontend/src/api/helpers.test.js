@@ -1,7 +1,8 @@
 import {
   buildURL, buildBody,
   mapResourceObjectToEntity,
-  mapSingleResourceDocumentToEntity
+  mapSingleResourceDocumentToEntity,
+  mapCollectionResourceDocumentToCollection
 } from './helpers';
 
 describe('buildURL', () => {
@@ -154,6 +155,34 @@ describe('mapSingleResourceDocumentToEntity', () => {
       attributes: {
         maxSpeed: 100,
       },
+    });
+  });
+});
+
+describe('mapCollectionResourceDocumentToCollection', () => {
+  it('maps document to collection', () => {
+    const entity = mapCollectionResourceDocumentToCollection({
+      data: [
+        {
+          id: 100,
+          type: 'spaceship',
+          attributes: {
+            max_speed: 100,
+          },
+        },
+      ]
+    });
+
+    expect(entity).toEqual({
+      entities: [
+        {
+          id: 100,
+          type: 'SPACESHIP',
+          attributes: {
+            maxSpeed: 100,
+          },
+        },
+      ],
     });
   });
 });
