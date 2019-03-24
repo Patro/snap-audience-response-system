@@ -4,8 +4,8 @@ import { JSON_API_MIME_TYPE } from './config';
 import {
   buildURL,
   buildBody,
-  mapSingleResourceDocumentToEntity,
-  mapCollectionResourceDocumentToCollection
+  mapSingleResourceToEntity,
+  mapCollectionResourceToCollection
 } from './helpers'
 
 export const create = ({ type, attributes } = {}) => (
@@ -19,7 +19,7 @@ export const create = ({ type, attributes } = {}) => (
     body: JSON.stringify(buildBody({ type, attributes }))
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
-    map(mapSingleResourceDocumentToEntity)
+    map(mapSingleResourceToEntity)
   )
 );
 
@@ -32,7 +32,7 @@ export const fetch = ({ id, type } = {}) => (
     }
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
-    map(mapSingleResourceDocumentToEntity)
+    map(mapSingleResourceToEntity)
   )
 );
 
@@ -45,7 +45,7 @@ export const fetchCollection = ({ type, filterParams } = {}) => (
     }
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
-    map(mapCollectionResourceDocumentToCollection)
+    map(mapCollectionResourceToCollection)
   )
 );
 

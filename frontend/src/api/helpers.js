@@ -107,10 +107,10 @@ export const mapResourceObjectToEntity = (resourceObject) => {
   return entity;
 };
 
-export const mapSingleResourceDocumentToEntity = (document) => (
+export const mapSingleResourceToEntity = (document) => (
   mapResourceObjectToEntity(document.data)
 );
 
-export const mapCollectionResourceDocumentToCollection = (document) => ({
+export const mapCollectionResourceToCollection = (document) => ({
   entities: document.data.map(mapResourceObjectToEntity)
 });

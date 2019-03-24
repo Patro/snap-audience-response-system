@@ -1,8 +1,8 @@
 import {
   buildURL, buildBody,
   mapResourceObjectToEntity,
-  mapSingleResourceDocumentToEntity,
-  mapCollectionResourceDocumentToCollection
+  mapSingleResourceToEntity,
+  mapCollectionResourceToCollection
 } from './helpers';
 
 describe('buildURL', () => {
@@ -137,9 +137,9 @@ describe('mapResourceObjectToEntity', () => {
   });
 });
 
-describe('mapSingleResourceDocumentToEntity', () => {
+describe('mapSingleResourceToEntity', () => {
   it('maps document to entity', () => {
-    const entity = mapSingleResourceDocumentToEntity({
+    const entity = mapSingleResourceToEntity({
       data: {
         id: 100,
         type: 'spaceship',
@@ -159,9 +159,9 @@ describe('mapSingleResourceDocumentToEntity', () => {
   });
 });
 
-describe('mapCollectionResourceDocumentToCollection', () => {
+describe('mapCollectionResourceToCollection', () => {
   it('maps document to collection', () => {
-    const entity = mapCollectionResourceDocumentToCollection({
+    const entity = mapCollectionResourceToCollection({
       data: [
         {
           id: 100,
