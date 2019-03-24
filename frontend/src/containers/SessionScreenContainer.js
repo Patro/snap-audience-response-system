@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { fetchEntity } from '../actions';
 import { INTERACTIVE_SESSION } from '../constants/entityTypes';
 import { getEntity } from '../selectors';
-import Session from '../components/Session';
+import SessionScreen from '../components/SessionScreen';
 
 export const getId = (props) => (
   props.match.params.id
@@ -21,4 +21,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Session);
+)(SessionScreen);

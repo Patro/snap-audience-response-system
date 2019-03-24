@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 
-class Welcome extends Component {
+class WelcomeScreen extends Component {
   render() {
     return (
       <div className="welcome">
@@ -11,4 +11,4 @@ class Welcome extends Component {
   }
 }
 
-export default Welcome;
+export default WelcomeScreen;

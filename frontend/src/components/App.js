@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import SessionContainer
-  from './../containers/SessionContainer';
-import Welcome from './Welcome';
+import SessionScreenContainer from './../containers/SessionScreenContainer';
+import WelcomeScreen from './WelcomeScreen';
 
 class App extends Component {
   render() {
     return (
       <div className="app">
         <Switch>
-          <Route exact path="/" component={Welcome} />
+          <Route exact path="/" component={WelcomeScreen} />
           <Route path="/interactive_sessions/:id"
-                 component={SessionContainer} />
+                 component={SessionScreenContainer} />
         </Switch>
       </div>
     );

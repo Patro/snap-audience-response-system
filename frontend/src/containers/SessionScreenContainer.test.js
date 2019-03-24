@@ -5,8 +5,8 @@ import { mount } from 'enzyme';
 import { FETCH_ENTITY } from '../actions';
 import { INTERACTIVE_SESSION } from '../constants/entityTypes';
 import { getEntity } from '../selectors';
-import Session from '../components/Session';
-import SessionContainer from './SessionContainer';
+import SessionScreen from '../components/SessionScreen';
+import SessionScreenContainer from './SessionScreenContainer';
 
 jest.mock('../selectors');
 
@@ -14,12 +14,12 @@ const setupStore = () => ( configureStore()() );
 const mountContainer = ({ store = setupStore(), sessionId = '100' } = {}) => (
   mount(
     <Provider store={store}>
-      <SessionContainer match={{ params: { id: sessionId } }}/>
+      <SessionScreenContainer match={{ params: { id: sessionId } }}/>
     </Provider>
   )
 );
 
-describe('SessionContainer', () => {
+describe('SessionScreenContainer', () => {
   describe('interactive session', () => {
     it('calls selector with session id', () => {
       mountContainer({ sessionId: '100' });
@@ -32,7 +32,7 @@ describe('SessionContainer', () => {
       getEntity.mockReturnValue(mockedSession);
 
       const wrapper = mountContainer();
-      const wrapped = wrapper.find(Session);
+      const wrapped = wrapper.find(SessionScreen);
 
       expect(wrapped.props().interactiveSession).toEqual(mockedSession);
     });
@@ -43,7 +43,7 @@ describe('SessionContainer', () => {
       const store = setupStore();
 
       const wrapper = mountContainer({ store, sessionId: '100' });
-      const wrapped = wrapper.find(Session);
+      const wrapped = wrapper.find(SessionScreen);
       wrapped.props().onRefresh();
 
       const action = store.getActions()[0];
