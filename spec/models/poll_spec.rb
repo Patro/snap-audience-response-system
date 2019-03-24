@@ -3,6 +3,64 @@
 require 'rails_helper'
 
 RSpec.describe Poll, type: :model do
+  describe '::responded_by' do
+    let(:user) { create(:user) }
+    subject { Poll.responded_by(user) }
+
+    context 'given poll with no responses' do
+      let(:poll) { create(:poll) }
+
+      it 'should return empty relation' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'given poll with responses of other user' do
+      let(:poll) { create(:poll, :with_responses) }
+
+      it 'should return empty relation' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'given poll with responses of user' do
+      let(:poll) { create(:poll, :with_responses, respondent: user) }
+
+      it 'should return poll' do
+        is_expected.to contain_exactly(poll)
+      end
+    end
+  end
+
+  describe '::responded_by' do
+    let(:user) { create(:user) }
+    subject { Poll.not_responded_by(user) }
+
+    context 'given poll with no responses' do
+      let(:poll) { create(:poll) }
+
+      it 'should return poll' do
+        is_expected.to contain_exactly(poll)
+      end
+    end
+
+    context 'given poll with responses of other user' do
+      let(:poll) { create(:poll, :with_responses) }
+
+      it 'should return poll' do
+        is_expected.to contain_exactly(poll)
+      end
+    end
+
+    context 'given poll with responses of user' do
+      let(:poll) { create(:poll, :with_responses, respondent: user) }
+
+      it 'should return empty relation' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '#destroy' do
     subject { -> { poll.destroy } }
 

@@ -5,6 +5,13 @@ class Poll < ApplicationRecord
   has_many :responses, inverse_of: :poll, dependent: :destroy
   has_one :interactive_session, through: :question
 
+  scope :responded_by, ->(user) do
+    where(id: Response.select(:poll_id).where(respondent: user))
+  end
+  scope :not_responded_by, ->(user) do
+    where.not(id: Response.select(:poll_id).where(respondent: user))
+  end
+
   validates :closed, inclusion: { in: [true, false] }
 
   after_create :broadcast_create_event
