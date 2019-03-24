@@ -11,6 +11,10 @@ class Poll < ApplicationRecord
   after_update :broadcast_update_event
   after_destroy :broadcast_destroy_event
 
+  def responded_by?(user)
+    responses.where(respondent: user).any?
+  end
+
   def status
     return :closed if closed?
     :open

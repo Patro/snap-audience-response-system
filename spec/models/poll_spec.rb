@@ -20,6 +20,46 @@ RSpec.describe Poll, type: :model do
     end
   end
 
+  describe '#responded_by?' do
+    let(:user) { create(:user) }
+    subject { poll.responded_by?(user) }
+
+    context 'given poll with no responses' do
+      let(:poll) { create(:poll) }
+
+      it 'should return false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'given poll with response of other user' do
+      let(:poll) { create(:poll) }
+      let(:option) { create(:question_option, question: poll.question) }
+
+      before(:each) do
+        create(:response, picked_question_option: option, poll: poll)
+      end
+
+      it 'should return false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'given poll with response of user' do
+      let(:poll) { create(:poll) }
+      let(:option) { create(:question_option, question: poll.question) }
+
+      before(:each) do
+        create(:response, picked_question_option: option,
+                          poll: poll, respondent: user)
+      end
+
+      it 'should return true' do
+        is_expected.to be true
+      end
+    end
+  end
+
   describe '#responses' do
     subject { poll.responses }
 
