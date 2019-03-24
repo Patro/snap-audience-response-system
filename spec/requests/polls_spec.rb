@@ -99,6 +99,38 @@ RSpec.describe 'Polls API', type: :request do
                       model_class: Poll, with_filter: true
   end
 
+  describe 'GET /api/polls?responded=true' do
+    set_current_user
+
+    let!(:records) do
+      create_list(:poll, 2, :with_responses, respondent: current_user)
+    end
+    let!(:non_matching_records) { create_list(:poll, 2, :with_responses) }
+
+    def fire_get
+      get '/api/polls?responded=true'
+    end
+
+    include_examples 'get collection of resources',
+                      model_class: Poll, with_filter: true
+  end
+
+  describe 'GET /api/polls?responded=false' do
+    set_current_user
+
+    let!(:records) { create_list(:poll, 2, :with_responses) }
+    let!(:non_matching_records) do
+      create_list(:poll, 2, :with_responses, respondent: current_user)
+    end
+
+    def fire_get
+      get '/api/polls?responded=false'
+    end
+
+    include_examples 'get collection of resources',
+                      model_class: Poll, with_filter: true
+  end
+
   describe 'POST /api/polls' do
     let(:question) { create(:dummy_question) }
     let(:poll_data) do

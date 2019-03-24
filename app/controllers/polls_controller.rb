@@ -37,10 +37,24 @@ class PollsController < ApplicationController
       end
     end
 
+    def apply_responded_filter(records)
+      return records unless params[:responded].present?
+
+      case params[:responded]
+      when 'true'
+        records.responded_by(current_user)
+      when 'false'
+        records.not_responded_by(current_user)
+      else
+        records
+      end
+    end
+
     def apply_query_filters(records)
       records = apply_interactive_session_filter(records)
       records = apply_question_filter(records)
       records = apply_status_filter(records)
+      records = apply_responded_filter(records)
       records
     end
 
