@@ -28,8 +28,8 @@ describe('App', () => {
 
     it('renders welcome screen component', () => {
       const wrapper = mountApp({ location });
-      const form = wrapper.find(WelcomeScreen);
-      expect(form.length).toBe(1);
+      const wrapped = wrapper.find(WelcomeScreen);
+      expect(wrapped.length).toBe(1);
     });
   });
 
@@ -38,8 +38,8 @@ describe('App', () => {
 
     it('renders session screen container', () => {
       const wrapper = mountApp({ location });
-      const form = wrapper.find(SessionScreenContainer);
-      expect(form.length).toBe(1);
+      const wrapped = wrapper.find(SessionScreenContainer);
+      expect(wrapped.length).toBe(1);
     });
   });
 
@@ -48,14 +48,14 @@ describe('App', () => {
 
     it('does not render welcome screen component', () => {
       const wrapper = mountApp({ location });
-      const form = wrapper.find(WelcomeScreen);
-      expect(form.length).toBe(0);
+      const wrapped = wrapper.find(WelcomeScreen);
+      expect(wrapped.length).toBe(0);
     });
 
     it('does not render session screen container', () => {
       const wrapper = mountApp({ location });
-      const form = wrapper.find(SessionScreenContainer);
-      expect(form.length).toBe(0);
+      const wrapped = wrapper.find(SessionScreenContainer);
+      expect(wrapped.length).toBe(0);
     });
   });
 });
