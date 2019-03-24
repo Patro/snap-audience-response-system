@@ -2,7 +2,10 @@ import { map } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
 import { JSON_API_MIME_TYPE } from './config';
 import {
-  buildURL, buildBody, mapSingleResourceDocumentToEntity
+  buildURL,
+  buildBody,
+  mapSingleResourceDocumentToEntity,
+  mapCollectionResourceDocumentToCollection
 } from './helpers'
 
 export const create = ({ type, attributes } = {}) => (
@@ -33,4 +36,17 @@ export const fetch = ({ id, type } = {}) => (
   )
 );
 
-export default { create, fetch }
+export const fetchCollection = ({ type, filterParams } = {}) => (
+  ajax({
+    url: buildURL({ type, filterParams }),
+    method: 'GET',
+    headers: {
+      'Accept': JSON_API_MIME_TYPE,
+    }
+  }).pipe(
+    map(ajaxResponse => ajaxResponse.response),
+    map(mapCollectionResourceDocumentToCollection)
+  )
+);
+
+export default { create, fetch, fetchCollection }
