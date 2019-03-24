@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import InteractiveSessionContainer
-  from './../containers/InteractiveSessionContainer';
+import SessionContainer
+  from './../containers/SessionContainer';
 import Welcome from './Welcome';
 
 class App extends Component {
@@ -12,7 +12,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={Welcome} />
           <Route path="/interactive_sessions/:id"
-                 component={InteractiveSessionContainer} />
+                 component={SessionContainer} />
         </Switch>
       </div>
     );

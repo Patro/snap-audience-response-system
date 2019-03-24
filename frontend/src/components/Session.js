@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class InteractiveSession extends Component {
+class Session extends Component {
   componentDidMount() {
     this.refresh();
   }
@@ -27,4 +27,4 @@ class InteractiveSession extends Component {
   }
 }
 
-export default InteractiveSession;
+export default Session;

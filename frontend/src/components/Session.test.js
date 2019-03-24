@@ -1,16 +1,16 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import InteractiveSession from './InteractiveSession';
+import Session from './Session';
 
-describe('InteractiveSession', () => {
+describe('Session', () => {
   it('renders without crashing', () => {
-    mount(<InteractiveSession />);
+    mount(<Session />);
   });
 
-  it('renders label of interactive session', () => {
+  it('renders label of session', () => {
     const interactiveSession = { attributes: { label: 'My Event'} };
     const wrapper = shallow(
-      <InteractiveSession interactiveSession={interactiveSession} />
+      <Session interactiveSession={interactiveSession} />
     );
     const label = wrapper.find('.interactive_session__label');
     expect(label.text()).toEqual('My Event');
@@ -18,7 +18,7 @@ describe('InteractiveSession', () => {
 
   it('calls on refresh handler on mount', () => {
     const refreshHandler = jest.fn();
-    shallow(<InteractiveSession onRefresh={refreshHandler} />);
+    shallow(<Session onRefresh={refreshHandler} />);
 
     expect(refreshHandler).toBeCalled();
   });
