@@ -55,8 +55,22 @@ class PollsController < ApplicationController
     def mapped_params
       {
         question_id: id_of_related_resource(:question),
-        closed: params.dig(:data, :attributes, :closed),
+        closed: closed_flag,
       }.compact
+    end
+
+    def closed_flag
+      case params.dig(:data, :attributes, :status)
+      when 'open'
+        false
+      when 'closed'
+        true
+      when nil
+        nil
+      else
+        raise Errors::UnprocessableEntityError,
+              error_message: 'Given status is unknown.'
+      end
     end
 
     def record_class

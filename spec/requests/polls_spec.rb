@@ -129,8 +129,8 @@ RSpec.describe 'Polls API', type: :request do
                        status: :unprocessable_entity
     end
 
-    context 'given data object with closed flag' do
-      let(:data) { poll_data.deep_merge(attributes: { closed: 'true' }) }
+    context 'given data object with status closed' do
+      let(:data) { poll_data.deep_merge(attributes: { status: 'closed' }) }
       let(:expected_record_attributes) { { closed: true } }
 
       include_examples 'create resource', model_class: Poll
@@ -153,11 +153,26 @@ RSpec.describe 'Polls API', type: :request do
       end
     end
 
-    context 'given data object with missing closed flag' do
-      let(:data) { poll_data.deep_merge(attributes: { closed: nil }) }
+    context 'given data object with status open' do
+      let(:data) { poll_data.deep_merge(attributes: { status: 'open' }) }
       let(:expected_record_attributes) { { closed: false } }
 
       include_examples 'create resource', model_class: Poll
+    end
+
+    context 'given data object with missing status' do
+      let(:data) { poll_data.deep_merge(attributes: { status: nil }) }
+      let(:expected_record_attributes) { { closed: false } }
+
+      include_examples 'create resource', model_class: Poll
+    end
+
+    context 'given data object with undefined status' do
+      let(:data) { poll_data.deep_merge(attributes: { status: 'undefined_status' }) }
+
+      include_examples 'fail to create resource',
+                       model_class: Poll,
+                       status: :unprocessable_entity
     end
 
     describe 'given relationship to question' do
@@ -216,9 +231,9 @@ RSpec.describe 'Polls API', type: :request do
                                           expect_changes: false
     end
 
-    context 'given closed' do
+    context 'given data object with status closed' do
       let!(:record) { create(:poll, closed: false) }
-      let(:data) { { attributes: { closed: 'true' } } }
+      let(:data) { { attributes: { status: 'closed' } } }
       let(:expected_record_attributes) { { closed: true } }
 
       include_examples 'update resource', model_class: Poll
@@ -235,6 +250,14 @@ RSpec.describe 'Polls API', type: :request do
           .with(event: { type: 'POLL_UPDATED', poll_id: id.to_s })
         end
       end
+    end
+
+    context 'given data object with status open' do
+      let!(:record) { create(:poll, closed: true) }
+      let(:data) { { attributes: { status: 'open' } } }
+      let(:expected_record_attributes) { { closed: false } }
+
+      include_examples 'update resource', model_class: Poll
     end
 
     context 'given question' do
