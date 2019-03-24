@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
 
 class SessionScreen extends Component {
   componentDidMount() {
@@ -11,17 +12,23 @@ class SessionScreen extends Component {
     }
   }
 
+  get session() {
+    return this.props.interactiveSession;
+  }
+
   get attributes() {
-    if (this.props.interactiveSession === undefined) {
-      return {};
-    }
-    return this.props.interactiveSession.attributes;
+    return this.session.attributes;
   }
 
   render() {
+    if (this.session === undefined) {
+      return <></>;
+    }
+
     return (
       <div className="interactive_session">
         <h1 className="interactive_session__label">{this.attributes.label}</h1>
+        <AttendeeScreenContainer interactiveSession={this.session} />
       </div>
     );
   }
