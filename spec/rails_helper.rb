@@ -10,6 +10,7 @@ require 'rspec/rails'
 
 require 'action_cable/testing/rspec'
 require 'capybara/rails'
+require 'support/current_user_helpers'
 require 'support/database_cleaner'
 require 'support/have_json_api_content_type_matcher'
 require 'support/include_identifier_of_matcher'
@@ -26,6 +27,7 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 RSpec.configure do |config|
+  config.include CurrentUserHelpers
   config.include PolicyHelpers
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
