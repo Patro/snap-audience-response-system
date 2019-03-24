@@ -38,6 +38,27 @@ RSpec.describe Poll, type: :model do
     end
   end
 
+  describe '#status' do
+    let(:user) { create(:user) }
+    subject { poll.status }
+
+    context 'given open poll' do
+      let(:poll) { create(:poll, :open) }
+
+      it 'should return open' do
+        is_expected.to be(:open)
+      end
+    end
+
+    context 'given closed poll' do
+      let(:poll) { create(:poll, :closed) }
+
+      it 'should return closed' do
+        is_expected.to be(:closed)
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { poll.valid? }
 

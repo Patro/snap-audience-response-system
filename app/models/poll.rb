@@ -11,6 +11,11 @@ class Poll < ApplicationRecord
   after_update :broadcast_update_event
   after_destroy :broadcast_destroy_event
 
+  def status
+    return :closed if closed?
+    :open
+  end
+
   private
 
     def broadcast_create_event
