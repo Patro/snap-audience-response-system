@@ -7,12 +7,7 @@ RSpec.describe Poll, type: :model do
     subject { -> { poll.destroy } }
 
     context 'given poll with two responses' do
-      let(:poll) { create(:poll) }
-      let(:option) { create(:question_option, question: poll.question) }
-
-      before(:each) do
-        create_list(:response, 2, picked_question_option: option, poll: poll)
-      end
+      let!(:poll) { create(:poll, :with_responses, responses_count: 2) }
 
       it 'should destroy responses' do
         is_expected.to change { Response.count }.from(2).to(0)
@@ -32,13 +27,8 @@ RSpec.describe Poll, type: :model do
       end
     end
 
-    context 'given poll with response of other user' do
-      let(:poll) { create(:poll) }
-      let(:option) { create(:question_option, question: poll.question) }
-
-      before(:each) do
-        create(:response, picked_question_option: option, poll: poll)
-      end
+    context 'given poll with responses of other user' do
+      let(:poll) { create(:poll, :with_responses) }
 
       it 'should return false' do
         is_expected.to be false
@@ -46,13 +36,7 @@ RSpec.describe Poll, type: :model do
     end
 
     context 'given poll with response of user' do
-      let(:poll) { create(:poll) }
-      let(:option) { create(:question_option, question: poll.question) }
-
-      before(:each) do
-        create(:response, picked_question_option: option,
-                          poll: poll, respondent: user)
-      end
+      let(:poll) { create(:poll, :with_responses, respondent: user) }
 
       it 'should return true' do
         is_expected.to be true
