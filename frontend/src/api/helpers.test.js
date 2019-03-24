@@ -10,6 +10,15 @@ describe('buildURL', () => {
 
     expect(url).toBe('/api/spaceships/');
   });
+
+  it('serializes filter params', () => {
+    const url = buildURL({
+      type: 'SPACESHIP',
+      filterParams: { aB: 'space & atmosphere', o: 'asc' }
+    });
+
+    expect(url).toBe('/api/spaceships/?a_b=space%20%26%20atmosphere&o=asc');
+  });
 });
 
 describe('buildBody', () => {

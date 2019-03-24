@@ -25,9 +25,28 @@ const deepMapKeysToCamelCase = (object) => (
   deepMapKeys(object, camelCase)
 );
 
-export const buildURL = ({id = '', type }) => (
-  `${API_ROOT_PATH}${snakeCase(type)}s/${id}`
-);
+const serializeQueryParams = (params) => {
+  if (params === undefined) { return ''; }
+  const keys = Object.keys(params);
+  const pairs = keys.map(key => {
+    const encKey = encodeURIComponent(snakeCase(key));
+    const encValue = encodeURIComponent(params[key]);
+    return `${encKey}=${encValue}`;
+  })
+  return pairs.join('&');
+};
+
+export const buildURL = ({id, type, filterParams }) => {
+  const parts = [API_ROOT_PATH, `${snakeCase(type)}s/`];
+  if (id !== undefined) {
+    parts.push(`${id}`)
+  }
+  const queryParams = serializeQueryParams(filterParams);
+  if (queryParams.length > 0) {
+    parts.push(`?${queryParams}`)
+  }
+  return parts.join('');
+};
 
 export const buildBody = ({ id, type, attributes }) => {
   const data = {};
