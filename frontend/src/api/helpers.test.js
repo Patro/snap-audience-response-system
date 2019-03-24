@@ -11,6 +11,12 @@ describe('buildURL', () => {
     expect(url).toBe('/api/spaceships/');
   });
 
+  it('builds URL of entity', () => {
+    const url = buildURL({ type: 'SPACESHIP', id: 100 });
+
+    expect(url).toBe('/api/spaceships/100');
+  });
+
   it('serializes filter params', () => {
     const url = buildURL({
       type: 'SPACESHIP',
