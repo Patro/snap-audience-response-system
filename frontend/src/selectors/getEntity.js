@@ -1,11 +1,7 @@
+import get from 'lodash/get';
+
 const getEntity = (state, type, id) => {
-  const entities = state.entities;
-  if (entities === undefined) { return; }
-
-  const entitiesOfType = entities[type];
-  if (entitiesOfType === undefined) { return; }
-
-  return entitiesOfType[id];
+  return get(state, `entities.${type}.${id}`);
 };
 
 export default getEntity;
