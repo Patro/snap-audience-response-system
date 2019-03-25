@@ -15,15 +15,17 @@ export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   jobId
 });
 
-export const createEntity = (entity) => ({
+export const createEntity = (entity, jobId = 'createEntity') => ({
   type: CREATE_ENTITY,
-  entity
+  entity,
+  jobId
 });
 
-export const fetchEntity = (entityType, entityId) => ({
+export const fetchEntity = (entityType, entityId, jobId = 'fetchEntity') => ({
   type: FETCH_ENTITY,
   entityType,
-  entityId
+  entityId,
+  jobId
 });
 
 export const receiveEntity = (entity) => ({
@@ -31,10 +33,11 @@ export const receiveEntity = (entity) => ({
   entity
 });
 
-export const fetchCollection = (entityType, filterParams) => ({
+export const fetchCollection = (entityType, filterParams, jobId = 'fetchCollection') => ({
   type: FETCH_COLLECTION,
   entityType,
-  filterParams
+  filterParams,
+  jobId
 });
 
 export const receiveCollection = (entityType, filterParams, collection) => ({
