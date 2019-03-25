@@ -1,12 +1,11 @@
 import { of, throwError } from 'rxjs';
 import { toArray } from 'rxjs/operators';
+import { fetchCollection, receiveCollection } from '../actions';
 import fetchCollectionEpic from './fetchCollectionEpic';
 
-const action$ = of({
-  type: 'FETCH_COLLECTION',
-  entityType: 'SPACESHIP_ENGINE',
-  filterParams: { fuel: 'gas' }
-});
+const action$ = of(
+  fetchCollection('SPACESHIP_ENGINE', { fuel: 'gas' })
+);
 const state$ = null;
 
 const collection = {
@@ -37,12 +36,9 @@ describe('fetchCollectionEpic', () => {
 
   describe('when request succeeds', () => {
     it('emits receive collection action', (done) => {
-      const expectedAction = {
-        type: 'RECEIVE_COLLECTION',
-        entityType: 'SPACESHIP_ENGINE',
-        filterParams: { fuel: 'gas' },
-        collection,
-      };
+      const expectedAction = receiveCollection(
+        'SPACESHIP_ENGINE', { fuel: 'gas' }, collection
+      )
 
       const result$ = callEpic();
       result$.subscribe(actions => {

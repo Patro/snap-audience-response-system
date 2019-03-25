@@ -1,10 +1,11 @@
 import { of, throwError } from 'rxjs';
 import { toArray } from 'rxjs/operators';
+import { fetchEntity, receiveEntity } from '../actions';
 import fetchEntityEpic from './fetchEntityEpic';
 
-const action$ = of({
-  type: 'FETCH_ENTITY', entityType: 'SPACESHIP', entityId: 100
-});
+const action$ = of(
+  fetchEntity('SPACESHIP', 100)
+);
 const state$ = null;
 
 const entity = {
@@ -32,7 +33,7 @@ describe('fetchEntityEpic', () => {
 
   describe('when request succeeds', () => {
     it('emits receive entity action', (done) => {
-      const expectedAction = { type: 'RECEIVE_ENTITY', entity };
+      const expectedAction = receiveEntity(entity);
 
       const result$ = callEpic();
       result$.subscribe(actions => {

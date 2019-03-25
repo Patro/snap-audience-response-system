@@ -1,67 +1,51 @@
 import React from 'react';
 import { Form, Button, Radio, Checkbox } from 'antd';
 import { mount } from 'enzyme';
-import {
-  MULTIPLE_CHOICE_QUESTION,
-  SINGLE_CHOICE_QUESTION
-} from '../constants/entityTypes';
+import factories from '../../__factories__';
 import RespondForm from './RespondForm';
 
-describe('RespondForm', () => {
-  const question = {
+const question = factories.multipleChoiceQuestion.entity({
+  attributes: { text: 'What is the meaning of life?' },
+});
+const options = [
+  factories.questionOption.entity({
+    id: 234,
+    attributes: { text: 'Eat, Sleep, Rave, Repeat' },
+  }),
+  factories.questionOption.entity({
     id: 123,
-    type: MULTIPLE_CHOICE_QUESTION,
-    attributes: {
-      text: 'What is the meaning of life?',
-    },
-  };
-  const options = [
-    {
-      id: 234,
-      type: 'QUESTION_OPTION',
-      attributes: {
-        text: 'Eat, Sleep, Rave, Repeat',
-      },
-    },
-    {
-      id: 123,
-      type: 'QUESTION_OPTION',
-      attributes: {
-        text: '42',
-      },
-    },
-    {
-      id: 923,
-      type: 'QUESTION_OPTION',
-      attributes: {
-        text: 'I don\'t know',
-      },
-    },
-  ];
+    attributes: { text: '42' },
+  }),
+  factories.questionOption.entity({
+    id: 923,
+    attributes: { text: 'I don\'t know' },
+  }),
+];
 
-  const mountForm = (question, options, onSubmit) => (
-    mount(
-      <RespondForm question={question} options={options} onSubmit={onSubmit} />
-    )
-  );
-  const getForm = (wrapper) => (
-    wrapper.find(Form)
-  );
-  const getHeader = (wrapper) => (
-    wrapper.find('.respond_form__header')
-  );
-  const getOptionLabels = (wrapper) => (
-    wrapper.find('label.respond_form__option')
-  );
-  const getSubmitButton = (wrapper) => (
-    wrapper.find(Button).filter('[htmlType="submit"]')
-  );
-  const checkInputElement = (item) => {
-    const inputElement = item.find('input');
-    inputElement.instance().checked = true;
-    inputElement.simulate('change');
-  };
+const mountForm = (question, options, onSubmit) => (
+  mount(
+    <RespondForm question={question} options={options} onSubmit={onSubmit} />
+  )
+);
+const getForm = (wrapper) => (
+  wrapper.find(Form)
+);
+const getHeader = (wrapper) => (
+  wrapper.find('.respond_form__header')
+);
+const getOptionLabels = (wrapper) => (
+  wrapper.find('label.respond_form__option')
+);
+const getSubmitButton = (wrapper) => (
+  wrapper.find(Button).filter('[htmlType="submit"]')
+);
+const checkInputElement = (item) => {
+  const inputElement = item.find('input');
+  inputElement.instance().checked = true;
+  inputElement.simulate('change');
+};
 
+describe('RespondForm', () => {
   it('renders text of question to header', () => {
     const wrapper = mountForm(question, options);
     const header = getHeader(wrapper);
@@ -87,10 +71,7 @@ describe('RespondForm', () => {
   });
 
   describe('given multiple choice question', () => {
-    const multipleChoiceQuestion = {
-      ...question,
-      type: MULTIPLE_CHOICE_QUESTION,
-    };
+    const multipleChoiceQuestion = factories.multipleChoiceQuestion.entity();
 
     it('renders a checkbox for every option', () => {
       const wrapper = mountForm(multipleChoiceQuestion, options);
@@ -113,10 +94,7 @@ describe('RespondForm', () => {
   });
 
   describe('given single choice question', () => {
-    const singleChoiceQuestion = {
-      ...question,
-      type: SINGLE_CHOICE_QUESTION,
-    };
+    const singleChoiceQuestion = factories.singleChoiceQuestion.entity();
 
     it('renders a radio box for every option', () => {
       const wrapper = mount(

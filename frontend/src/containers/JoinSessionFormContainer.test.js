@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
-import { JOIN_SESSION } from '../actions';
+import { joinSession } from '../actions';
 import JoinSessionForm from '../components/JoinSessionForm';
 import JoinSessionFormContainer from './JoinSessionFormContainer';
 
@@ -25,7 +25,7 @@ describe('JoinSessionFormContainer', () => {
       form.props().onSubmit('ABCD');
 
       const action = store.getActions()[0];
-      const expectedAction = { type: JOIN_SESSION, attendanceCode: 'ABCD' };
+      const expectedAction = joinSession('ABCD');
       expect(action).toMatchObject(expectedAction);
     });
   });
