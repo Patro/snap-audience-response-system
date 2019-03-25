@@ -7,6 +7,7 @@ export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
 export const MARK_JOB_AS_STARTED = 'MARK_JOB_AS_STARTED';
 export const MARK_JOB_AS_SUCCEEDED = 'MARK_JOB_AS_SUCCEEDED';
 export const MARK_JOB_AS_FAILED = 'MARK_JOB_AS_FAILED';
+export const REMOVE_JOB = 'REMOVE_JOB';
 
 export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   type: JOIN_SESSION,
@@ -58,4 +59,9 @@ export const markJobAsFailed = (id, errors) => ({
   type: MARK_JOB_AS_FAILED,
   id,
   errors
+});
+
+export const removeJob = (id) => ({
+  type: REMOVE_JOB,
+  id
 });
