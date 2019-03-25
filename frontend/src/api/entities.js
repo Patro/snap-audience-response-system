@@ -1,12 +1,7 @@
 import { map } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
 import { JSON_API_MIME_TYPE } from './config';
-import {
-  buildURL,
-  buildBody,
-  mapSingleResourceToEntity,
-  mapCollectionResourceToCollection
-} from './helpers'
+import { buildURL, buildBody, mapResponse } from './helpers'
 
 export const create = (entity = {}) => (
   ajax({
@@ -19,7 +14,7 @@ export const create = (entity = {}) => (
     body: JSON.stringify(buildBody(entity))
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
-    map(mapSingleResourceToEntity)
+    map(mapResponse)
   )
 );
 
@@ -32,7 +27,7 @@ export const fetch = ({ id, type } = {}) => (
     }
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
-    map(mapSingleResourceToEntity)
+    map(mapResponse)
   )
 );
 
@@ -45,7 +40,7 @@ export const fetchCollection = ({ type, filterParams } = {}) => (
     }
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
-    map(mapCollectionResourceToCollection)
+    map(mapResponse)
   )
 );
 
