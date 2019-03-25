@@ -3,7 +3,7 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import snakeCase from 'lodash/snakeCase';
 import toUpper from 'lodash/toUpper';
-import { API_ROOT_PATH } from './config';
+import { API_ROOT_PATH, ROOT_TYPE_MAP } from './config';
 
 const deepMapKeys = (object, iteratee) => {
   const mapped = {}
@@ -25,6 +25,11 @@ const deepMapKeysToCamelCase = (object) => (
   deepMapKeys(object, camelCase)
 );
 
+const getCollectionPath = (type) =>  {
+  type = ROOT_TYPE_MAP[type] || type;
+  return `${snakeCase(type)}s`;
+};
+
 const serializeQueryParams = (params) => {
   if (params === undefined) { return ''; }
   const keys = Object.keys(params);
@@ -36,8 +41,8 @@ const serializeQueryParams = (params) => {
   return pairs.join('&');
 };
 
-export const buildURL = ({id, type, filterParams }) => {
-  const parts = [API_ROOT_PATH, `${snakeCase(type)}s/`];
+export const buildURL = ({ id, type, filterParams }) => {
+  const parts = [API_ROOT_PATH, getCollectionPath(type), '/'];
   if (id !== undefined) {
     parts.push(`${id}`)
   }

@@ -5,6 +5,8 @@ import {
   mapCollectionResourceToCollection
 } from './helpers';
 
+jest.mock('./config');
+
 describe('buildURL', () => {
   it('builds URL of collection', () => {
     const url = buildURL({ type: 'SPACESHIP' });
@@ -16,6 +18,12 @@ describe('buildURL', () => {
     const url = buildURL({ type: 'SPACESHIP', id: 100 });
 
     expect(url).toBe('/api/spaceships/100');
+  });
+
+  it('builds URL of entity using parent type map', () => {
+    const url = buildURL({ type: 'JET', id: 100 });
+
+    expect(url).toBe('/api/airplanes/100');
   });
 
   it('serializes filter params', () => {
