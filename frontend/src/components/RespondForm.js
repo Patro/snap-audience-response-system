@@ -10,6 +10,16 @@ class RespondForm extends Component {
     this.renderOption = this.renderOption.bind(this);
   }
 
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
+  }
+
   isMultipleChoice() {
     return this.props.question.type === MULTIPLE_CHOICE_QUESTION;
   }
