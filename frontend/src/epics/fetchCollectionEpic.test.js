@@ -17,7 +17,7 @@ const collection = {
 const setupFetchMock = () => (jest.fn((_) => of(collection)));
 
 const callEpic = (fetchMock = setupFetchMock()) => {
-  const dependencies = { api: { entities: { fetchCollection: fetchMock }} };
+  const dependencies = { api: { collections: { fetch: fetchMock }} };
   return fetchCollectionEpic(action$, state$, dependencies).pipe(toArray());
 };
 

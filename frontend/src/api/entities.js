@@ -13,35 +13,20 @@ export const create = (entity = {}) => (
     },
     body: JSON.stringify(buildBody(entity))
   }).pipe(
-    map(ajaxResponse => ajaxResponse.response),
-    map(mapResponse)
+    map(xhr => mapResponse(xhr.response))
   )
 );
 
-export const fetch = ({ id, type } = {}) => (
+export const fetch = ({ type, id } = {}) => (
   ajax({
-    url: buildURL({ id, type }),
+    url: buildURL({ type, id }),
     method: 'GET',
     headers: {
       'Accept': JSON_API_MIME_TYPE,
     }
   }).pipe(
-    map(ajaxResponse => ajaxResponse.response),
-    map(mapResponse)
+    map(xhr => mapResponse(xhr.response))
   )
 );
 
-export const fetchCollection = ({ type, filterParams } = {}) => (
-  ajax({
-    url: buildURL({ type, filterParams }),
-    method: 'GET',
-    headers: {
-      'Accept': JSON_API_MIME_TYPE,
-    }
-  }).pipe(
-    map(ajaxResponse => ajaxResponse.response),
-    map(mapResponse)
-  )
-);
-
-export default { create, fetch, fetchCollection }
+export default { create, fetch }
