@@ -1,15 +1,22 @@
-import { EMPTY } from 'rxjs';
-import { filter, mergeMap, map, catchError } from 'rxjs/operators';
+import { filter, mergeMap, map } from 'rxjs/operators';
 import { FETCH_ENTITY, receiveEntity } from '../actions';
+import withJob from './withJob';
 
-const fetchEntityEpic = (action$, _, { api }) => action$.pipe(
-  filter(action => action.type === FETCH_ENTITY),
-  mergeMap(({ entityType, entityId }) =>
-    api.entities.fetch({ type: entityType, id: entityId }).pipe(
-      map(receiveEntity),
-      catchError(() => EMPTY)
-    )
+const fetchEntity$ = ({ entityType, entityId }, { api }) => (
+  api.entities.fetch({ type: entityType, id: entityId })
+);
+
+const processAction = (action, dependencies) => (
+  withJob(
+    action.jobId,
+    fetchEntity$(action, dependencies),
+    map(receiveEntity)
   )
+);
+
+const fetchEntityEpic = (action$, _, dependencies) => action$.pipe(
+  filter(action => action.type === FETCH_ENTITY),
+  mergeMap(action => processAction(action, dependencies))
 );
 
 export default fetchEntityEpic;

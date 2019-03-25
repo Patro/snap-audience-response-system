@@ -1,4 +1,4 @@
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { fetchEntity, receiveEntity } from '../actions';
 import fetchEntityEpic from './fetchEntityEpic';
@@ -6,7 +6,6 @@ import fetchEntityEpic from './fetchEntityEpic';
 const action$ = of(
   fetchEntity('SPACESHIP', 100)
 );
-const state$ = null;
 
 const entity = {
   id: 100,
@@ -17,7 +16,7 @@ const setupFetchMock = () => (jest.fn((_) => of(entity)));
 
 const callEpic = (fetchMock = setupFetchMock()) => {
   const dependencies = { api: { entities: { fetch: fetchMock }} }
-  return fetchEntityEpic(action$, state$, dependencies).pipe(toArray())
+  return fetchEntityEpic(action$, null, dependencies).pipe(toArray())
 };
 
 describe('fetchEntityEpic', () => {
@@ -37,19 +36,7 @@ describe('fetchEntityEpic', () => {
 
       const result$ = callEpic();
       result$.subscribe(actions => {
-        expect(actions).toEqual([expectedAction]);
-        done();
-      });
-    });
-  });
-
-  describe('when request fails', () => {
-    it('emits no action', (done) => {
-      const fetchMock = (_) => throwError(new Error());
-
-      const result$ = callEpic(fetchMock);
-      result$.subscribe(actions => {
-        expect(actions).toEqual([]);
+        expect(actions).toContainEqual(expectedAction);
         done();
       });
     });

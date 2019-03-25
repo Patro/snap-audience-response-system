@@ -1,4 +1,4 @@
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { fetchCollection, receiveCollection } from '../actions';
 import fetchCollectionEpic from './fetchCollectionEpic';
@@ -6,7 +6,6 @@ import fetchCollectionEpic from './fetchCollectionEpic';
 const action$ = of(
   fetchCollection('SPACESHIP_ENGINE', { fuel: 'gas' })
 );
-const state$ = null;
 
 const collection = {
   entities: [
@@ -18,7 +17,7 @@ const setupFetchMock = () => (jest.fn((_) => of(collection)));
 
 const callEpic = (fetchMock = setupFetchMock()) => {
   const dependencies = { api: { collections: { fetch: fetchMock }} };
-  return fetchCollectionEpic(action$, state$, dependencies).pipe(toArray());
+  return fetchCollectionEpic(action$, null, dependencies).pipe(toArray());
 };
 
 describe('fetchCollectionEpic', () => {
@@ -42,19 +41,7 @@ describe('fetchCollectionEpic', () => {
 
       const result$ = callEpic();
       result$.subscribe(actions => {
-        expect(actions).toEqual([expectedAction]);
-        done();
-      });
-    });
-  });
-
-  describe('when request fails', () => {
-    it('emits no action', (done) => {
-      const fetchMock = (_) => throwError(new Error());
-
-      const result$ = callEpic(fetchMock);
-      result$.subscribe(actions => {
-        expect(actions).toEqual([]);
+        expect(actions).toContainEqual(expectedAction);
         done();
       });
     });
