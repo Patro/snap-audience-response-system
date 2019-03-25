@@ -6,6 +6,7 @@ export const FETCH_COLLECTION = 'FETCH_COLLECTION';
 export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
 export const MARK_JOB_AS_STARTED = 'MARK_JOB_AS_STARTED';
 export const MARK_JOB_AS_SUCCEEDED = 'MARK_JOB_AS_SUCCEEDED';
+export const MARK_JOB_AS_FAILED = 'MARK_JOB_AS_FAILED';
 
 export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   type: JOIN_SESSION,
@@ -51,4 +52,10 @@ export const markJobAsSucceeded = (id, result) => ({
   type: MARK_JOB_AS_SUCCEEDED,
   id,
   result
+});
+
+export const markJobAsFailed = (id, errors) => ({
+  type: MARK_JOB_AS_FAILED,
+  id,
+  errors
 });
