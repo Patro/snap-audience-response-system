@@ -4,6 +4,7 @@ export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
 export const FETCH_COLLECTION = 'FETCH_COLLECTION';
 export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
+export const CREATE_JOB = 'CREATE_JOB';
 
 export const joinSession = (attendanceCode) => ({
   type: JOIN_SESSION,
@@ -37,4 +38,9 @@ export const receiveCollection = (entityType, filterParams, collection) => ({
   entityType,
   filterParams,
   collection
+});
+
+export const createJob = (id) => ({
+  type: CREATE_JOB,
+  id
 });
