@@ -1,16 +1,18 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
+import factories from '../../__factories__';
 import AttendeeScreen from './AttendeeScreen';
-import RespondForm from './RespondForm';
+import RespondFormContainer from '../containers/RespondFormContainer';
 
 describe('AttendeeScreen', () => {
   it('renders without crashing', () => {
     mount(<AttendeeScreen />);
   });
 
-  it('renders respond form', () => {
-    const wrapper = shallow(<AttendeeScreen />);
-    const form = wrapper.find(RespondForm);
+  it('renders respond form container', () => {
+    const poll = factories.poll.entity();
+    const wrapper = shallow(<AttendeeScreen unrespondedPoll={poll} />);
+    const form = wrapper.find(RespondFormContainer);
     expect(form.length).toBe(1);
   });
 

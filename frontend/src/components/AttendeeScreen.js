@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import RespondForm from './RespondForm';
+import RespondFormContainer from '../containers/RespondFormContainer';
 
 class AttendeeScreen extends Component {
   componentDidMount() {
@@ -15,9 +15,16 @@ class AttendeeScreen extends Component {
   render() {
     return (
       <div className="attendee_screen">
-        <RespondForm/>
+        {this.renderRespondFormContainer()}
       </div>
     );
+  }
+
+  renderRespondFormContainer() {
+    const poll = this.props.unrespondedPoll;
+    if (poll === undefined) { return; }
+
+    return (<RespondFormContainer poll={poll} />)
   }
 }
 
