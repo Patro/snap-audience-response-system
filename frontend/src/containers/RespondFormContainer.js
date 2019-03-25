@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import { fetchCollection, fetchEntity } from '../actions';
+import { createEntity, fetchCollection, fetchEntity } from '../actions';
 import RespondForm from '../components/RespondForm';
-import { QUESTION_OPTION } from '../constants/entityTypes';
+import { QUESTION_OPTION, RESPONSE } from '../constants/entityTypes';
 import { getCollection, getEntity } from '../selectors';
 
 const buildFilterParams = (questionIdentifier) => ({
@@ -42,6 +42,17 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(fetchEntity(identifier.type, identifier.id));
     dispatch(fetchCollection(QUESTION_OPTION, buildFilterParams(identifier)));
   },
+  onSubmit: (optionIds) => (
+    optionIds.forEach(optionId => (
+      dispatch(createEntity({
+        type: RESPONSE,
+        relationships: {
+          poll: { id: ownProps.poll.id, type: ownProps.poll.type },
+          pickedQuestionOption: { id: optionId, type: QUESTION_OPTION },
+        }
+      }))
+    ))
+  ),
 });
 
 export default connect(

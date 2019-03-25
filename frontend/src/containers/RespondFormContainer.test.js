@@ -3,9 +3,9 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
-import { fetchCollection, fetchEntity } from '../actions';
+import { fetchCollection, fetchEntity, createEntity } from '../actions';
 import {
-  QUESTION_OPTION, SINGLE_CHOICE_QUESTION
+  QUESTION_OPTION, RESPONSE, SINGLE_CHOICE_QUESTION
 } from './../constants/entityTypes';
 import RespondForm from '../components/RespondForm';
 import RespondFormContainer from './RespondFormContainer';
@@ -104,6 +104,24 @@ describe('RespondFormContainer', () => {
     const actions = store.getActions();
     const expectedAction = fetchCollection(QUESTION_OPTION, {
       questionId: 123,
+    });
+    expect(actions).toContainEqual(expectedAction);
+  });
+
+  it('dispatches create entity action for given id on submit', () => {
+    const store = setupStore();
+
+    const wrapper = mountContainer({ store, poll });
+    const wrapped = getForm(wrapper);
+    wrapped.props().onSubmit([1]);
+
+    const actions = store.getActions();
+    const expectedAction = createEntity({
+      type: RESPONSE,
+      relationships: {
+        poll: { id: poll.id, type: poll.type },
+        pickedQuestionOption: { id: 1, type: QUESTION_OPTION },
+      },
     });
     expect(actions).toContainEqual(expectedAction);
   });
