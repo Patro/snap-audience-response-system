@@ -42,13 +42,13 @@ const serializeQueryParams = (params) => {
 };
 
 export const buildURL = ({ id, type, filterParams }) => {
-  const parts = [API_ROOT_PATH, getCollectionPath(type), '/'];
+  const parts = [API_ROOT_PATH, '/', getCollectionPath(type)];
   if (id !== undefined) {
-    parts.push(`${id}`)
+    parts.push('/', id)
   }
   const queryParams = serializeQueryParams(filterParams);
   if (queryParams.length > 0) {
-    parts.push(`?${queryParams}`)
+    parts.push('?', queryParams)
   }
   return parts.join('');
 };

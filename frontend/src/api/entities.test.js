@@ -3,6 +3,7 @@ import { ajax } from 'rxjs/ajax';
 import entities from './entities';
 
 jest.mock('rxjs/ajax');
+jest.mock('./config');
 
 const itMapsSingleResourceResponse = (trigger) => {
   it('maps response to entity', (done) => {
@@ -45,7 +46,7 @@ describe('entities', () => {
 
       expect(ajax).toBeCalledWith({
         method: 'POST',
-        url: '/api/spaceships/',
+        url: '/test_api/spaceships',
         headers: {
           'Accept': 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json'
@@ -75,7 +76,7 @@ describe('entities', () => {
 
       expect(ajax).toBeCalledWith({
         method: 'GET',
-        url: '/api/spaceships/100',
+        url: '/test_api/spaceships/100',
         headers: {
           'Accept': 'application/vnd.api+json'
         },
@@ -96,7 +97,7 @@ describe('entities', () => {
 
       expect(ajax).toBeCalledWith({
         method: 'GET',
-        url: '/api/spaceships/?q=space%20%26%20atmosphere',
+        url: '/test_api/spaceships?q=space%20%26%20atmosphere',
         headers: {
           'Accept': 'application/vnd.api+json'
         },
