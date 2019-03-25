@@ -1,9 +1,14 @@
 import { of, throwError } from 'rxjs';
 import { toArray } from 'rxjs/operators';
+import {
+  joinSession, markJobAsStarted, markJobAsSucceeded, markJobAsFailed, removeJob
+} from '../actions';
 import { ATTENDANCE, INTERACTIVE_SESSION } from '../constants/entityTypes';
 import joinSessionEpic from './joinSessionEpic';
 
-const action$ = of({ type: 'JOIN_SESSION', attendanceCode: 'ABCD' });
+const action$ = of(
+  joinSession('ABCD', 'jobId')
+);
 const state$ = null;
 
 const entity = {
@@ -28,6 +33,26 @@ const callEpic = (createMock, pushMock) => {
 };
 
 describe('joinSessionEpic', () => {
+  it('emits action to mark job as started', (done) => {
+    const expectedAction = markJobAsStarted('jobId');
+
+    const result$ = callEpic();
+    result$.subscribe(actions => {
+      expect(actions[0]).toEqual(expectedAction);
+      done();
+    });
+  });
+
+  it('emits action to remove job', (done) => {
+    const expectedAction = removeJob('jobId');
+
+    const result$ = callEpic();
+    result$.subscribe(actions => {
+      expect(actions.slice(-1)[0]).toEqual(expectedAction);
+      done();
+    });
+  });
+
   it('triggers create request', (done) => {
     const createMock = setupCreateMock();
 
@@ -52,22 +77,29 @@ describe('joinSessionEpic', () => {
       });
     });
 
-    it('emits no action', (done) => {
+    it('emits action to mark job as succeeded', (done) => {
+      const expectedAction = markJobAsSucceeded('jobId', entity);
+
       const result$ = callEpic();
       result$.subscribe(actions => {
-        expect(actions).toEqual([]);
+        expect(actions).toContainEqual(expectedAction);
         done();
       });
     });
   });
 
   describe('when request fails', () => {
-    it('emits no action', (done) => {
-      const createMock = (_) => throwError(new Error());
+    it('emits action to mark job as succeeded', (done) => {
+      const errors = [{ title: 'error' }];
+      const expectedAction = markJobAsFailed('jobId', errors);
+
+      const error = new Error();
+      error.response = { errors };
+      const createMock = (_) => throwError(error);
 
       const result$ = callEpic(createMock);
       result$.subscribe(actions => {
-        expect(actions).toEqual([]);
+        expect(actions).toContainEqual(expectedAction);
         done();
       });
     });
