@@ -3,10 +3,13 @@
 require 'rails_helper'
 
 RSpec.feature 'Attendee navigates to interactive sessions page', type: :feature do
+  set_current_user
+
   context 'given open poll' do
     scenario 'they see the questions text' do
       interactive_session = create(:interactive_session)
-      create(:attendance, interactive_session: interactive_session)
+      create(:attendance, interactive_session: interactive_session,
+                          attendee: current_user)
       question = create(
         :single_choice_question,
         interactive_session: interactive_session,
