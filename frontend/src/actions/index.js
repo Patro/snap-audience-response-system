@@ -6,9 +6,10 @@ export const FETCH_COLLECTION = 'FETCH_COLLECTION';
 export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
 export const CREATE_JOB = 'CREATE_JOB';
 
-export const joinSession = (attendanceCode) => ({
+export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   type: JOIN_SESSION,
-  attendanceCode
+  attendanceCode,
+  jobId
 });
 
 export const createEntity = (entity) => ({
