@@ -1,4 +1,5 @@
 export const JOIN_SESSION = 'JOIN_SESSION';
+export const CREATE_ENTITY = 'CREATE_ENTITY';
 export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
 export const FETCH_COLLECTION = 'FETCH_COLLECTION';
@@ -7,6 +8,11 @@ export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
 export const joinSession = (attendanceCode) => ({
   type: JOIN_SESSION,
   attendanceCode
+});
+
+export const createEntity = (entity) => ({
+  type: CREATE_ENTITY,
+  entity
 });
 
 export const fetchEntity = (entityType, entityId) => ({
