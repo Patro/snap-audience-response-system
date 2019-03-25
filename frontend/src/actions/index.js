@@ -4,7 +4,7 @@ export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
 export const FETCH_COLLECTION = 'FETCH_COLLECTION';
 export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
-export const CREATE_JOB = 'CREATE_JOB';
+export const MARK_JOB_AS_STARTED = 'MARK_JOB_AS_STARTED';
 
 export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   type: JOIN_SESSION,
@@ -41,7 +41,7 @@ export const receiveCollection = (entityType, filterParams, collection) => ({
   collection
 });
 
-export const createJob = (id) => ({
-  type: CREATE_JOB,
-  id
+export const markJobAsStarted = (id) => ({
+  type: MARK_JOB_AS_STARTED,
+  id,
 });
