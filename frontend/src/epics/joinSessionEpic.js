@@ -1,9 +1,7 @@
-import { merge, of } from 'rxjs';
-import { filter, map, mergeMap, tap, catchError, endWith } from 'rxjs/operators';
-import {
-  JOIN_SESSION, markJobAsStarted, markJobAsSucceeded, markJobAsFailed, removeJob
-} from '../actions';
+import { filter, map, mergeMap, tap } from 'rxjs/operators';
+import { JOIN_SESSION, receiveEntity } from '../actions';
 import { ATTENDANCE } from '../constants/entityTypes'
+import withJob from './withJob';
 
 const buildSessionUrl = (attendance) => (
   `/interactive_sessions/${attendance.relationships.interactiveSession.id}`
@@ -13,29 +11,26 @@ const redirectToSession = (attendance, history) => (
   history.push(buildSessionUrl(attendance))
 );
 
-const createAttendance$ = ({ attendanceCode, jobId }, { api, history }) => (
+const createAttendance$ = ({ attendanceCode }, { api, history }) => (
   api.entities.create({
     type: ATTENDANCE,
     attributes: { attendanceCode },
   }).pipe(
-    tap(attendance => redirectToSession(attendance, history)),
-    map(attendance => markJobAsSucceeded(jobId, attendance)),
-    catchError((err) => {
-      if (err.response === undefined) { throw err; }
-      return of(markJobAsFailed(jobId, err.response.errors));
-    }),
-    endWith(removeJob(jobId)),
+    tap(attendance => redirectToSession(attendance, history))
   )
 );
 
+const processAction = (action, dependencies) => (
+  withJob(
+    action.jobId,
+    createAttendance$(action, dependencies),
+    map(receiveEntity)
+  )
+)
+
 const joinSessionEpic = (action$, _, dependencies) => action$.pipe(
   filter(action => action.type === JOIN_SESSION),
-  mergeMap(action =>
-    merge(
-      of(markJobAsStarted(action.jobId)),
-      createAttendance$(action, dependencies)
-    )
-  )
+  mergeMap(action => processAction(action, dependencies))
 );
 
 export default joinSessionEpic;

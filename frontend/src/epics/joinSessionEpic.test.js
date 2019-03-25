@@ -1,8 +1,6 @@
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
-import {
-  joinSession, markJobAsStarted, markJobAsSucceeded, markJobAsFailed, removeJob
-} from '../actions';
+import { joinSession, receiveEntity } from '../actions';
 import { ATTENDANCE, INTERACTIVE_SESSION } from '../constants/entityTypes';
 import joinSessionEpic from './joinSessionEpic';
 
@@ -33,26 +31,6 @@ const callEpic = (createMock, pushMock) => {
 };
 
 describe('joinSessionEpic', () => {
-  it('emits action to mark job as started', (done) => {
-    const expectedAction = markJobAsStarted('jobId');
-
-    const result$ = callEpic();
-    result$.subscribe(actions => {
-      expect(actions[0]).toEqual(expectedAction);
-      done();
-    });
-  });
-
-  it('emits action to remove job', (done) => {
-    const expectedAction = removeJob('jobId');
-
-    const result$ = callEpic();
-    result$.subscribe(actions => {
-      expect(actions.slice(-1)[0]).toEqual(expectedAction);
-      done();
-    });
-  });
-
   it('triggers create request', (done) => {
     const createMock = setupCreateMock();
 
@@ -77,27 +55,10 @@ describe('joinSessionEpic', () => {
       });
     });
 
-    it('emits action to mark job as succeeded', (done) => {
-      const expectedAction = markJobAsSucceeded('jobId', entity);
+    it('emits receive entity action', (done) => {
+      const expectedAction = receiveEntity(entity);
 
       const result$ = callEpic();
-      result$.subscribe(actions => {
-        expect(actions).toContainEqual(expectedAction);
-        done();
-      });
-    });
-  });
-
-  describe('when request fails', () => {
-    it('emits action to mark job as succeeded', (done) => {
-      const errors = [{ title: 'error' }];
-      const expectedAction = markJobAsFailed('jobId', errors);
-
-      const error = new Error();
-      error.response = { errors };
-      const createMock = (_) => throwError(error);
-
-      const result$ = callEpic(createMock);
       result$.subscribe(actions => {
         expect(actions).toContainEqual(expectedAction);
         done();
