@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import RespondForm from './RespondForm';
 
 class AttendeeScreen extends Component {
   componentDidMount() {
@@ -14,6 +15,7 @@ class AttendeeScreen extends Component {
   render() {
     return (
       <div className="attendee_screen">
+        <RespondForm/>
       </div>
     );
   }
