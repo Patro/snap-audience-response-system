@@ -66,6 +66,26 @@ describe('buildBody', () => {
     };
     expect(body).toEqual(expectedBody);
   });
+
+  it('builds hash with relationships', () => {
+    const body = buildBody({
+      relationships: { initialAuthor: { id: 1, type: 'AUTHOR' } }
+    });
+
+    const expectedBody = {
+      data: {
+        relationships: {
+          initial_author: {
+            data: {
+              id: 1,
+              type: 'author',
+            },
+          },
+        },
+      },
+    };
+    expect(body).toEqual(expectedBody);
+  });
 });
 
 describe('mapResourceObjectToEntity', () => {

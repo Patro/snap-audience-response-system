@@ -8,15 +8,15 @@ import {
   mapCollectionResourceToCollection
 } from './helpers'
 
-export const create = ({ type, attributes } = {}) => (
+export const create = (entity = {}) => (
   ajax({
-    url: buildURL({ type }),
+    url: buildURL({ type: entity.type }),
     method: 'POST',
     headers: {
       'Accept': JSON_API_MIME_TYPE,
       'Content-Type': JSON_API_MIME_TYPE,
     },
-    body: JSON.stringify(buildBody({ type, attributes }))
+    body: JSON.stringify(buildBody(entity))
   }).pipe(
     map(ajaxResponse => ajaxResponse.response),
     map(mapSingleResourceToEntity)

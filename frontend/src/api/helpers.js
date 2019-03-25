@@ -53,7 +53,33 @@ export const buildURL = ({ id, type, filterParams }) => {
   return parts.join('');
 };
 
-export const buildBody = ({ id, type, attributes }) => {
+const buildResourceIdentifier = (entityIdentifier) => ({
+  id: entityIdentifier.id,
+  type: snakeCase(entityIdentifier.type),
+});
+
+const buildResourceObjectRelationship = (relationship) => {
+  if (isArray(relationship)) {
+    return relationship.map(buildResourceIdentifier);
+  }
+  else if (isObject(relationship)) {
+    return buildResourceIdentifier(relationship);
+  }
+}
+
+const buildResourceObjectRelationships = (relationships) => {
+  const keys = Object.keys(relationships);
+  const mapped = {};
+  keys.forEach(key => {
+    const relationship = relationships[key];
+    mapped[snakeCase(key)] = {
+      data: buildResourceObjectRelationship(relationship),
+    };
+  });
+  return mapped;
+};
+
+export const buildBody = ({ id, type, attributes, relationships }) => {
   const data = {};
   if (id !== undefined) {
     data['id'] = id;
@@ -63,6 +89,9 @@ export const buildBody = ({ id, type, attributes }) => {
   }
   if (attributes !== undefined) {
     data['attributes'] = deepMapKeysToSnakeCase(attributes);
+  }
+  if (relationships !== undefined) {
+    data['relationships'] = buildResourceObjectRelationships(relationships);
   }
   return { data };
 };
