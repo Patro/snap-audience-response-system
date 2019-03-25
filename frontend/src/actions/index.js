@@ -5,6 +5,7 @@ export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
 export const FETCH_COLLECTION = 'FETCH_COLLECTION';
 export const RECEIVE_COLLECTION = 'RECEIVE_COLLECTION';
 export const MARK_JOB_AS_STARTED = 'MARK_JOB_AS_STARTED';
+export const MARK_JOB_AS_SUCCEEDED = 'MARK_JOB_AS_SUCCEEDED';
 
 export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   type: JOIN_SESSION,
@@ -44,4 +45,10 @@ export const receiveCollection = (entityType, filterParams, collection) => ({
 export const markJobAsStarted = (id) => ({
   type: MARK_JOB_AS_STARTED,
   id,
+});
+
+export const markJobAsSucceeded = (id, result) => ({
+  type: MARK_JOB_AS_SUCCEEDED,
+  id,
+  result
 });
