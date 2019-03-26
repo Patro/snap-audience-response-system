@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Input } from 'antd';
 import { mount } from 'enzyme';
+import factories from '../../__factories__';
 import JoinSessionForm from './JoinSessionForm';
 
 describe('JoinSessionForm', () => {
@@ -13,6 +14,12 @@ describe('JoinSessionForm', () => {
   const getSubmitButton = (wrapper) => (
     wrapper.find(Button).filter('[htmlType="submit"]')
   );
+  const inputAttendanceCodeAndSubmit = (wrapper, attendanceCode) => {
+    const input = getAttendanceCodeInput(wrapper);
+    input.simulate('change', { target: { value: attendanceCode } });
+    const form = getForm(wrapper);
+    form.simulate('submit');
+  };
 
   it('renders input box for attendance code', () => {
     const wrapper = mount(<JoinSessionForm />);
@@ -26,15 +33,28 @@ describe('JoinSessionForm', () => {
     expect(button).toHaveLength(1);
   });
 
-  it('calls on submit handler with attendance code on form submit', () => {
-    const onSubmit = jest.fn();
+  describe('without join job', () => {
+    it('calls on submit handler with attendance code on form submit', () => {
+      const onSubmit = jest.fn();
 
-    const wrapper = mount(<JoinSessionForm onSubmit={onSubmit} />);
-    const input = getAttendanceCodeInput(wrapper);
-    input.simulate('change', { target: { value: 'ABCD' } });
-    const form = getForm(wrapper);
-    form.simulate('submit');
+      const wrapper = mount(<JoinSessionForm onSubmit={onSubmit} />);
+      inputAttendanceCodeAndSubmit(wrapper, 'ABCD')
 
-    expect(onSubmit).toBeCalledWith('ABCD');
+      expect(onSubmit).toBeCalledWith('ABCD');
+    });
+  });
+
+  describe('given join job', () => {
+    it('does not call on submit handler on form submit', () => {
+      const onSubmit = jest.fn();
+
+      const job = factories.job.started();
+      const wrapper = mount(
+        <JoinSessionForm joinJob={job} onSubmit={onSubmit} />
+      );
+      inputAttendanceCodeAndSubmit(wrapper, 'ABCD')
+
+      expect(onSubmit).not.toBeCalled();
+    });
   });
 });

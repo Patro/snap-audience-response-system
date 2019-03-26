@@ -7,8 +7,13 @@ class JoinSessionForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  get loading() {
+    return this.props.joinJob !== undefined;
+  }
+
   handleSubmit(event) {
     event.preventDefault();
+    if (this.loading) { return; }
 
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) { return; }
@@ -29,7 +34,9 @@ class JoinSessionForm extends Component {
             ) }
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">Join</Button>
+            <Button type="primary" htmlType="submit" loading={this.loading}>
+              Join
+            </Button>
           </Form.Item>
         </Form>
       </div>
