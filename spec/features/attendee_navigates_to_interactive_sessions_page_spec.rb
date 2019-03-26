@@ -11,9 +11,9 @@ RSpec.feature 'Attendee navigates to interactive sessions page', type: :feature 
       create(:attendance, interactive_session: interactive_session,
                           attendee: current_user)
 
-      visit "/interactive_sessions/#{interactive_session.id}"
+      visit("/interactive_sessions/#{interactive_session.id}")
 
-      expect(page).to have_text 'Waiting'
+      expect(page).to have_text('Waiting')
     end
   end
 
@@ -29,9 +29,9 @@ RSpec.feature 'Attendee navigates to interactive sessions page', type: :feature 
       )
       create(:poll, :open, question: question)
 
-      visit "/interactive_sessions/#{interactive_session.id}"
+      visit("/interactive_sessions/#{interactive_session.id}")
 
-      expect(page).to have_text 'What is 4 + 6?'
+      expect(page).to have_text('What is 4 + 6?')
     end
   end
 end

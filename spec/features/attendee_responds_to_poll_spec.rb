@@ -14,17 +14,17 @@ RSpec.feature 'Attendee responds to poll', type: :feature do
         :single_choice_question,
         interactive_session: interactive_session,
       )
-      option = create(:question_option, question: question, text: '42')
+      create(:question_option, question: question, text: '42')
       create(:poll, :open, question: question)
 
-      visit "/interactive_sessions/#{interactive_session.id}"
+      visit("/interactive_sessions/#{interactive_session.id}")
 
-      within(".respond_form") do
-        find(".ant-radio-input", visible: :all).choose();
+      within('.respond_form') do
+        find('.ant-radio-input', visible: :all).choose()
         click_button('Send')
       end
 
-      expect(page).to have_text 'Thank you'
+      expect(page).to have_text('Thank you')
     end
   end
 end

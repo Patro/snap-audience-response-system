@@ -11,12 +11,12 @@ RSpec.feature 'User enters attendance code', type: :feature do
         attendance_code: 'ABCD'
       )
 
-      visit root_path
+      visit(root_path)
 
       fill_in('Attendance Code', with: 'ABCD')
       click_button('Join')
 
-      expect(page).to have_text 'Super Event'
+      expect(page).to have_text('Super Event')
     end
   end
 end
