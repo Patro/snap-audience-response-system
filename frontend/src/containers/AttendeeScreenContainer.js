@@ -5,32 +5,37 @@ import { POLL } from '../constants/entityTypes';
 import { getCollection, getEntity } from '../selectors';
 import AttendeeScreen from '../components/AttendeeScreen';
 
-const buildFilterParams = (ownProps) => ({
-  interactiveSessionId: ownProps.interactiveSession.id,
-  status: 'open',
-  responded: false,
-})
-
-const findUnrespondedPoll = (state, ownProps) => {
-  const collection = getCollection(state, POLL, buildFilterParams(ownProps));
-  const pollId = get(collection, 'entities[0].id')
-  if (pollId === undefined) {
-    return undefined;
-  }
-  return getEntity(state, POLL, pollId)
-}
-
-const mapStateToProps = (state, ownProps) => ({
-  unrespondedPoll: findUnrespondedPoll(state, ownProps)
+const mapStateToProps = (state, { interactiveSession }) => ({
+  unrespondedPoll: findUnrespondedPoll(state, interactiveSession),
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onRefresh: () => (
-    dispatch(fetchCollection(POLL, buildFilterParams(ownProps)))
-  ),
+const mapDispatchToProps = (dispatch, { interactiveSession }) => ({
+  onRefresh: () => fetchPolls(dispatch, interactiveSession),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AttendeeScreen);
+
+///////////////////////////////////////////////////////////////////////////////
+
+const findUnrespondedPoll = (state, interactiveSession) => {
+  const filterParams = buildFilterParams(interactiveSession);
+  const collection = getCollection(state, POLL, filterParams);
+  const pollId = get(collection, 'entities[0].id')
+  if (pollId === undefined) {
+    return undefined;
+  }
+  return getEntity(state, POLL, pollId)
+};
+
+const fetchPolls = (dispatch, interactiveSession) => {
+  dispatch(fetchCollection(POLL, buildFilterParams(interactiveSession)))
+};
+
+const buildFilterParams = (interactiveSession) => ({
+  interactiveSessionId: interactiveSession.id,
+  status: 'open',
+  responded: false,
+});

@@ -3,12 +3,21 @@ import { JOIN_SESSION, receiveEntity } from '../actions';
 import { ATTENDANCE } from '../constants/entityTypes'
 import withJob from './withJob';
 
-const buildSessionUrl = (attendance) => (
-  `/interactive_sessions/${attendance.relationships.interactiveSession.id}`
+const joinSessionEpic = (action$, _, dependencies) => action$.pipe(
+  filter(action => action.type === JOIN_SESSION),
+  mergeMap(action => processAction(action, dependencies))
 );
 
-const redirectToSession = (attendance, history) => (
-  history.push(buildSessionUrl(attendance))
+export default joinSessionEpic;
+
+///////////////////////////////////////////////////////////////////////////////
+
+const processAction = (action, dependencies) => (
+  withJob(
+    action.jobId,
+    createAttendance$(action, dependencies),
+    map(receiveEntity)
+  )
 );
 
 const createAttendance$ = ({ attendanceCode }, { api, history }) => (
@@ -20,17 +29,10 @@ const createAttendance$ = ({ attendanceCode }, { api, history }) => (
   )
 );
 
-const processAction = (action, dependencies) => (
-  withJob(
-    action.jobId,
-    createAttendance$(action, dependencies),
-    map(receiveEntity)
-  )
-)
-
-const joinSessionEpic = (action$, _, dependencies) => action$.pipe(
-  filter(action => action.type === JOIN_SESSION),
-  mergeMap(action => processAction(action, dependencies))
+const redirectToSession = (attendance, history) => (
+  history.push(buildSessionUrl(attendance))
 );
 
-export default joinSessionEpic;
+const buildSessionUrl = (attendance) => (
+  `/interactive_sessions/${attendance.relationships.interactiveSession.id}`
+);

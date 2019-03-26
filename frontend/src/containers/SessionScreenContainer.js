@@ -4,21 +4,29 @@ import { INTERACTIVE_SESSION } from '../constants/entityTypes';
 import { getEntity } from '../selectors';
 import SessionScreen from '../components/SessionScreen';
 
-export const getId = (props) => (
-  props.match.params.id
-);
-
 const mapStateToProps = (state, ownProps) => ({
-  interactiveSession: getEntity(state, INTERACTIVE_SESSION, getId(ownProps))
+  interactiveSession: getInteractiveSession(state, getId(ownProps)),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onRefresh: () => (
-    dispatch(fetchEntity(INTERACTIVE_SESSION, getId(ownProps)))
-  ),
+  onRefresh: () => fetchInteractiveSession(dispatch, getId(ownProps)),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(SessionScreen);
+
+///////////////////////////////////////////////////////////////////////////////
+
+const getId = (props) => (
+  props.match.params.id
+);
+
+const getInteractiveSession = (state, id) => (
+  getEntity(state, INTERACTIVE_SESSION, id)
+);
+
+const fetchInteractiveSession = (dispatch, id) => (
+  dispatch(fetchEntity(INTERACTIVE_SESSION, id))
+);

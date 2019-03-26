@@ -2,9 +2,14 @@ import { filter, mergeMap, map } from 'rxjs/operators';
 import { CREATE_ENTITY, receiveEntity } from '../actions';
 import withJob from './withJob';
 
-const createEntity$ = ({ entity }, { api }) => (
-  api.entities.create(entity)
+const createEntityEpic = (action$, _, dependencies) => action$.pipe(
+  filter(action => action.type === CREATE_ENTITY),
+  mergeMap(action => processAction(action, dependencies))
 );
+
+export default createEntityEpic;
+
+///////////////////////////////////////////////////////////////////////////////
 
 const processAction = (action, dependencies) => (
   withJob(
@@ -14,9 +19,6 @@ const processAction = (action, dependencies) => (
   )
 );
 
-const createEntityEpic = (action$, _, dependencies) => action$.pipe(
-  filter(action => action.type === CREATE_ENTITY),
-  mergeMap(action => processAction(action, dependencies))
+const createEntity$ = ({ entity }, { api }) => (
+  api.entities.create(entity)
 );
-
-export default createEntityEpic;

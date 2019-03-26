@@ -1,18 +1,5 @@
 import { RECEIVE_COLLECTION, RECEIVE_ENTITY } from '../actions';
 
-const receiveCollection = (state, collection) => (
-  collection.entities.reduce(receiveEntity, state)
-);
-
-const receiveEntity = (state, entity) => {
-  const entitiesOfType = state[entity.type] || {};
-  entitiesOfType[entity.id] = entity;
-  return {
-    [entity.type]: entitiesOfType,
-    ...state,
-  };
-};
-
 const entities = (state = {}, action) => {
   switch(action.type) {
     case RECEIVE_COLLECTION:
@@ -25,3 +12,18 @@ const entities = (state = {}, action) => {
 };
 
 export default entities;
+
+///////////////////////////////////////////////////////////////////////////////
+
+const receiveCollection = (state, collection) => (
+  collection.entities.reduce(receiveEntity, state)
+);
+
+const receiveEntity = (state, entity) => {
+  const entitiesOfType = state[entity.type] || {};
+  entitiesOfType[entity.id] = entity;
+  return {
+    [entity.type]: entitiesOfType,
+    ...state,
+  };
+};
