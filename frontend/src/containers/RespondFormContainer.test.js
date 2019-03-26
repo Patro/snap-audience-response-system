@@ -21,6 +21,7 @@ const poll = factories.poll.entity({
     question: factories.singleChoiceQuestion.identifier(question),
   },
 });
+const job = factories.job.started({ id: 'respondJob' });
 
 const filledStore = {
   entities: {
@@ -30,6 +31,9 @@ const filledStore = {
   },
   collections: {
     QUESTION_OPTION: { '{"questionId":123}': optionCollection },
+  },
+  jobs: {
+    'respondJob': job,
   },
 };
 
@@ -62,6 +66,13 @@ describe('RespondFormContainer', () => {
 
       expect(wrapped.props().options).toEqual([optionA, optionB]);
     });
+
+    it('passes job to component', () => {
+      const wrapper = mountContainer({ store, poll });
+      const wrapped = getForm(wrapper);
+
+      expect(wrapped.props().respondJob).toEqual(job);
+    });
   });
 
   describe('given empty store', () => {
@@ -79,6 +90,13 @@ describe('RespondFormContainer', () => {
       const wrapped = getForm(wrapper);
 
       expect(wrapped.props().options).toBeUndefined();
+    });
+
+    it('passes undefined as job to component', () => {
+      const wrapper = mountContainer({ store, poll });
+      const wrapped = getForm(wrapper);
+
+      expect(wrapped.props().respondJob).toBeUndefined();
     });
   });
 
@@ -122,7 +140,7 @@ describe('RespondFormContainer', () => {
         poll: { id: poll.id, type: poll.type },
         pickedQuestionOption: { id: 1, type: QUESTION_OPTION },
       },
-    });
+    }, 'respondJob');
     expect(actions).toContainEqual(expectedAction);
   });
 });

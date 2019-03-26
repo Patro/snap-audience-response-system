@@ -2,13 +2,14 @@ import { connect } from 'react-redux';
 import { createEntity, fetchCollection, fetchEntity } from '../actions';
 import RespondForm from '../components/RespondForm';
 import { QUESTION_OPTION, RESPONSE } from '../constants/entityTypes';
-import { getCollection, getEntity } from '../selectors';
+import { getCollection, getEntity, getJob } from '../selectors';
 
 const mapStateToProps = (state, { poll }) => {
   const questionIdentifier = getIdentifierOfQuestion(poll);
   return {
     question: getQuestion(state, questionIdentifier),
     options: getOptionsOfQuestion(state, questionIdentifier),
+    respondJob: getJob(state, respondJobId),
   };
 };
 
@@ -27,6 +28,8 @@ export default connect(
 )(RespondForm);
 
 ///////////////////////////////////////////////////////////////////////////////
+
+const respondJobId = 'respondJob';
 
 const getIdentifierOfQuestion = (poll) => (
   poll.relationships.question
@@ -61,7 +64,7 @@ const createResponses = (dispatch, poll, optionIds) => (
         poll: { id: poll.id, type: poll.type },
         pickedQuestionOption: { id: optionId, type: QUESTION_OPTION },
       }
-    }))
+    }, respondJobId))
   ))
 );
 
