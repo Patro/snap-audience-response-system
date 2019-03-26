@@ -24,12 +24,17 @@ class RespondForm extends Component {
     return this.props.question.type === MULTIPLE_CHOICE_QUESTION;
   }
 
+  get loading() {
+    return this.props.respondJob !== undefined;
+  }
+
   get itemComponent() {
     return this.isMultipleChoice() ? Checkbox : Radio;
   }
 
   handleSubmit(event) {
     event.preventDefault();
+    if (this.loading) { return; }
 
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) { return; }
@@ -62,7 +67,9 @@ class RespondForm extends Component {
             ],
           })(this.renderSelection()) }
           <Form.Item>
-            <Button type="primary" htmlType="submit">Send</Button>
+            <Button type="primary" htmlType="submit" loading={this.loading}>
+              Send
+            </Button>
           </Form.Item>
         </Form>
       </div>
