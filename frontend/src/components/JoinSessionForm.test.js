@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Button, Input } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import JobErrorAlert from './JobErrorAlert';
 import JoinSessionForm from './JoinSessionForm';
 
 describe('JoinSessionForm', () => {
@@ -31,6 +32,12 @@ describe('JoinSessionForm', () => {
     const wrapper = mount(<JoinSessionForm />);
     const button = getSubmitButton(wrapper);
     expect(button).toHaveLength(1);
+  });
+
+  it('renders job error alert', () => {
+    const wrapper = mount(<JoinSessionForm />);
+    const alert = wrapper.find(JobErrorAlert);
+    expect(alert).toHaveLength(1);
   });
 
   describe('without join job', () => {
