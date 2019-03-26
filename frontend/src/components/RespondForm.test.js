@@ -22,15 +22,6 @@ const options = [
   }),
 ];
 
-const mountForm = (question, options, onSubmit, respondJob) => (
-  mount(
-    <RespondForm
-      question={question}
-      options={options}
-      onSubmit={onSubmit}
-      respondJob={respondJob} />
-  )
-);
 const getForm = (wrapper) => (
   wrapper.find(Form)
 );
@@ -51,25 +42,33 @@ const checkInputElement = (item) => {
 
 describe('RespondForm', () => {
   it('renders text of question to header', () => {
-    const wrapper = mountForm(question, options);
+    const wrapper = mount(
+      <RespondForm question={question} options={options} />
+    );
     const header = getHeader(wrapper);
     expect(header.text()).toEqual('What is the meaning of life?');
   });
 
   it('renders option labels', () => {
-    const wrapper = mountForm(question, options);
+    const wrapper = mount(
+      <RespondForm question={question} options={options} />
+    );
     const labels = getOptionLabels(wrapper);
     expect(labels).toHaveLength(3);
   });
 
   it('renders text of option', () => {
-    const wrapper = mountForm(question, options);
+    const wrapper = mount(
+      <RespondForm question={question} options={options} />
+    );
     const firstLabel = getOptionLabels(wrapper).at(0);
     expect(firstLabel.text()).toEqual('Eat, Sleep, Rave, Repeat');
   });
 
   it('renders submit button', () => {
-    const wrapper = mountForm(question, options);
+    const wrapper = mount(
+      <RespondForm question={question} options={options} />
+    );
     const button = getSubmitButton(wrapper);
     expect(button).toHaveLength(1);
   });
@@ -85,7 +84,9 @@ describe('RespondForm', () => {
     };
 
     it('renders a checkbox for every option', () => {
-      const wrapper = mountForm(multipleChoiceQuestion, options);
+      const wrapper = mount(
+        <RespondForm question={multipleChoiceQuestion} options={options} />
+      );
       const checkboxes = wrapper.find(Checkbox);
       expect(checkboxes).toHaveLength(3);
     });
@@ -94,7 +95,12 @@ describe('RespondForm', () => {
       it('calls on submit handler with ids of selected options', () => {
         const onSubmit = jest.fn();
 
-        const wrapper = mountForm(multipleChoiceQuestion, options, onSubmit);
+        const wrapper = mount(
+          <RespondForm
+            question={multipleChoiceQuestion}
+            options={options}
+            onSubmit={onSubmit} />
+        );
         checkCheckboxesAndSubmit(wrapper);
 
         expect(onSubmit).toBeCalledWith([234, 923]);
@@ -106,8 +112,12 @@ describe('RespondForm', () => {
         const onSubmit = jest.fn();
 
         const job = factories.job.started();
-        const wrapper = mountForm(
-          multipleChoiceQuestion, options, onSubmit, job
+        const wrapper = mount(
+          <RespondForm
+            question={multipleChoiceQuestion}
+            options={options}
+            onSubmit={onSubmit}
+            respondJob={job} />
         );
         checkCheckboxesAndSubmit(wrapper);
 
@@ -137,7 +147,12 @@ describe('RespondForm', () => {
       it('calls on submit handler with id of selected option', () => {
         const onSubmit = jest.fn();
 
-        const wrapper = mountForm(singleChoiceQuestion, options, onSubmit);
+        const wrapper = mount(
+          <RespondForm
+            question={singleChoiceQuestion}
+            options={options}
+            onSubmit={onSubmit} />
+        );
         checkRadioBoxAndSubmit(wrapper);
 
         expect(onSubmit).toBeCalledWith([123]);
@@ -149,8 +164,12 @@ describe('RespondForm', () => {
         const onSubmit = jest.fn();
 
         const job = factories.job.started();
-        const wrapper = mountForm(
-          singleChoiceQuestion, options, onSubmit, job
+        const wrapper = mount(
+          <RespondForm
+            question={singleChoiceQuestion}
+            options={options}
+            onSubmit={onSubmit}
+            respondJob={job} />
         );
         checkRadioBoxAndSubmit(wrapper);
 
