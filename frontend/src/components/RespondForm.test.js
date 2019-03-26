@@ -177,4 +177,26 @@ describe('RespondForm', () => {
       });
     });
   });
+
+  describe('given started respond job', () => {
+    describe('when job status changes to succeeded', () => {
+      it('does call on success handler', () => {
+        const onSuccess = jest.fn();
+
+        const startedJob = factories.job.started();
+        const wrapper = mount(
+          <RespondForm
+            question={question}
+            options={options}
+            onSuccess={onSuccess}
+            respondJob={startedJob} />
+        );
+
+        const succeededJob = factories.job.succeeded();
+        wrapper.setProps({ respondJob: succeededJob });
+
+        expect(onSuccess).toBeCalled();
+      });
+    });
+  });
 });

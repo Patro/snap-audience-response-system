@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Button, Radio, Checkbox, List } from 'antd';
 import isArray from 'lodash/isArray';
 import { MULTIPLE_CHOICE_QUESTION } from '../constants/entityTypes';
+import { SUCCEEDED } from '../constants/jobStatus';
 
 class RespondForm extends Component {
   constructor(props) {
@@ -12,6 +13,21 @@ class RespondForm extends Component {
 
   componentDidMount() {
     this.refresh();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.jobStatusChangedToSucceeded(prevProps)) {
+      this.props.onSuccess();
+    }
+  }
+
+  jobStatusChangedToSucceeded(prevProps) {
+    const job = this.props.respondJob;
+    if (!job) { return false; }
+    const prevJob = prevProps.respondJob;
+    if (!prevJob) { return false; }
+
+    return job.status !== prevJob.status && job.status === SUCCEEDED;
   }
 
   refresh() {
