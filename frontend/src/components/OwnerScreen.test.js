@@ -1,9 +1,11 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import OwnerScreen from './OwnerScreen';
-import QuestionList from './QuestionList';
+import QuestionListContainer from './../containers/QuestionListContainer';
 
 const session = factories.interactiveSession.entity({
   attributes: {
@@ -11,11 +13,14 @@ const session = factories.interactiveSession.entity({
   },
 });
 
+const setupStore = () => ( configureStore()() );
 const mountScreen = ({ location = {} } = {}) => (
   mount(
-    <StaticRouter location={location} context={ {} }>
-      <OwnerScreen interactiveSession={session} />
-    </StaticRouter>
+    <Provider store={setupStore()}>
+      <StaticRouter location={location} context={ {} }>
+        <OwnerScreen interactiveSession={session} />
+      </StaticRouter>
+    </Provider>
   )
 );
 
@@ -28,9 +33,9 @@ describe('OwnerScreen', () => {
   describe('given owner path', () => {
     const location = { pathname: '/interactive_sessions/12/owner' };
 
-    it('renders question list', () => {
+    it('renders question list container', () => {
       const wrapper = mountScreen({ location });
-      const wrapped = wrapper.find(QuestionList);
+      const wrapped = wrapper.find(QuestionListContainer);
       expect(wrapped).toHaveLength(1);
     });
   });

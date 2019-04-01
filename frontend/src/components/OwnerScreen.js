@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Card } from 'antd';
-import QuestionList from './QuestionList';
+import QuestionListContainer from './../containers/QuestionListContainer';
 
 class OwnerScreen extends Component {
   get session() {
@@ -33,7 +33,9 @@ class OwnerScreen extends Component {
 
   renderQuestionList(routeProps) {
     return (
-      <QuestionList interactiveSession={this.session} {...routeProps} />
+      <QuestionListContainer
+        interactiveSession={this.session}
+        {...routeProps} />
     );
   }
 }
