@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Input } from 'antd';
 import { mount } from 'enzyme';
+import factories from '../../__factories__';
 import JobErrorAlert from './JobErrorAlert';
 import StartSessionForm from './StartSessionForm';
 
@@ -36,12 +37,28 @@ describe('StartSessionForm', () => {
     expect(alert).toHaveLength(1);
   });
 
-  it('calls on submit handler with label on form submit', () => {
-    const onSubmit = jest.fn();
+  describe('without start job', () => {
+    it('calls on submit handler with label on form submit', () => {
+      const onSubmit = jest.fn();
 
-    const wrapper = mount(<StartSessionForm onSubmit={onSubmit} />);
-    inputLabelAndSubmit(wrapper, 'My Super Session')
+      const wrapper = mount(<StartSessionForm onSubmit={onSubmit} />);
+      inputLabelAndSubmit(wrapper, 'My Super Session')
 
-    expect(onSubmit).toBeCalledWith('My Super Session');
+      expect(onSubmit).toBeCalledWith('My Super Session');
+    });
+  });
+
+  describe('given start job', () => {
+    it('does not call on submit handler on form submit', () => {
+      const onSubmit = jest.fn();
+
+      const job = factories.job.started();
+      const wrapper = mount(
+        <StartSessionForm startJob={job} onSubmit={onSubmit} />
+      );
+      inputLabelAndSubmit(wrapper, 'My Super Session')
+
+      expect(onSubmit).not.toBeCalled();
+    });
   });
 });
