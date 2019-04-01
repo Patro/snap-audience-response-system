@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
+import OwnerScreen from './OwnerScreen';
 
 class SessionScreen extends Component {
   componentDidMount() {
@@ -21,15 +23,39 @@ class SessionScreen extends Component {
   }
 
   render() {
-    if (this.session === undefined) {
-      return <></>;
-    }
+    if (this.session === undefined) { return false; }
 
     return (
       <div className="interactive_session">
         <h1 className="interactive_session__label">{this.attributes.label}</h1>
-        <AttendeeScreenContainer interactiveSession={this.session} />
+        {this.renderRoutes()}
       </div>
+    );
+  }
+
+  renderRoutes() {
+    return (
+      <Switch>
+        <Route
+          path="/interactive_sessions/:id/owner"
+          component={props => this.renderOwnerScreen(props)} />
+        <Route
+          component={props => this.renderAttendeeScreen(props)} />
+      </Switch>
+    );
+  }
+
+  renderOwnerScreen(routeProps) {
+    return (
+      <OwnerScreen interactiveSession={this.session} {...routeProps} />
+    );
+  }
+
+  renderAttendeeScreen(routeProps) {
+    return (
+      <AttendeeScreenContainer
+        interactiveSession={this.session}
+        {...routeProps} />
     );
   }
 }
