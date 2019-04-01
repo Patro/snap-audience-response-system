@@ -36,6 +36,16 @@ class QuestionList extends Component {
       </List.Item>
     )
   }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
+  }
 }
 
 export default QuestionList;

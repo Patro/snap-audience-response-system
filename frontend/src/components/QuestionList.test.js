@@ -51,4 +51,13 @@ describe('QuestionList', () => {
       expect(wrapper.isEmptyRender()).toBe(true);
     });
   });
+
+  it('calls on refresh handler on mount', () => {
+    const refreshHandler = jest.fn();
+    shallow(
+      <QuestionList interactiveSession={session} onRefresh={refreshHandler} />
+    );
+
+    expect(refreshHandler).toBeCalled();
+  });
 });
