@@ -1,0 +1,3 @@
+export const POLL_CREATED = 'POLL_CREATED';
+export const POLL_DESTROYED = 'POLL_DESTROYED';
+export const POLL_UPDATED = 'POLL_UPDATED';
