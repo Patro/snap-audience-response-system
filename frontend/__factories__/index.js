@@ -1,3 +1,4 @@
+import collection from './collection';
 import error from './error';
 import event from './event';
 import interactiveSession from './interactiveSession';
@@ -8,6 +9,7 @@ import questionOption from './questionOption';
 import singleChoiceQuestion from './singleChoiceQuestion';
 
 export default {
+  collection,
   error,
   event,
   interactiveSession,
