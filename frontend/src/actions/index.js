@@ -1,4 +1,5 @@
 export const JOIN_SESSION = 'JOIN_SESSION';
+export const START_SESSION = 'START_SESSION';
 export const CREATE_ENTITY = 'CREATE_ENTITY';
 export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
@@ -12,6 +13,12 @@ export const REMOVE_JOB = 'REMOVE_JOB';
 export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
   type: JOIN_SESSION,
   attendanceCode,
+  jobId
+});
+
+export const startSession = (label, jobId = 'startSession') => ({
+  type: START_SESSION,
+  label,
   jobId
 });
 
