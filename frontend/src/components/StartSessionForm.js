@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Button, Input } from 'antd';
+import JobErrorAlert from './JobErrorAlert';
 
 class StartSessionForm extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class StartSessionForm extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="start_session_form">
+        <JobErrorAlert job={this.props.startJob} />
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Session Name">
             { getFieldDecorator('label')(

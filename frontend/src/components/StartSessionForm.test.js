@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Input } from 'antd';
 import { mount } from 'enzyme';
+import JobErrorAlert from './JobErrorAlert';
 import StartSessionForm from './StartSessionForm';
 
 describe('StartSessionForm', () => {
@@ -27,6 +28,12 @@ describe('StartSessionForm', () => {
     const wrapper = mount(<StartSessionForm />);
     const button = getSubmitButton(wrapper);
     expect(button).toHaveLength(1);
+  });
+
+  it('renders job error alert', () => {
+    const wrapper = mount(<StartSessionForm />);
+    const alert = wrapper.find(JobErrorAlert);
+    expect(alert).toHaveLength(1);
   });
 
   it('calls on submit handler with label on form submit', () => {
