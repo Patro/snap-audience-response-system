@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, Icon } from 'antd';
+import subscriptions from '../websocket/subscriptions';
 import RespondFormContainer from '../containers/RespondFormContainer';
 
 class AttendeeScreen extends Component {
@@ -10,13 +11,33 @@ class AttendeeScreen extends Component {
   }
 
   componentDidMount() {
+    this.subscribe();
     this.refresh();
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   refresh() {
     if (this.props.onRefresh) {
       this.props.onRefresh();
     }
+  }
+
+  subscribe() {
+    this.subscription = subscriptions.subscribeForPollEvents(
+      this.props.interactiveSession.id,
+      ({ pollId }) => {
+        const activePoll = this.props.unrespondedPoll;
+        if (activePoll && activePoll.id !== pollId) { return; }
+        this.refresh();
+      }
+    );
+  }
+
+  unsubscribe() {
+    this.subscription.unsubscribe();
   }
 
   hasUnrespondedPoll() {
