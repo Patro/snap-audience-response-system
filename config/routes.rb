@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   root to: 'static#index'
 
+  mount ActionCable.server => '/cable'
+
   scope :api do
     resources :attendances, except: [:update]
     resources :interactive_sessions do
