@@ -3,7 +3,9 @@ import createEntityEpic from './createEntityEpic';
 import fetchCollectionEpic from './fetchCollectionEpic';
 import fetchEntityEpic from './fetchEntityEpic';
 import joinSessionEpic from './joinSessionEpic';
+import startSessionEpic from './startSessionEpic';
 
 export default combineEpics(
-  createEntityEpic, fetchCollectionEpic, fetchEntityEpic, joinSessionEpic
+  createEntityEpic, fetchCollectionEpic, fetchEntityEpic,
+  joinSessionEpic, startSessionEpic
 );
