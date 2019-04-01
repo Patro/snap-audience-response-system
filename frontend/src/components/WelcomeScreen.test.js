@@ -4,7 +4,8 @@ import configureStore from 'redux-mock-store'
 import { mount, shallow } from 'enzyme'
 import WelcomeScreen from './WelcomeScreen';
 import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
-import StartSessionForm from './StartSessionForm';
+import StartSessionFormContainer
+  from '../containers/StartSessionFormContainer';
 
 const setupStore = () => ( configureStore()() );
 
@@ -23,9 +24,9 @@ describe('WelcomeScreen', () => {
     expect(form.length).toBe(1);
   });
 
-  it('renders start session form', () => {
+  it('renders start session form container', () => {
     const wrapper = shallow(<WelcomeScreen />);
-    const form = wrapper.find(StartSessionForm);
+    const form = wrapper.find(StartSessionFormContainer);
     expect(form.length).toBe(1);
   });
 });
