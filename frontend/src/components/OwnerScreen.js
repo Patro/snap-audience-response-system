@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Card } from 'antd';
+import QuestionFormContainer from './../containers/QuestionFormContainer';
 import QuestionListContainer from './../containers/QuestionListContainer';
-import QuestionForm from './QuestionForm';
 
 class OwnerScreen extends Component {
   get session() {
@@ -38,7 +38,7 @@ class OwnerScreen extends Component {
 
   renderQuestionForm(routeProps) {
     return (
-      <QuestionForm
+      <QuestionFormContainer
         interactiveSession={this.session}
         {...routeProps} />
     );

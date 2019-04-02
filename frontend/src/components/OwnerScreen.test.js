@@ -5,8 +5,8 @@ import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import OwnerScreen from './OwnerScreen';
+import QuestionFormContainer from './../containers/QuestionFormContainer';
 import QuestionListContainer from './../containers/QuestionListContainer';
-import QuestionForm from './QuestionForm';
 
 const session = factories.interactiveSession.entity({
   attributes: {
@@ -46,9 +46,9 @@ describe('OwnerScreen', () => {
       pathname: '/interactive_sessions/12/owner/questions/new'
     };
 
-    it('renders question form', () => {
+    it('renders question form container', () => {
       const wrapper = mountScreen({ location });
-      const wrapped = wrapper.find(QuestionForm);
+      const wrapped = wrapper.find(QuestionFormContainer);
       expect(wrapped).toHaveLength(1);
     });
   });
