@@ -1,5 +1,6 @@
 export const JOIN_SESSION = 'JOIN_SESSION';
 export const START_SESSION = 'START_SESSION';
+export const SAVE_QUESTION = 'SAVE_QUESTION';
 export const CREATE_ENTITY = 'CREATE_ENTITY';
 export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
@@ -19,6 +20,13 @@ export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
 export const startSession = (label, jobId = 'startSession') => ({
   type: START_SESSION,
   label,
+  jobId
+});
+
+export const saveQuestion = (question, options, jobId = 'saveQuestion') => ({
+  type: SAVE_QUESTION,
+  question,
+  options,
   jobId
 });
 
