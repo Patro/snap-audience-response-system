@@ -24,12 +24,8 @@ const getQuestionsOfSession = (state, interactiveSession) => {
     state, QUESTION, buildFilterParams(interactiveSession)
   );
   if (collection === undefined) { return; }
-  return collection.entities.map(identifier => getQuestion(state, identifier));
+  return collection.entities.map(identifier => getEntity(state, identifier));
 };
-
-const getQuestion = (state, identifier) => (
-  getEntity(state, identifier.type, identifier.id)
-);
 
 const fetchQuestions = (dispatch, interactiveSession) => {
   dispatch(fetchCollection(QUESTION, buildFilterParams(interactiveSession)));

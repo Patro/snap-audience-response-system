@@ -7,7 +7,7 @@ import { getCollection, getEntity, getJob } from '../selectors';
 const mapStateToProps = (state, { poll }) => {
   const questionIdentifier = getIdentifierOfQuestion(poll);
   return {
-    question: getQuestion(state, questionIdentifier),
+    question: getEntity(state, questionIdentifier),
     options: getOptionsOfQuestion(state, questionIdentifier),
     respondJob: getJob(state, respondJobId),
   };
@@ -35,21 +35,13 @@ const getIdentifierOfQuestion = (poll) => (
   poll.relationships.question
 );
 
-const getQuestion = (state, identifier) => (
-  getEntity(state, identifier.type, identifier.id)
-);
-
 const getOptionsOfQuestion = (state, questionIdentifier) => {
   const collection = getCollection(
     state, QUESTION_OPTION, buildFilterParams(questionIdentifier)
   );
   if (collection === undefined) { return; }
-  return collection.entities.map(identifier => getOption(state, identifier));
+  return collection.entities.map(identifier => getEntity(state, identifier));
 };
-
-const getOption = (state, identifier) => (
-  getEntity(state, identifier.type, identifier.id)
-);
 
 const fetchQuestionAndOptions = (dispatch, identifier) => {
   dispatch(fetchEntity(identifier.type, identifier.id));

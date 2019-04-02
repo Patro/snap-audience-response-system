@@ -27,7 +27,7 @@ const findUnrespondedPoll = (state, interactiveSession) => {
   if (pollId === undefined) {
     return undefined;
   }
-  return getEntity(state, POLL, pollId)
+  return getEntity(state, { type: POLL, id: pollId })
 };
 
 const fetchPolls = (dispatch, interactiveSession) => {

@@ -12,13 +12,15 @@ describe('getEntitiy', () => {
 
     describe('when entity with id exists', () => {
       it('returns entity', () => {
-        expect(getEntity(state, 'SPACESHIP', '100')).toEqual({ id: 100 });
+        const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
+        expect(entity).toEqual({ id: 100 });
       });
     });
 
     describe('when entity with id does not exist', () => {
       it('returns undefined', () => {
-        expect(getEntity(state, 'SPACESHIP', '101')).toBeUndefined();
+        const entity = getEntity(state, { type: 'SPACESHIP', id: '101' });
+        expect(entity).toBeUndefined();
       });
     });
   });
@@ -33,7 +35,8 @@ describe('getEntitiy', () => {
     };
 
     it('returns undefined', () => {
-      expect(getEntity(state, 'SPACESHIP', '100')).toBeUndefined();
+      const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
+      expect(entity).toBeUndefined();
     });
   });
 
@@ -41,7 +44,8 @@ describe('getEntitiy', () => {
     const state = {};
 
     it('returns undefined', () => {
-      expect(getEntity(state, 'SPACESHIP', '100')).toBeUndefined();
+      const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
+      expect(entity).toBeUndefined();
     });
   });
 });

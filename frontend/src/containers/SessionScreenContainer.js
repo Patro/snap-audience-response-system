@@ -24,7 +24,7 @@ const getId = (props) => (
 );
 
 const getInteractiveSession = (state, id) => (
-  getEntity(state, INTERACTIVE_SESSION, id)
+  getEntity(state, { type: INTERACTIVE_SESSION, id })
 );
 
 const fetchInteractiveSession = (dispatch, id) => (
