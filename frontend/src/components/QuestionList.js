@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, List } from 'antd';
 
 class QuestionList extends Component {
+  get interactiveSession() {
+    return this.props.interactiveSession;
+  }
+
   get questions() {
     return this.props.questions;
+  }
+
+  get newQuestionPath() {
+    const id = this.interactiveSession.id;
+    return `/interactive_sessions/${id}/owner/questions/new`;
   }
 
   render() {
@@ -24,7 +34,9 @@ class QuestionList extends Component {
     return (
       <>
         <span>Questions</span>
-        <Button type="primary" icon="plus">Add question</Button>
+        <Link to={this.newQuestionPath}>
+          <Button type="primary" icon="plus">Add question</Button>
+        </Link>
       </>
     )
   }

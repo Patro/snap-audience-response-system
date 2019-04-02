@@ -6,6 +6,7 @@ import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import OwnerScreen from './OwnerScreen';
 import QuestionListContainer from './../containers/QuestionListContainer';
+import QuestionForm from './QuestionForm';
 
 const session = factories.interactiveSession.entity({
   attributes: {
@@ -36,6 +37,18 @@ describe('OwnerScreen', () => {
     it('renders question list container', () => {
       const wrapper = mountScreen({ location });
       const wrapped = wrapper.find(QuestionListContainer);
+      expect(wrapped).toHaveLength(1);
+    });
+  });
+
+  describe('given new question path', () => {
+    const location = {
+      pathname: '/interactive_sessions/12/owner/questions/new'
+    };
+
+    it('renders question form', () => {
+      const wrapper = mountScreen({ location });
+      const wrapped = wrapper.find(QuestionForm);
       expect(wrapped).toHaveLength(1);
     });
   });

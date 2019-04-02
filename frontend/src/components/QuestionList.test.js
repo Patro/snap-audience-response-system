@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, List } from 'antd';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import QuestionList from './QuestionList';
 
 const session = factories.interactiveSession.entity();
@@ -14,50 +15,64 @@ const questions = [
   }),
 ];
 
-const getListItems = (wrapper) => (
-  wrapper.find(List.Item)
-);
+class TestWrapper extends AbstractTestWrapper {
+  get listItems() {
+    return this.wrapper.find(List.Item);
+  }
+
+  get addButton() {
+    return this.wrapper.find(Button);
+  }
+
+  _render() {
+    return mount(this._addStaticRouter(
+      <QuestionList {...this.props} />
+    ));
+  }
+}
 
 describe('QuestionList', () => {
+  let component;
+
+  beforeEach(() => {
+    component = new TestWrapper({ props: {
+      interactiveSession: session,
+    }});
+  });
+
   describe('given questions', () => {
+    beforeEach(() => {
+      component.props.questions = questions;
+    });
+
     it('renders one list item per question', () => {
-      const wrapper = mount(
-        <QuestionList interactiveSession={session} questions={questions} />
-      );
-      const listItems = getListItems(wrapper);
-      expect(listItems).toHaveLength(2);
+      expect(component.listItems).toHaveLength(2);
     });
 
     it('renders text of question', () => {
-      const wrapper = mount(
-        <QuestionList interactiveSession={session} questions={questions} />
-      );
-      const firstListItem = getListItems(wrapper).at(0);
+      const firstListItem = component.listItems.at(0);
       expect(firstListItem.text()).toEqual('Question A');
     });
 
     it('renders button to add new question', () => {
-      const wrapper = mount(
-        <QuestionList interactiveSession={session} questions={questions} />
-      );
-      const button = wrapper.find(Button);
-      expect(button.length).toBe(1);
+      expect(component.addButton.length).toBe(1);
     });
   });
 
   describe('without questions', () => {
     it('renders nothing', () => {
-      const wrapper = shallow(<QuestionList interactiveSession={session} />);
-      expect(wrapper.isEmptyRender()).toBe(true);
+      expect(component.wrapper.isEmptyRender()).toBe(true);
     });
   });
 
-  it('calls on refresh handler on mount', () => {
-    const refreshHandler = jest.fn();
-    shallow(
-      <QuestionList interactiveSession={session} onRefresh={refreshHandler} />
-    );
+  describe('on mount', () => {
+    it('calls on refresh handler', () => {
+      const refreshHandler = jest.fn();
+      component.props.onRefresh = refreshHandler;
 
-    expect(refreshHandler).toBeCalled();
+      component._render();
+
+      expect(refreshHandler).toBeCalled();
+    });
   });
 });

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { fetchCollection } from '../actions';
 import { QUESTION } from '../constants/entityTypes';
 import QuestionList from '../components/QuestionList';
@@ -25,47 +24,57 @@ const filledStore = {
   },
 };
 
-const setupStore = (initial) => ( configureStore()(initial) );
-const mountContainer = ({ store } = {}) => (
-  mount(
-    <Provider store={store}>
-      <QuestionListContainer interactiveSession={session} />
-    </Provider>
-  )
-);
-const getComponent = (wrapper) => wrapper.find(QuestionList);
+class TestWrapper extends AbstractTestWrapper {
+  get list() {
+    return this.wrapper.find(QuestionList);
+  }
+
+  get givenQuestions() {
+    return this.list.prop('questions');
+  }
+
+  _render() {
+    return mount(this._addStoreProvider(this._addStaticRouter(
+      <QuestionListContainer {...this.props} />
+    )));
+  }
+
+  refresh() {
+    this.list.props().onRefresh();
+  }
+}
 
 describe('QuestionListContainer', () => {
+  let component;
+
+  beforeEach(() => {
+    component = new TestWrapper({ props: { interactiveSession: session } });
+  });
+
   describe('given filled store', () => {
-    const store = setupStore(filledStore);
+    beforeEach(() => {
+      component.store = filledStore;
+    });
 
     it('passes questions to component', () => {
-      const wrapper = mountContainer({ store });
-      const wrapped = getComponent(wrapper);
-
-      expect(wrapped.props().questions).toEqual([questionA, questionB]);
+      expect(component.givenQuestions).toEqual([questionA, questionB]);
     });
   });
 
   describe('given empty store', () => {
-    const store = setupStore({});
+    beforeEach(() => {
+      component.store = {};
+    });
 
     it('passes undefined as questions to component', () => {
-      const wrapper = mountContainer({ store });
-      const wrapped = getComponent(wrapper);
-
-      expect(wrapped.props().questions).toBeUndefined();
+      expect(component.givenQuestions).toBeUndefined();
     });
   });
 
   it('dispatches fetch collection action on refresh', () => {
-    const store = setupStore();
+    component.refresh();
 
-    const wrapper = mountContainer({ store });
-    const wrapped = getComponent(wrapper);
-    wrapped.props().onRefresh();
-
-    const actions = store.getActions();
+    const actions = component.store.getActions();
     const expectedAction = fetchCollection(QUESTION, {
       interactiveSessionId: 100,
     });

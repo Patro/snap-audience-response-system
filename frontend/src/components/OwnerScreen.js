@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Card } from 'antd';
 import QuestionListContainer from './../containers/QuestionListContainer';
+import QuestionForm from './QuestionForm';
 
 class OwnerScreen extends Component {
   get session() {
@@ -26,8 +27,20 @@ class OwnerScreen extends Component {
   renderRoutes() {
     return (
       <Switch>
-        <Route component={props => this.renderQuestionList(props)} />
+        <Route
+          path="/interactive_sessions/:id/owner/questions/new"
+          component={props => this.renderQuestionForm(props)} />
+        <Route
+          component={props => this.renderQuestionList(props)} />
       </Switch>
+    );
+  }
+
+  renderQuestionForm(routeProps) {
+    return (
+      <QuestionForm
+        interactiveSession={this.session}
+        {...routeProps} />
     );
   }
 
