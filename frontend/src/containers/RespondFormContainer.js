@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { createEntity, fetchCollection, fetchEntity } from '../actions';
 import RespondForm from '../components/RespondForm';
 import { QUESTION_OPTION, RESPONSE } from '../constants/entityTypes';
-import { getCollection, getEntity, getJob } from '../selectors';
+import { getEntity, getEntitiesOfCollection, getJob } from '../selectors';
 
 const mapStateToProps = (state, { poll }) => {
   const questionIdentifier = getIdentifierOfQuestion(poll);
@@ -35,13 +35,11 @@ const getIdentifierOfQuestion = (poll) => (
   poll.relationships.question
 );
 
-const getOptionsOfQuestion = (state, questionIdentifier) => {
-  const collection = getCollection(
+const getOptionsOfQuestion = (state, questionIdentifier) => (
+  getEntitiesOfCollection(
     state, QUESTION_OPTION, buildFilterParams(questionIdentifier)
-  );
-  if (collection === undefined) { return; }
-  return collection.entities.map(identifier => getEntity(state, identifier));
-};
+  )
+);
 
 const fetchQuestionAndOptions = (dispatch, identifier) => {
   dispatch(fetchEntity(identifier.type, identifier.id));
