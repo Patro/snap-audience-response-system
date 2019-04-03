@@ -2,63 +2,88 @@ import React from 'react';
 import { Form, Button, Input } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import JobErrorAlert from './JobErrorAlert';
 import StartSessionForm from './StartSessionForm';
 
+class TestWrapper extends AbstractTestWrapper {
+  get jobErrorAlert() {
+    return this.wrapper.find(JobErrorAlert);
+  }
+
+  get form() {
+    return this.wrapper.find(Form).first();
+  }
+
+  get labelInput() {
+    return this.wrapper.find(Input).filter('#label').first();
+  }
+
+  get submitButton() {
+    return this.wrapper.find(Button).filter('[htmlType="submit"]');
+  }
+
+  _render() {
+    return mount(<StartSessionForm {...this.props} />)
+  }
+
+  setLabel(label) {
+    this.labelInput.simulate('change', {
+      target: { value: label }
+    });
+  }
+
+  submit() {
+    this.form.simulate('submit');
+  }
+}
+
 describe('StartSessionForm', () => {
-  const getLabelInput = (wrapper) => (
-    wrapper.find(Input).filter('#label')
-  );
-  const getSubmitButton = (wrapper) => (
-    wrapper.find(Button).filter('[htmlType="submit"]')
-  );
-  const inputLabelAndSubmit = (wrapper, label) => {
-    const input = getLabelInput(wrapper);
-    input.simulate('change', { target: { value: label } });
-    const form = wrapper.find(Form);
-    form.simulate('submit');
-  };
+  let component;
+
+  beforeEach(() => {
+    component = new TestWrapper();
+  });
 
   it('renders input box for label', () => {
-    const wrapper = mount(<StartSessionForm />);
-    const input = getLabelInput(wrapper);
-    expect(input).toHaveLength(1);
+    expect(component.labelInput).toHaveLength(1);
   });
 
   it('renders submit button', () => {
-    const wrapper = mount(<StartSessionForm />);
-    const button = getSubmitButton(wrapper);
-    expect(button).toHaveLength(1);
+    expect(component.submitButton).toHaveLength(1);
   });
 
   it('renders job error alert', () => {
-    const wrapper = mount(<StartSessionForm />);
-    const alert = wrapper.find(JobErrorAlert);
-    expect(alert).toHaveLength(1);
+    expect(component.jobErrorAlert).toHaveLength(1);
   });
 
-  describe('without start job', () => {
-    it('calls on submit handler with label on form submit', () => {
-      const onSubmit = jest.fn();
+  describe('on submit', () => {
+    describe('without start job', () => {
+      it('calls on submit handler with label', () => {
+        const onSubmit = jest.fn();
+        component.props.onSubmit = onSubmit;
 
-      const wrapper = mount(<StartSessionForm onSubmit={onSubmit} />);
-      inputLabelAndSubmit(wrapper, 'My Super Session')
+        component.setLabel('My Super Session');
+        component.submit();
 
-      expect(onSubmit).toBeCalledWith('My Super Session');
+        expect(onSubmit).toBeCalledWith('My Super Session');
+      });
     });
-  });
 
-  describe('given start job', () => {
-    it('does not call on submit handler on form submit', () => {
-      const onSubmit = jest.fn();
+    describe('given start job', () => {
+      beforeEach(() => {
+        component.props.startJob = factories.job.started();
+      });
 
-      const job = factories.job.started();
-      const wrapper = mount(
-        <StartSessionForm startJob={job} onSubmit={onSubmit} />
-      );
-      inputLabelAndSubmit(wrapper, 'My Super Session')
+      it('does not call on submit handler', () => {
+        const onSubmit = jest.fn();
+        component.props.onSubmit = onSubmit;
 
-      expect(onSubmit).not.toBeCalled();
+        component.setLabel('My Super Session');
+        component.submit();
+
+        expect(onSubmit).not.toBeCalled();
+      });
     });
   });
 });

@@ -5,16 +5,6 @@ import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import QuestionList from './QuestionList';
 
-const session = factories.interactiveSession.entity();
-const questions = [
-  factories.singleChoiceQuestion.entity({
-    attributes: { text: 'Question A' },
-  }),
-  factories.multipleChoiceQuestion.entity({
-    attributes: { text: 'Question B' },
-  }),
-];
-
 class TestWrapper extends AbstractTestWrapper {
   get listItems() {
     return this.wrapper.find(List.Item);
@@ -35,6 +25,7 @@ describe('QuestionList', () => {
   let component;
 
   beforeEach(() => {
+    const session = factories.interactiveSession.entity();
     component = new TestWrapper({ props: {
       interactiveSession: session,
     }});
@@ -42,6 +33,14 @@ describe('QuestionList', () => {
 
   describe('given questions', () => {
     beforeEach(() => {
+      const questions = [
+        factories.singleChoiceQuestion.entity({
+          attributes: { text: 'Question A' },
+        }),
+        factories.multipleChoiceQuestion.entity({
+          attributes: { text: 'Question B' },
+        }),
+      ];
       component.props.questions = questions;
     });
 

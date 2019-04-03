@@ -1,32 +1,37 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store'
-import { mount, shallow } from 'enzyme'
-import WelcomeScreen from './WelcomeScreen';
+import { shallow } from 'enzyme'
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 import StartSessionFormContainer
   from '../containers/StartSessionFormContainer';
+import WelcomeScreen from './WelcomeScreen';
 
-const setupStore = () => ( configureStore()() );
+class TestWrapper extends AbstractTestWrapper {
+  get joinSessionFormContainer() {
+    return this.wrapper.find(JoinSessionFormContainer);
+  }
+
+  get startSessionFormContainer() {
+    return this.wrapper.find(StartSessionFormContainer);
+  }
+
+  _render() {
+    return shallow(<WelcomeScreen {...this.props} />)
+  }
+}
 
 describe('WelcomeScreen', () => {
-  it('renders without crashing', () => {
-    mount(
-      <Provider store={setupStore()}>
-        <WelcomeScreen />
-      </Provider>
-    )
+  let component;
+
+  beforeEach(() => {
+    component = new TestWrapper();
   });
 
   it('renders join form container', () => {
-    const wrapper = shallow(<WelcomeScreen />);
-    const form = wrapper.find(JoinSessionFormContainer);
-    expect(form.length).toBe(1);
+    expect(component.joinSessionFormContainer).toHaveLength(1);
   });
 
   it('renders start session form container', () => {
-    const wrapper = shallow(<WelcomeScreen />);
-    const form = wrapper.find(StartSessionFormContainer);
-    expect(form.length).toBe(1);
+    expect(component.startSessionFormContainer).toHaveLength(1);
   });
 });

@@ -11,23 +11,6 @@ import {
 import JobErrorAlert from './JobErrorAlert';
 import QuestionForm from './QuestionForm';
 
-const question = factories.multipleChoiceQuestion.entity({
-  attributes: { text: 'What is the meaning of life?' },
-});
-const options = [
-  factories.questionOption.entity({
-    id: 234,
-    attributes: { text: 'Eat, Sleep, Rave, Repeat' },
-  }),
-  factories.questionOption.entity({
-    id: 123,
-    attributes: { text: '42' },
-  }),
-  factories.questionOption.entity({
-    id: 923,
-    attributes: { text: 'I don\'t know' },
-  }),
-];
 
 class TestWrapper extends AbstractTestWrapper {
   get inner() {
@@ -104,9 +87,28 @@ class TestWrapper extends AbstractTestWrapper {
 
 describe('QuestionForm', () => {
   describe('given question and options', () => {
+    let question;
+    let options;
     let component;
 
     beforeEach(() => {
+      question = factories.multipleChoiceQuestion.entity({
+        attributes: { text: 'What is the meaning of life?' },
+      });
+      options = [
+        factories.questionOption.entity({
+          id: 234,
+          attributes: { text: 'Eat, Sleep, Rave, Repeat' },
+        }),
+        factories.questionOption.entity({
+          id: 123,
+          attributes: { text: '42' },
+        }),
+        factories.questionOption.entity({
+          id: 923,
+          attributes: { text: 'I don\'t know' },
+        }),
+      ];
       component = new TestWrapper({ props: { question, options } });
     });
 

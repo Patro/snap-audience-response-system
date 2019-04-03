@@ -4,9 +4,10 @@ import { StaticRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 
 class AbstractTestWrapper {
-  constructor({ props = {}, store = {} } = {}) {
+  constructor({ props = {}, store = {}, location = {} } = {}) {
     this.props = props;
     this.store = store;
+    this.location = location;
   }
 
   get store() {
@@ -38,7 +39,7 @@ class AbstractTestWrapper {
 
   _addStaticRouter(children) {
     return (
-      <StaticRouter location='/' context={ {} }>
+      <StaticRouter location={this.location} context={ {} }>
         {children}
       </StaticRouter>
     )

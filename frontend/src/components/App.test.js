@@ -1,61 +1,76 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { StaticRouter } from 'react-router-dom';
-import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import App from './App';
 import SessionScreenContainer from './../containers/SessionScreenContainer';
 import WelcomeScreen from './WelcomeScreen';
 
-const setupStore = () => ( configureStore()() );
-const mountApp = ({ location = {}, context = {} } = {}) => (
-  mount(
-    <Provider store={setupStore()}>
-      <StaticRouter location={location} context={context}>
-        <App />
-      </StaticRouter>
-    </Provider>
-  )
-)
+class TestWrapper extends AbstractTestWrapper {
+  get welcomeScreen() {
+    return this.wrapper.find(WelcomeScreen).first();
+  }
+
+  get sessionScreenContainer() {
+    return this.wrapper.find(SessionScreenContainer).first();
+  }
+
+  _render() {
+    return mount(this._addStoreProvider(this._addStaticRouter(
+      <App {...this.props} />
+    )))
+  }
+
+  setRootPath() {
+    this.location = { pathname: '/' };
+  }
+
+  setInteractiveSessionPath() {
+    this.location = { pathname: '/interactive_sessions/12' };
+  }
+
+  setPhantasyPath() {
+    this.location = { pathname: '/spaceship' };
+  }
+}
 
 describe('App', () => {
-  it('renders without crashing', () => {
-    mountApp();
+  let component;
+
+  beforeEach(() => {
+    component = new TestWrapper();
   });
 
   describe('given root path', () => {
-    const location = { pathname: '/' };
+    beforeEach(() => {
+      component.setRootPath();
+    });
 
     it('renders welcome screen component', () => {
-      const wrapper = mountApp({ location });
-      const wrapped = wrapper.find(WelcomeScreen);
-      expect(wrapped.length).toBe(1);
+      expect(component.welcomeScreen).toHaveLength(1);
     });
   });
 
   describe('given interactive session path', () => {
-    const location = { pathname: '/interactive_sessions/12' };
+    beforeEach(() => {
+      component.setInteractiveSessionPath();
+    });
 
     it('renders session screen container', () => {
-      const wrapper = mountApp({ location });
-      const wrapped = wrapper.find(SessionScreenContainer);
-      expect(wrapped.length).toBe(1);
+      expect(component.sessionScreenContainer).toHaveLength(1);
     });
   });
 
   describe('given phantasy path', () => {
-    const location = { pathname: '/spaceship' };
+    beforeEach(() => {
+      component.setPhantasyPath();
+    });
 
     it('does not render welcome screen component', () => {
-      const wrapper = mountApp({ location });
-      const wrapped = wrapper.find(WelcomeScreen);
-      expect(wrapped.length).toBe(0);
+      expect(component.welcomeScreen).toHaveLength(0);
     });
 
     it('does not render session screen container', () => {
-      const wrapper = mountApp({ location });
-      const wrapped = wrapper.find(SessionScreenContainer);
-      expect(wrapped.length).toBe(0);
+      expect(component.sessionScreenContainer).toHaveLength(0);
     });
   });
 });

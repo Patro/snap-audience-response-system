@@ -1,65 +1,85 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import { Alert } from 'antd';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import subscriptions from '../websocket/subscriptions';
 import AttendeeScreen from './AttendeeScreen';
 import RespondFormContainer from '../containers/RespondFormContainer';
 
-const session = factories.interactiveSession.entity({ id: 100 });
+jest.mock('../websocket/subscriptions', () => {
+  let _onEvent;
+  return {
+    subscribeForPollEvents: jest.fn((_, onEvent) => {
+      _onEvent = onEvent;
+    }),
+    _publishPollEvent: (event) => {
+      _onEvent(event);
+    }
+  };
+});
 
-jest.mock('../websocket/subscriptions');
+class TestWrapper extends AbstractTestWrapper {
+  get alert() {
+    return this.wrapper.find(Alert).first();
+  }
+
+  get alertText() {
+    return this.alert.render().text();
+  }
+
+  get respondFormContainer() {
+    return this.wrapper.find(RespondFormContainer).first();
+  }
+
+  _render() {
+    return shallow(
+      <AttendeeScreen {...this.props} />
+    );
+  }
+
+  respond() {
+    this.respondFormContainer.simulate('success');
+  }
+}
 
 describe('AttendeeScreen', () => {
-  it('renders without crashing', () => {
-    mount(<AttendeeScreen interactiveSession={session} />);
+  let component;
+
+  beforeEach(() => {
+    const session = factories.interactiveSession.entity({ id: 100 });
+    component = new TestWrapper({ props: {
+      interactiveSession: session,
+    } });
   });
 
   describe('without unresponded poll', () => {
     it('renders waiting info', () => {
-      const wrapper = shallow(<AttendeeScreen interactiveSession={session} />);
-      const alert = wrapper.find(Alert).render();
-      expect(alert.text()).toContain('Waiting');
+      expect(component.alertText).toContain('Waiting');
     });
   });
 
   describe('given unresponded poll', () => {
-    const poll = factories.poll.entity();
+    beforeEach(() => {
+      component.props.unrespondedPoll = factories.poll.entity();
+    });
 
     it('renders respond form container', () => {
-      const wrapper = shallow(
-        <AttendeeScreen interactiveSession={session} unrespondedPoll={poll} />
-      );
-      const form = wrapper.find(RespondFormContainer);
-      expect(form.length).toBe(1);
+      expect(component.respondFormContainer).toHaveLength(1);
     });
 
     describe('when user responded to poll', () => {
-      const simulateResponse = (wrapper) => {
-        const form = wrapper.find(RespondFormContainer);
-        form.simulate('success');
-      };
-
       it('shows thank you message', () => {
-        const wrapper = shallow(
-          <AttendeeScreen interactiveSession={session} unrespondedPoll={poll} />
-        )
-        simulateResponse(wrapper);
+        component.respond();
 
-        const alert = wrapper.find(Alert).render();
-        expect(alert.text()).toContain('Thank you');
+        expect(component.alertText).toContain('Thank you');
       });
 
       it('calls on refresh handler', () => {
         const refreshHandler = jest.fn();
+        component.props.onRefresh = refreshHandler;
 
-        const wrapper = shallow(
-          <AttendeeScreen
-            interactiveSession={session}
-            unrespondedPoll={poll}
-            onRefresh={refreshHandler} />
-        );
-        simulateResponse(wrapper);
+        component.respond();
 
         expect(refreshHandler).toBeCalled();
       });
@@ -69,15 +89,15 @@ describe('AttendeeScreen', () => {
   describe('on mount', () => {
     it('calls on refresh handler', () => {
       const refreshHandler = jest.fn();
-      shallow(
-        <AttendeeScreen interactiveSession={session} onRefresh={refreshHandler} />
-      );
+      component.props.onRefresh = refreshHandler;
+
+      component._render();
 
       expect(refreshHandler).toBeCalled();
     });
 
     it('subscribes for poll events', () => {
-      shallow(<AttendeeScreen interactiveSession={session} />);
+      component._render();
 
       expect(subscriptions.subscribeForPollEvents).toBeCalled();
     });
@@ -86,70 +106,52 @@ describe('AttendeeScreen', () => {
   describe('on poll event', () => {
     describe('without unresponded poll', () => {
       it('calls on refresh handler', () => {
-        let onEventHandler;
-        subscriptions.subscribeForPollEvents.mockImplementation((_, onEvent) => {
-          onEventHandler = onEvent
-        });
-
         const refreshHandler = jest.fn();
-        shallow(
-          <AttendeeScreen
-            interactiveSession={session}
-            onRefresh={refreshHandler} />
-        );
-        refreshHandler.mockClear();
+        component.props.onRefresh = refreshHandler;
 
-        onEventHandler(factories.event.pollCreated())
+        component._render();
+        refreshHandler.mockClear();
+        subscriptions._publishPollEvent(factories.event.pollCreated())
 
         expect(refreshHandler).toBeCalled();
       });
     });
 
     describe('given unresponded poll with same id', () => {
-      const poll = factories.poll.entity({ id: '300' });
+      beforeEach(() => {
+        component.props.unrespondedPoll = factories.poll.entity({ id: '300' });
+      });
 
-      it('does call refresh handler', () => {
-        let onEventHandler;
-        subscriptions.subscribeForPollEvents.mockImplementation((_, onEvent) => {
-          onEventHandler = onEvent
-        });
-
+      it('calls refresh handler', () => {
         const refreshHandler = jest.fn();
-        shallow(
-          <AttendeeScreen
-            interactiveSession={session}
-            unrespondedPoll={poll}
-            onRefresh={refreshHandler} />
-        );
-        refreshHandler.mockClear();
+        component.props.onRefresh = refreshHandler;
 
-        onEventHandler(factories.event.pollCreated({ pollId: '300'}))
+        component._render();
+        refreshHandler.mockClear();
+        subscriptions._publishPollEvent(
+          factories.event.pollCreated({ pollId: '300' })
+        );
 
         expect(refreshHandler).toBeCalled();
       });
     });
 
     describe('given unresponded poll with different id', () => {
-      const poll = factories.poll.entity({ id: '200' });
+      beforeEach(() => {
+        component.props.unrespondedPoll = factories.poll.entity({ id: '200' });
+      });
 
       it('does not call refresh handler', () => {
-        let onEventHandler;
-        subscriptions.subscribeForPollEvents.mockImplementation((_, onEvent) => {
-          onEventHandler = onEvent
-        });
-
         const refreshHandler = jest.fn();
-        shallow(
-          <AttendeeScreen
-            interactiveSession={session}
-            unrespondedPoll={poll}
-            onRefresh={refreshHandler} />
-        );
+        component.props.onRefresh = refreshHandler;
+
+        component._render();
         refreshHandler.mockClear();
+        subscriptions._publishPollEvent(
+          factories.event.pollCreated({ pollId: '300' })
+        );
 
-        onEventHandler(factories.event.pollCreated({ pollId: '300'}))
-
-        expect(refreshHandler).not.toBeCalled();
+        expect(refreshHandler).not.toBeCalled();;
       });
     });
   });
@@ -161,8 +163,7 @@ describe('AttendeeScreen', () => {
         subscription
       );
 
-      const wrapper = shallow(<AttendeeScreen interactiveSession={session} />);
-      wrapper.unmount();
+      component.wrapper.unmount();
 
       expect(subscription.unsubscribe).toBeCalled();
     });

@@ -1,55 +1,76 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { StaticRouter } from 'react-router-dom';
-import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import OwnerScreen from './OwnerScreen';
 import QuestionFormContainer from './../containers/QuestionFormContainer';
 import QuestionListContainer from './../containers/QuestionListContainer';
 
-const session = factories.interactiveSession.entity({
-  attributes: {
-    attendanceCode: 'ABCD',
-  },
-});
+class TestWrapper extends AbstractTestWrapper {
+  get text() {
+    return this.wrapper.text();
+  }
 
-const setupStore = () => ( configureStore()() );
-const mountScreen = ({ location = {} } = {}) => (
-  mount(
-    <Provider store={setupStore()}>
-      <StaticRouter location={location} context={ {} }>
-        <OwnerScreen interactiveSession={session} />
-      </StaticRouter>
-    </Provider>
-  )
-);
+  get questionFormContainer() {
+    return this.wrapper.find(QuestionFormContainer).first();
+  }
+
+  get questionListContainer() {
+    return this.wrapper.find(QuestionListContainer).first();
+  }
+
+  _render() {
+    return mount(this._addStoreProvider(this._addStaticRouter(
+      <OwnerScreen {...this.props} />
+    )))
+  }
+
+  setOwnerPath() {
+    this.location = { pathname: '/interactive_sessions/12/owner' };
+  }
+
+  setNewQuestionPath() {
+    this.location = {
+      pathname: '/interactive_sessions/12/owner/questions/new'
+    };
+  }
+}
 
 describe('OwnerScreen', () => {
+  let component;
+
+  beforeEach(() => {
+    const session = factories.interactiveSession.entity({
+      attributes: {
+        attendanceCode: 'ABCD',
+      },
+    });
+    component = new TestWrapper({ props: {
+      interactiveSession: session,
+    } });
+  });
+
   it('renders attendance code', () => {
-    const wrapper = mountScreen();
-    expect(wrapper.text()).toContain('ABCD');
+    expect(component.text).toContain('ABCD');
   });
 
   describe('given owner path', () => {
-    const location = { pathname: '/interactive_sessions/12/owner' };
+    beforeEach(() => {
+      component.setOwnerPath();
+    });
 
     it('renders question list container', () => {
-      const wrapper = mountScreen({ location });
-      const wrapped = wrapper.find(QuestionListContainer);
-      expect(wrapped).toHaveLength(1);
+      expect(component.questionListContainer).toHaveLength(1);
     });
   });
 
   describe('given new question path', () => {
-    const location = {
-      pathname: '/interactive_sessions/12/owner/questions/new'
-    };
+    beforeEach(() => {
+      component.setNewQuestionPath();
+    });
 
     it('renders question form container', () => {
-      const wrapper = mountScreen({ location });
-      const wrapped = wrapper.find(QuestionFormContainer);
-      expect(wrapped).toHaveLength(1);
+      expect(component.questionFormContainer).toHaveLength(1);
     });
   });
 });

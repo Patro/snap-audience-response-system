@@ -4,63 +4,80 @@ import { StaticRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import SessionScreen from './SessionScreen';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
 import OwnerScreen from './OwnerScreen';
 
-const session = factories.interactiveSession.entity({
-  attributes: { label: 'My Event' },
-});
+class TestWrapper extends AbstractTestWrapper {
+  get label() {
+    return this.wrapper.find('.interactive_session__label');
+  }
 
-const setupStore = () => ( configureStore()() );
-const mountScreen = ({ store, location = {}, props = {} }) => (
-  mount(
-    <Provider store={store}>
-      <StaticRouter location={location} context={ { match: { url: '' } } }>
-        <SessionScreen interactiveSession={session} {...props} />
-      </StaticRouter>
-    </Provider>
-  )
-);
+  get attendeeScreenContainer() {
+    return this.wrapper.find(AttendeeScreenContainer);
+  }
+
+  get ownerScreen() {
+    return this.wrapper.find(OwnerScreen);
+  }
+
+  _render() {
+    return mount(this._addStoreProvider(this._addStaticRouter(
+      <SessionScreen {...this.props} />
+    )));
+  }
+
+  setAttendeePath() {
+    this.location = { pathname: '/interactive_sessions/12' };
+  }
+
+  setOwnerPath() {
+    this.location = { pathname: '/interactive_sessions/12/owner' };
+  }
+}
 
 describe('SessionScreen', () => {
-  it('renders without crashing', () => {
-    mountScreen({ store: setupStore() })
+  let component;
+
+  beforeEach(() => {
+    const session = factories.interactiveSession.entity({
+      attributes: { label: 'My Event' },
+    });
+    component = new TestWrapper({ props: {
+      interactiveSession: session,
+    }});
   });
 
   it('renders label of session', () => {
-    const wrapper = mountScreen({ store: setupStore() });
-    const label = wrapper.find('.interactive_session__label');
-    expect(label.text()).toEqual('My Event');
+    expect(component.label.text()).toEqual('My Event');
   });
 
   describe('given attendee path', () => {
-    const location = { pathname: '/interactive_sessions/12' };
+    beforeEach(() => {
+      component.setAttendeePath();
+    });
 
     it('renders attendee screen container', () => {
-      const wrapper = mountScreen({ store: setupStore(), location })
-
-      const wrapped = wrapper.find(AttendeeScreenContainer);
-      expect(wrapped).toHaveLength(1);
+      expect(component.attendeeScreenContainer).toHaveLength(1);
     });
   });
 
   describe('given owner path', () => {
-    const location = { pathname: '/interactive_sessions/12/owner' };
+    beforeEach(() => {
+      component.setOwnerPath();
+    });
 
     it('renders owner screen', () => {
-      const wrapper = mountScreen({ store: setupStore(), location })
-
-      const wrapped = wrapper.find(OwnerScreen);
-      expect(wrapped).toHaveLength(1);
+      expect(component.ownerScreen).toHaveLength(1);
     });
   });
 
   it('calls on refresh handler on mount', () => {
     const refreshHandler = jest.fn();
-    mountScreen({ store: setupStore(), props: {
-      onRefresh: refreshHandler
-    }})
+    component.props.onRefresh = refreshHandler;
+
+    component._render();
 
     expect(refreshHandler).toBeCalled();
   });
