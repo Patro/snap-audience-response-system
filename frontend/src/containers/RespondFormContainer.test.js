@@ -1,8 +1,7 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { fetchCollection, fetchEntity, createEntity } from '../actions';
 import {
   QUESTION_OPTION, RESPONSE, SINGLE_CHOICE_QUESTION
@@ -10,116 +9,125 @@ import {
 import RespondForm from '../components/RespondForm';
 import RespondFormContainer from './RespondFormContainer';
 
-const question = factories.singleChoiceQuestion.entity({ id: 123 });
-const optionA = factories.questionOption.entity({ id: 426 });
-const optionB = factories.questionOption.entity({ id: 429 });
-const optionCollection = factories.questionOption.collectionWithIds([
-  426, 429
-]);
-const poll = factories.poll.entity({
-  relationships: {
-    question: factories.singleChoiceQuestion.identifier(question),
-  },
-});
-const job = factories.job.started({ id: 'respondJob' });
 
-const filledStore = {
-  entities: {
-    POLL: { 923: poll },
-    SINGLE_CHOICE_QUESTION: { 123: question },
-    QUESTION_OPTION: { 426: optionA, 429: optionB },
-  },
-  collections: {
-    QUESTION_OPTION: { '{"questionId":123}': optionCollection },
-  },
-  jobs: {
-    'respondJob': job,
-  },
-};
+class TestWrapper extends AbstractTestWrapper {
+  get form() {
+    return this.wrapper.find(RespondForm);
+  }
 
-const setupStore = (initial) => ( configureStore()(initial) );
-const mountContainer = ({ store, poll } = {}) => (
-  mount(
-    <Provider store={store}>
-      <RespondFormContainer poll={poll} />
-    </Provider>
-  )
-);
-const getForm = (wrapper) => (
-  wrapper.find(RespondForm)
-);
+  get givenQuestion() {
+    return this.form.prop('question');
+  }
+
+  get givenOptions() {
+    return this.form.prop('options');
+  }
+
+  get givenJob() {
+    return this.form.prop('respondJob');
+  }
+
+  _render() {
+    return mount(this._addStoreProvider(
+      <RespondFormContainer {...this.props } />
+    ));
+  }
+
+  refresh() {
+    this.form.props().onRefresh();
+  }
+
+  submit(optionIds) {
+    this.form.props().onSubmit(optionIds);
+  }
+}
 
 describe('RespondFormContainer', () => {
+  let question;
+  let poll;
+  let component;
+
+  beforeEach(() => {
+    question = factories.singleChoiceQuestion.entity({ id: 123 });
+    poll = factories.poll.entity({
+      relationships: {
+        question: factories.singleChoiceQuestion.identifier(question),
+      },
+    });
+    component = new TestWrapper({ props: { poll: poll } });
+  });
+
   describe('given filled store', () => {
-    const store = setupStore(filledStore);
+    let optionA;
+    let optionB;
+    let job;
+
+    beforeEach(() => {
+      optionA = factories.questionOption.entity({ id: 426 });
+      optionB = factories.questionOption.entity({ id: 429 });
+      const optionCollection = factories.questionOption.collectionWithIds([
+        426, 429
+      ]);
+      job = factories.job.started({ id: 'respondJob' });
+
+      component.store = {
+        entities: {
+          POLL: { 923: poll },
+          SINGLE_CHOICE_QUESTION: { 123: question },
+          QUESTION_OPTION: { 426: optionA, 429: optionB },
+        },
+        collections: {
+          QUESTION_OPTION: { '{"questionId":123}': optionCollection },
+        },
+        jobs: {
+          'respondJob': job,
+        },
+      };
+    });
 
     it('passes question to component', () => {
-      const wrapper = mountContainer({ store, poll });
-      const wrapped = getForm(wrapper);
-
-      expect(wrapped.props().question).toEqual(question);
+      expect(component.givenQuestion).toEqual(question);
     });
 
     it('passes options to component', () => {
-      const wrapper = mountContainer({ store, poll });
-      const wrapped = getForm(wrapper);
-
-      expect(wrapped.props().options).toEqual([optionA, optionB]);
+      expect(component.givenOptions).toEqual([optionA, optionB]);
     });
 
     it('passes job to component', () => {
-      const wrapper = mountContainer({ store, poll });
-      const wrapped = getForm(wrapper);
-
-      expect(wrapped.props().respondJob).toEqual(job);
+      expect(component.givenJob).toEqual(job);
     });
   });
 
   describe('given empty store', () => {
-    const store = setupStore({});
+    beforeEach(() => {
+      component.store = {};
+    });
 
     it('passes undefined as question to component', () => {
-      const wrapper = mountContainer({ store, poll });
-      const wrapped = getForm(wrapper);
-
-      expect(wrapped.props().question).toBeUndefined();
+      expect(component.givenQuestion).toBeUndefined();
     });
 
     it('passes undefined as options to component', () => {
-      const wrapper = mountContainer({ store, poll });
-      const wrapped = getForm(wrapper);
-
-      expect(wrapped.props().options).toBeUndefined();
+      expect(component.givenOptions).toBeUndefined();
     });
 
     it('passes undefined as job to component', () => {
-      const wrapper = mountContainer({ store, poll });
-      const wrapped = getForm(wrapper);
-
-      expect(wrapped.props().respondJob).toBeUndefined();
+      expect(component.givenJob).toBeUndefined();
     });
   });
 
   it('dispatches fetch entity action on refresh', () => {
-    const store = setupStore();
+    component.refresh();
 
-    const wrapper = mountContainer({ store, poll });
-    const wrapped = getForm(wrapper);
-    wrapped.props().onRefresh();
-
-    const actions = store.getActions();
+    const actions = component.store.getActions();
     const expectedAction = fetchEntity(SINGLE_CHOICE_QUESTION, 123);
     expect(actions).toContainEqual(expectedAction);
   });
 
   it('dispatches fetch collection action on refresh', () => {
-    const store = setupStore();
+    component.refresh();
 
-    const wrapper = mountContainer({ store, poll });
-    const wrapped = getForm(wrapper);
-    wrapped.props().onRefresh();
-
-    const actions = store.getActions();
+    const actions = component.store.getActions();
     const expectedAction = fetchCollection(QUESTION_OPTION, {
       questionId: 123,
     });
@@ -127,20 +135,17 @@ describe('RespondFormContainer', () => {
   });
 
   it('dispatches create entity action for given id on submit', () => {
-    const store = setupStore();
+    component.submit([1]);
 
-    const wrapper = mountContainer({ store, poll });
-    const wrapped = getForm(wrapper);
-    wrapped.props().onSubmit([1]);
-
-    const actions = store.getActions();
-    const expectedAction = createEntity({
+    const actions = component.store.getActions();
+    const response = {
       type: RESPONSE,
       relationships: {
         poll: { id: poll.id, type: poll.type },
         pickedQuestionOption: { id: 1, type: QUESTION_OPTION },
       },
-    }, 'respondJob');
+    };
+    const expectedAction = createEntity(response, 'respondJob');
     expect(actions).toContainEqual(expectedAction);
   });
 });

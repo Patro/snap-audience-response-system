@@ -1,60 +1,69 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
+import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { joinSession } from '../actions';
 import JoinSessionForm from '../components/JoinSessionForm';
 import JoinSessionFormContainer from './JoinSessionFormContainer';
 
-const job = factories.job.started({ id: 'joinSessionJob' });
+class TestWrapper extends AbstractTestWrapper {
+  get form() {
+    return this.wrapper.find(JoinSessionForm);
+  }
 
-const filledStore = {
-  jobs: {
-    'joinSessionJob': job,
-  },
-};
+  get givenJoinJob() {
+    return this.form.prop('joinJob');
+  }
 
-const mountContainer = ({ store }) => (
-  mount(
-    <Provider store={store}>
-      <JoinSessionFormContainer />
-    </Provider>
-  )
-);
-const setupStore = (initial) => ( configureStore()(initial) );
+  _render() {
+    return mount(this._addStoreProvider(
+      <JoinSessionFormContainer {...this.props} />
+    ))
+  }
+
+  submit(attendanceCode) {
+    this.form.props().onSubmit(attendanceCode);
+  }
+}
 
 describe('JoinSessionFormContainer', () => {
+  let component;
+
+  beforeEach(() => {
+    component = new TestWrapper();
+  });
+
   describe('given filled store', () => {
-    const store = setupStore(filledStore);
+    let job;
+
+    beforeEach(() => {
+      job = factories.job.started({ id: 'joinSessionJob' });
+      component.store = {
+        jobs: {
+          'joinSessionJob': job,
+        },
+      };
+    });
 
     it('passes job to component', () => {
-      const wrapper = mountContainer({ store });
-      const wrapped = wrapper.find(JoinSessionForm);
-
-      expect(wrapped.props().joinJob).toEqual(job);
+      expect(component.givenJoinJob).toEqual(job);
     });
   });
 
   describe('given empty store', () => {
-    const store = setupStore({});
+    beforeEach(() => {
+      component.store = {};
+    });
 
     it('passes undefined as job to component', () => {
-      const wrapper = mountContainer({ store });
-      const wrapped = wrapper.find(JoinSessionForm);
-
-      expect(wrapped.props().joinJob).toBeUndefined();
+      expect(component.givenJoinJob).toBeUndefined();
     });
   });
 
   it('dispatches join action on submit', () => {
-    const store = setupStore({});
+    component.submit('ABCD');
 
-    const wrapper = mountContainer({ store });
-    const form = wrapper.find(JoinSessionForm);
-    form.props().onSubmit('ABCD');
-
-    const action = store.getActions()[0];
+    const action = component.store.getActions()[0];
     const expectedAction = joinSession('ABCD', 'joinSessionJob');
     expect(action).toMatchObject(expectedAction);
   });

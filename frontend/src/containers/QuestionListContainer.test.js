@@ -7,23 +7,6 @@ import { QUESTION } from '../constants/entityTypes';
 import QuestionList from '../components/QuestionList';
 import QuestionListContainer from './QuestionListContainer';
 
-const session = factories.interactiveSession.entity({ id: 100 });
-const questionA = factories.singleChoiceQuestion.entity({ id: 913 });
-const questionB = factories.multipleChoiceQuestion.entity({ id: 914 });
-const questionCollection = factories.collection.withEntities([
-  questionA, questionB
-]);
-
-const filledStore = {
-  entities: {
-    SINGLE_CHOICE_QUESTION: { 913: questionA },
-    MULTIPLE_CHOICE_QUESTION: { 914: questionB },
-  },
-  collections: {
-    QUESTION: { '{"interactiveSessionId":100}': questionCollection },
-  },
-};
-
 class TestWrapper extends AbstractTestWrapper {
   get list() {
     return this.wrapper.find(QuestionList);
@@ -48,12 +31,30 @@ describe('QuestionListContainer', () => {
   let component;
 
   beforeEach(() => {
+    const session = factories.interactiveSession.entity({ id: 100 });
     component = new TestWrapper({ props: { interactiveSession: session } });
   });
 
   describe('given filled store', () => {
+    let questionA;
+    let questionB;
+
     beforeEach(() => {
-      component.store = filledStore;
+      questionA = factories.singleChoiceQuestion.entity({ id: 913 });
+      questionB = factories.multipleChoiceQuestion.entity({ id: 914 });
+      const questionCollection = factories.collection.withEntities([
+        questionA, questionB
+      ]);
+
+      component.store = {
+        entities: {
+          SINGLE_CHOICE_QUESTION: { 913: questionA },
+          MULTIPLE_CHOICE_QUESTION: { 914: questionB },
+        },
+        collections: {
+          QUESTION: { '{"interactiveSessionId":100}': questionCollection },
+        },
+      };
     });
 
     it('passes questions to component', () => {
