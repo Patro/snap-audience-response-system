@@ -34,7 +34,11 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get optionTextInputs() {
-    return this.inner.find('.question_form__option_text');
+    return this.inner.find('.question_form__option__text');
+  }
+
+  get optionCorrectFlagSwitches() {
+    return this.inner.find('.question_form__option__correct_flag');
   }
 
   get addOptionButton() {
@@ -75,6 +79,10 @@ class TestWrapper extends AbstractTestWrapper {
       .simulate('change', { target: { value: text } });
   }
 
+  setOptionCorrectFlag(index, flag) {
+    this.optionCorrectFlagSwitches.at(index).simulate('change', flag);
+  }
+
   removeOption(index) {
     this.removeOptionButtons.at(index).simulate('click');
     this.update();
@@ -104,15 +112,15 @@ describe('QuestionForm', () => {
       options = [
         factories.questionOption.entity({
           id: 234,
-          attributes: { text: 'Eat, Sleep, Rave, Repeat' },
+          attributes: { text: 'Eat, Sleep, Rave, Repeat', correct: false },
         }),
         factories.questionOption.entity({
           id: 123,
-          attributes: { text: '42' },
+          attributes: { text: '42', correct: true },
         }),
         factories.questionOption.entity({
           id: 923,
-          attributes: { text: 'I don\'t know' },
+          attributes: { text: 'I don\'t know', correct: false },
         }),
       ];
       component.props.question = question;
@@ -131,6 +139,11 @@ describe('QuestionForm', () => {
 
     it('renders text input for every option', () => {
       const inputs = component.optionTextInputs;
+      expect(inputs).toHaveLength(3);
+    });
+
+    it('renders correct flag switch for every option', () => {
+      const inputs = component.optionCorrectFlagSwitches;
       expect(inputs).toHaveLength(3);
     });
 
@@ -217,6 +230,45 @@ describe('QuestionForm', () => {
             ...options[0],
             attributes: {
               text: 'Updated option text',
+              correct: false,
+            },
+          };
+          expect(onSubmit).toBeCalledWith({
+            question, options: updatedOptions
+          });
+        });
+      });
+
+      describe('with toggled to true option correct flag', () => {
+        it('calls handler with updated option correct flag', () => {
+          component.setOptionCorrectFlag(0, true);
+          component.submit();
+
+          const updatedOptions = options.slice();
+          updatedOptions[0] = {
+            ...options[0],
+            attributes: {
+              text: 'Eat, Sleep, Rave, Repeat',
+              correct: true,
+            },
+          };
+          expect(onSubmit).toBeCalledWith({
+            question, options: updatedOptions
+          });
+        });
+      });
+
+      describe('with toggled to false option correct flag', () => {
+        it('calls handler with updated option correct flag', () => {
+          component.setOptionCorrectFlag(1, false);
+          component.submit();
+
+          const updatedOptions = options.slice();
+          updatedOptions[1] = {
+            ...options[1],
+            attributes: {
+              text: '42',
+              correct: false,
             },
           };
           expect(onSubmit).toBeCalledWith({
@@ -252,6 +304,7 @@ describe('QuestionForm', () => {
             type: QUESTION_OPTION,
             attributes: {
               text: 'New option text',
+              correct: false,
             }
           })
           expect(onSubmit).toBeCalledWith({
@@ -295,6 +348,7 @@ describe('QuestionForm', () => {
           component.setQuestionType(SINGLE_CHOICE_QUESTION);
           component.setOptionText(0, 'First option');
           component.setOptionText(1, 'Second option');
+          component.setOptionCorrectFlag(1, true);
           component.setOptionText(2, 'Third option');
           component.submit();
 
@@ -312,15 +366,15 @@ describe('QuestionForm', () => {
             options: [
               {
                 type: QUESTION_OPTION,
-                attributes: { text: 'First option' },
+                attributes: { text: 'First option', correct: false },
               },
               {
                 type: QUESTION_OPTION,
-                attributes: { text: 'Second option' },
+                attributes: { text: 'Second option', correct: true },
               },
               {
                 type: QUESTION_OPTION,
-                attributes: { text: 'Third option' },
+                attributes: { text: 'Third option', correct: false },
               },
             ],
           });

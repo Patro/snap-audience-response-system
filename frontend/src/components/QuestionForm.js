@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Input, Radio, Divider } from 'antd';
+import { Form, Button, Input, Radio, Switch, Icon, Divider } from 'antd';
 import {
   MULTIPLE_CHOICE_QUESTION,
   QUESTION_OPTION,
@@ -54,7 +54,6 @@ class QuestionForm extends Component {
         <JobErrorAlert job={this.props.saveJob} />
         <Form {...layout} onSubmit={this.submit}>
           {this.renderQuestionFields()}
-          <Divider>Options</Divider>
           {this.renderOptionsFields()}
           {this.renderAddOptionButton()}
           {this.renderSubmitButton()}
@@ -127,18 +126,32 @@ class QuestionForm extends Component {
 
   renderOptionFields(optionKey, index) {
     return (
-      <Form.Item label={`Option ${index + 1}`} key={optionKey}>
-        { this.form.getFieldDecorator(`options.${optionKey}.text`, {
-            rules: [{
-              required: true,
-              whitespace: true,
-              message: "Please provide some text or remove this option.",
-            }],
-        })(
-          <Input className="question_form__option_text" />
-        ) }
-        {this.renderActionsOfOption(optionKey)}
-      </Form.Item>
+      <div key={optionKey} className="question_form__option">
+        <Divider>{`Option ${index + 1}`}</Divider>
+        <Form.Item label="Text">
+          { this.form.getFieldDecorator(`options.${optionKey}.text`, {
+              rules: [{
+                required: true,
+                whitespace: true,
+                message: "Please provide some text or remove this option.",
+              }],
+          })(
+            <Input className="question_form__option__text" />
+          ) }
+          {this.renderActionsOfOption(optionKey)}
+        </Form.Item>
+        <Form.Item label="Is correct?">
+          { this.form.getFieldDecorator(
+            `options.${optionKey}.correct`,
+            { valuePropName: 'checked' }
+          )(
+            <Switch
+              checkedChildren={<Icon type="check" />}
+              unCheckedChildren={<Icon type="close" />}
+              className="question_form__option__correct_flag" />
+          ) }
+        </Form.Item>
+      </div>
     )
   }
 
@@ -250,6 +263,7 @@ class QuestionForm extends Component {
       ...option,
       attributes: {
         text: values.text,
+        correct: values.correct || false,
       },
     };
   }
@@ -262,6 +276,7 @@ class QuestionForm extends Component {
       type: QUESTION_OPTION,
       attributes: {
         text: fieldsValue.options[key].text,
+        correct: fieldsValue.options[key].correct || false,
       },
     }));
   }
@@ -294,7 +309,7 @@ const defaultOptions = () => (
 const defaultOption = (idSuffix) => ({
   id: [prefixes.default, idSuffix].join('_'),
   type: QUESTION_OPTION,
-  attributes: { text: '' },
+  attributes: { text: '', correct: false },
 });
 
 const mapQuestionAndOptionsToFields = ({ question, options }) => ({
@@ -323,6 +338,9 @@ const mapOptionsToFields = options => {
 const mapOptionToFields = option => ({
   text: Form.createFormField({
     value: option.attributes.text,
+  }),
+  correct: Form.createFormField({
+    value: option.attributes.correct,
   }),
 });
 

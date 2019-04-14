@@ -13,7 +13,7 @@ export const identifier = (obj) => (defaultsDeep({}, obj, {
 export const entity = (obj) => (defaultsDeep({}, obj, {
   id: nextId(),
   type: QUESTION_OPTION,
-  attributes: { text: '42' },
+  attributes: { text: '42', correct: false },
   relationships: {
     question: singleChoiceQuestion.identifier(),
   },
