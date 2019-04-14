@@ -119,4 +119,26 @@ describe('entities', () => {
 
     itMapsResponse(entities.update);
   });
+
+  describe('destroy', () => {
+    it('configures delete request', () => {
+      ajax.mockReturnValue(of({}));
+
+      entities.destroy({
+        id: 100,
+        type: 'SPACESHIP',
+        attributes: {
+          name: 'Enterprise',
+        },
+      });
+
+      expect(ajax).toBeCalledWith({
+        method: 'DELETE',
+        url: '/test_api/spaceships/100',
+        headers: {
+          'Accept': 'application/vnd.api+json',
+        },
+      });
+    });
+  });
 });

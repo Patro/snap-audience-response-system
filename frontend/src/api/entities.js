@@ -43,4 +43,14 @@ export const update = (entity = {}) => (
   )
 );
 
-export default { create, fetch, update }
+export const destroy = ({ type, id } = {}) => (
+  ajax({
+    url: buildURL({ type, id }),
+    method: 'DELETE',
+    headers: {
+      'Accept': JSON_API_MIME_TYPE,
+    },
+  })
+);
+
+export default { create, fetch, update, destroy }
