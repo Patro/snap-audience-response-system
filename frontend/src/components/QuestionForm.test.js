@@ -86,10 +86,16 @@ class TestWrapper extends AbstractTestWrapper {
 }
 
 describe('QuestionForm', () => {
+  let interactiveSession, component;
+
+  beforeEach(() => {
+    interactiveSession = factories.interactiveSession.entity();
+    component = new TestWrapper({ props: { interactiveSession }});
+  });
+
   describe('given question and options', () => {
     let question;
     let options;
-    let component;
 
     beforeEach(() => {
       question = factories.multipleChoiceQuestion.entity({
@@ -109,7 +115,8 @@ describe('QuestionForm', () => {
           attributes: { text: 'I don\'t know' },
         }),
       ];
-      component = new TestWrapper({ props: { question, options } });
+      component.props.question = question;
+      component.props.options = options;
     });
 
     it('sets question text', () => {
@@ -269,12 +276,6 @@ describe('QuestionForm', () => {
   });
 
   describe('without question and options', () => {
-    let component;
-
-    beforeEach(() => {
-      component = new TestWrapper();
-    });
-
     it('renders three option text inputs as default', () => {
       const inputs = component.optionTextInputs;
       expect(inputs).toHaveLength(3);
@@ -301,6 +302,12 @@ describe('QuestionForm', () => {
             question: {
               type: SINGLE_CHOICE_QUESTION,
               attributes: { text: 'My new question' },
+              relationships: {
+                interactiveSession: {
+                  id: interactiveSession.id,
+                  type: interactiveSession.type,
+                },
+              },
             },
             options: [
               {

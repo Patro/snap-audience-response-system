@@ -21,8 +21,19 @@ class QuestionForm extends Component {
     return this.props.form;
   }
 
+  get interactiveSession() {
+    return this.props.interactiveSession;
+  }
+
   get question() {
-    return this.props.question;
+    return this.props.question || {
+      relationships: {
+        interactiveSession: {
+          id: this.interactiveSession.id,
+          type: this.interactiveSession.type
+        },
+      }
+    };
   }
 
   get options() {
@@ -274,7 +285,7 @@ const prefixes = {
 
 const defaultQuestion = () => ({
   attributes: { text: '' },
-})
+});
 
 const defaultOptions = () => (
   [1, 2, 3].map(defaultOption)
@@ -284,7 +295,7 @@ const defaultOption = (idSuffix) => ({
   id: [prefixes.default, idSuffix].join('_'),
   type: QUESTION_OPTION,
   attributes: { text: '' },
-})
+});
 
 const mapQuestionAndOptionsToFields = ({ question, options }) => ({
   question: mapQuestionToFields(question),

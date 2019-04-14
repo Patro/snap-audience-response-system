@@ -46,7 +46,8 @@ describe('QuestionFormContainer', () => {
   let component;
 
   beforeEach(() => {
-    component = new TestWrapper();
+    const interactiveSession = factories.interactiveSession.entity();
+    component = new TestWrapper({ props: { interactiveSession }});
   });
 
   describe('with question type and id', () => {
