@@ -29,4 +29,18 @@ export const fetch = ({ type, id } = {}) => (
   )
 );
 
-export default { create, fetch }
+export const update = (entity = {}) => (
+  ajax({
+    url: buildURL({ type: entity.type, id: entity.id }),
+    method: 'PATCH',
+    headers: {
+      'Accept': JSON_API_MIME_TYPE,
+      'Content-Type': JSON_API_MIME_TYPE,
+    },
+    body: JSON.stringify(buildBody(entity))
+  }).pipe(
+    map(xhr => mapResponse(xhr.response))
+  )
+);
+
+export default { create, fetch, update }

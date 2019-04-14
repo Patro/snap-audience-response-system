@@ -85,4 +85,38 @@ describe('entities', () => {
 
     itMapsResponse(entities.fetch);
   });
+
+  describe('update', () => {
+    it('configures patch request', () => {
+      ajax.mockReturnValue(of({}));
+
+      entities.update({
+        id: 100,
+        type: 'SPACESHIP',
+        attributes: {
+          name: 'Enterprise',
+        },
+      });
+
+      expect(ajax).toBeCalledWith({
+        method: 'PATCH',
+        url: '/test_api/spaceships/100',
+        headers: {
+          'Accept': 'application/vnd.api+json',
+          'Content-Type': 'application/vnd.api+json'
+        },
+        body: JSON.stringify({
+          data: {
+            id: 100,
+            type: 'spaceship',
+            attributes: {
+              name: 'Enterprise',
+            },
+          },
+        }),
+      });
+    });
+
+    itMapsResponse(entities.update);
+  });
 });
