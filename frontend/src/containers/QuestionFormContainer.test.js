@@ -38,7 +38,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   submit(question, options) {
-    this.form.props().onSubmit(question, options);
+    this.form.props().onSubmit({ question, options });
   }
 }
 

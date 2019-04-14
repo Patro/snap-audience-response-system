@@ -25,7 +25,7 @@ const mapStateToProps = (state, { match }) => {
 
 const mapDispatchToProps = (dispatch, { match }) => {
   const props = {
-    onSubmit: (question, options) => (
+    onSubmit: ({ question, options }) => (
       dispatch(saveQuestion(question, options, saveQuestionJobId))
     ),
   };
