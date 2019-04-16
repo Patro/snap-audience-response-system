@@ -10,8 +10,12 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(List.Item);
   }
 
+  get editButtons() {
+    return this.wrapper.find(Button).filter('.question_list__edit_button');
+  }
+
   get addButton() {
-    return this.wrapper.find(Button);
+    return this.wrapper.find(Button).filter('.question_list__add_button');
   }
 
   _render() {
@@ -51,6 +55,10 @@ describe('QuestionList', () => {
     it('renders text of question', () => {
       const firstListItem = component.listItems.at(0);
       expect(firstListItem.text()).toEqual('Question A');
+    });
+
+    it('renders an edit button for every question', () => {
+      expect(component.editButtons).toHaveLength(2);
     });
 
     it('renders button to add new question', () => {
