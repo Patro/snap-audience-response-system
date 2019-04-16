@@ -3,6 +3,7 @@ import { Button, List } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import DeleteButton from './DeleteButton';
 import QuestionList from './QuestionList';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -12,6 +13,10 @@ class TestWrapper extends AbstractTestWrapper {
 
   get editButtons() {
     return this.wrapper.find(Button).filter('.question_list__edit_button');
+  }
+
+  get deleteButtons() {
+    return this.wrapper.find(DeleteButton);
   }
 
   get addButton() {
@@ -59,6 +64,10 @@ describe('QuestionList', () => {
 
     it('renders an edit button for every question', () => {
       expect(component.editButtons).toHaveLength(2);
+    });
+
+    it('renders a delete button for every question', () => {
+      expect(component.deleteButtons).toHaveLength(2);
     });
 
     it('renders button to add new question', () => {

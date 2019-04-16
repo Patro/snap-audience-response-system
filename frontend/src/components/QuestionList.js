@@ -5,6 +5,7 @@ import {
   MULTIPLE_CHOICE_QUESTION,
   SINGLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
+import DeleteButton from './DeleteButton';
 
 class QuestionList extends Component {
   constructor(props) {
@@ -83,6 +84,9 @@ class QuestionList extends Component {
             icon="edit"
             className="question_list__edit_button" />
         </Link>
+        <DeleteButton
+          confirmMessage="Are you sure to delete this question?"
+          className="question_list__delete_button" />
       </List.Item>
     )
   }
