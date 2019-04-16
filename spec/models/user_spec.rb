@@ -14,7 +14,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return attendances' do
-        is_expected.to match(@attendances)
+        is_expected.to match_array(@attendances)
       end
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return attended interactive sessions' do
-        is_expected.to match(@interactive_sessions)
+        is_expected.to match_array(@interactive_sessions)
       end
     end
   end
@@ -70,7 +70,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return attended interactive sessions' do
-        is_expected.to match(@interactive_sessions)
+        is_expected.to match_array(@interactive_sessions)
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return owned interactive sessions' do
-        is_expected.to match(@interactive_sessions)
+        is_expected.to match_array(@interactive_sessions)
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return interactive session' do
-        is_expected.to match([@interactive_session])
+        is_expected.to match_array([@interactive_session])
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should not return unassociated interactive session' do
-        is_expected.to match([])
+        is_expected.to match_array([])
       end
     end
   end
@@ -116,7 +116,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return owned interactive sessions' do
-        is_expected.to match(@interactive_sessions)
+        is_expected.to match_array(@interactive_sessions)
       end
     end
   end
@@ -130,7 +130,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'should return responses' do
-        is_expected.to match(@responses)
+        is_expected.to match_array(@responses)
       end
     end
   end

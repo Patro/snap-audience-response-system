@@ -15,7 +15,7 @@ RSpec.describe InteractiveSession, type: :model do
       end
 
       it 'should return attendances' do
-        is_expected.to match(@attendances)
+        is_expected.to match_array(@attendances)
       end
     end
   end
@@ -33,7 +33,7 @@ RSpec.describe InteractiveSession, type: :model do
       end
 
       it 'should return two attendees' do
-        is_expected.to match(@attendees)
+        is_expected.to match_array(@attendees)
       end
     end
   end
@@ -107,7 +107,7 @@ RSpec.describe InteractiveSession, type: :model do
       end
 
       it 'should return polls' do
-        is_expected.to match(@polls)
+        is_expected.to match_array(@polls)
       end
     end
   end
@@ -124,7 +124,7 @@ RSpec.describe InteractiveSession, type: :model do
       end
 
       it 'should return questions' do
-        is_expected.to match(@questions)
+        is_expected.to match_array(@questions)
       end
     end
   end

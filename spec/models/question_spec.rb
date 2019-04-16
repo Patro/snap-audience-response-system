@@ -38,7 +38,7 @@ RSpec.describe Question, type: :model do
       end
 
       it 'should return options' do
-        is_expected.to match(@options)
+        is_expected.to match_array(@options)
       end
     end
   end
@@ -54,7 +54,7 @@ RSpec.describe Question, type: :model do
       end
 
       it 'should return polls' do
-        is_expected.to match(@polls)
+        is_expected.to match_array(@polls)
       end
     end
   end

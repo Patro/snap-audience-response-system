@@ -28,7 +28,7 @@ RSpec.describe QuestionOption, type: :model do
       end
 
       it 'should return responses' do
-        is_expected.to match(@responses)
+        is_expected.to match_array(@responses)
       end
     end
   end
