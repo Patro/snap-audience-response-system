@@ -2,6 +2,7 @@ export const JOIN_SESSION = 'JOIN_SESSION';
 export const START_SESSION = 'START_SESSION';
 export const SAVE_QUESTION = 'SAVE_QUESTION';
 export const CREATE_ENTITY = 'CREATE_ENTITY';
+export const DESTROY_ENTITY = 'DESTROY_ENTITY';
 export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
 export const FETCH_COLLECTION = 'FETCH_COLLECTION';
@@ -35,6 +36,12 @@ export const saveQuestion = (question, options, jobId = nextJobId()) => ({
 
 export const createEntity = (entity, jobId = nextJobId()) => ({
   type: CREATE_ENTITY,
+  entity,
+  jobId
+});
+
+export const destroyEntity = (entity, jobId = nextJobId()) => ({
+  type: DESTROY_ENTITY,
   entity,
   jobId
 });
