@@ -14,7 +14,7 @@ export default joinSessionEpic;
 
 const processAction = (action, dependencies) => (
   withJob(
-    action.jobId,
+    action,
     createAttendance$(action, dependencies),
     map(receiveEntity)
   )

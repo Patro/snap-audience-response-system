@@ -62,9 +62,10 @@ export const receiveCollection = (entityType, filterParams, collection) => ({
   collection
 });
 
-export const markJobAsStarted = (id) => ({
+export const markJobAsStarted = (id, trigger) => ({
   type: MARK_JOB_AS_STARTED,
   id,
+  trigger
 });
 
 export const markJobAsSucceeded = (id, result) => ({
@@ -76,7 +77,7 @@ export const markJobAsSucceeded = (id, result) => ({
 export const markJobAsFailed = (id, errors) => ({
   type: MARK_JOB_AS_FAILED,
   id,
-  errors
+  errors,
 });
 
 export const removeJob = (id) => ({

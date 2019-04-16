@@ -5,25 +5,47 @@ import {
 } from '../actions';
 import withJob from './withJob';
 
-const root$ = of('root')
+class TestWrapper {
+  constructor({ trigger, wrapped$, pipe$ } = {}) {
+    this.root$ = of('root');
+    this.trigger = trigger;
+    this.wrapped$ = wrapped$;
+    this.pipe$ = pipe$;
+  }
 
-const call = (wrapped$, pipe) => (
-  root$.pipe(mergeMap(_ => withJob('jobId', wrapped$, pipe)), toArray())
-)
+  call$() {
+    return this.root$.pipe(
+      mergeMap(_ => withJob(this.trigger, this.wrapped$, this.pipe$)),
+      toArray(),
+    )
+  }
+}
 
 describe('withJob', () => {
+  let trigger, withJob;
+
+  beforeEach(() => {
+    trigger = { jobId: 'jobId' };
+    withJob = new TestWrapper({
+      pipe$: map(() => 'pipedResult'),
+      trigger,
+    });
+  });
+
   describe('when wrapped observable succeeds', () => {
-    const wrapped$ = of('wrapped');
+    beforeEach(() => {
+      withJob.wrapped$ = of('innerResult');
+    });
 
     it('emits mark job as succeeded action', (done) => {
       const expectedEvents = [
-        markJobAsStarted('jobId'),
-        'mapped',
-        markJobAsSucceeded('jobId', 'wrapped'),
+        markJobAsStarted('jobId', trigger),
+        'pipedResult',
+        markJobAsSucceeded('jobId', 'innerResult'),
         removeJob('jobId'),
       ]
 
-      const result$ = call(wrapped$, map(() => 'mapped'));
+      const result$ = withJob.call$();
       result$.subscribe(actions => {
         expect(actions).toEqual(expectedEvents);
         done();
@@ -32,18 +54,22 @@ describe('withJob', () => {
   });
 
   describe('when wrapped observable fails with response', () => {
-    const errors = [{ title: 'error' }];
-    const error = { response: { errors } };
-    const wrapped$ = throwError(error);
+    let errors;
+
+    beforeEach(() => {
+      errors = [{ title: 'error' }];
+      const error = { response: { errors } };
+      withJob.wrapped$ = throwError(error);
+    });
 
     it('emits mark job as failed action', (done) => {
       const expectedEvents = [
-        markJobAsStarted('jobId'),
+        markJobAsStarted('jobId', trigger),
         markJobAsFailed('jobId', errors),
         removeJob('jobId'),
       ]
 
-      const result$ = call(wrapped$, map(() => 'mapped'));
+      const result$ = withJob.call$();
       result$.subscribe(actions => {
         expect(actions).toEqual(expectedEvents);
         done();
@@ -52,17 +78,20 @@ describe('withJob', () => {
   });
 
   describe('when wrapped observable fails with empty response', () => {
-    const error = { response: null };
-    const wrapped$ = throwError(error);
+
+    beforeEach(() => {
+      const error = { response: null };
+      withJob.wrapped$ = throwError(error);
+    });
 
     it('emits mark job as failed action', (done) => {
       const expectedEvents = [
-        markJobAsStarted('jobId'),
+        markJobAsStarted('jobId', trigger),
         markJobAsFailed('jobId', []),
         removeJob('jobId'),
       ]
 
-      const result$ = call(wrapped$, map(() => 'mapped'));
+      const result$ = withJob.call$();
       result$.subscribe(actions => {
         expect(actions).toEqual(expectedEvents);
         done();

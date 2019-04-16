@@ -13,7 +13,7 @@ export default fetchEntityEpic;
 
 const processAction = (action, dependencies) => (
   withJob(
-    action.jobId,
+    action,
     fetchEntity$(action, dependencies),
     map(receiveEntity)
   )

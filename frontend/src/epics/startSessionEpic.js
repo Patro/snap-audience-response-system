@@ -14,7 +14,7 @@ export default startSessionEpic;
 
 const processAction = (action, dependencies) => (
   withJob(
-    action.jobId,
+    action,
     createSession$(action, dependencies),
     map(receiveEntity)
   )

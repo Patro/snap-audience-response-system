@@ -13,7 +13,7 @@ import {
 const jobs = (state = {}, action) => {
   switch(action.type) {
     case MARK_JOB_AS_STARTED:
-      return markJobAsStarted(state, action.id);
+      return markJobAsStarted(state, action.id, action.trigger);
     case MARK_JOB_AS_SUCCEEDED:
       return markJobAsSucceeded(state, action.id, action.result);
     case MARK_JOB_AS_FAILED:
@@ -29,19 +29,33 @@ export default jobs;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const markJobAsStarted = (state, jobId) => ({
+const markJobAsStarted = (state, jobId, trigger) => ({
   ...state,
-  [jobId]: { id: jobId, status: STARTED },
+  [jobId]: {
+    id: jobId,
+    status: STARTED,
+    trigger
+  },
 });
 
 const markJobAsSucceeded = (state, jobId, result) => ({
   ...state,
-  [jobId]: { id: jobId, status: SUCCEEDED, result },
+  [jobId]: {
+    id: jobId,
+    status: SUCCEEDED,
+    trigger: state[jobId].trigger,
+    result,
+  },
 });
 
 const markJobAsFailed = (state, jobId, errors) => ({
   ...state,
-  [jobId]: { id: jobId, status: FAILED, errors },
+  [jobId]: {
+    id: jobId,
+    status: FAILED,
+    trigger: state[jobId].trigger,
+    errors,
+  },
 });
 
 const removeJob = (state, jobId) => {

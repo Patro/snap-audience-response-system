@@ -13,7 +13,7 @@ export default fetchCollectionEpic;
 
 const processAction = (action, dependencies) => (
   withJob(
-    action.jobId,
+    action,
     fetchCollection$(action, dependencies),
     map(collection =>
       receiveCollection(action.entityType, action.filterParams, collection)

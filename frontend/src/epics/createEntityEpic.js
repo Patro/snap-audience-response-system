@@ -13,7 +13,7 @@ export default createEntityEpic;
 
 const processAction = (action, dependencies) => (
   withJob(
-    action.jobId,
+    action,
     createEntity$(action, dependencies),
     map(receiveEntity)
   )

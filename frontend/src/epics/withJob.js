@@ -5,20 +5,20 @@ import {
   markJobAsStarted, markJobAsSucceeded, markJobAsFailed, removeJob
 } from '../actions';
 
-const withJob = (jobId, wrapped$, pipe) => (
+const withJob = (trigger, wrapped$, pipe) => (
   merge(
-    of(markJobAsStarted(jobId)),
+    of(markJobAsStarted(trigger.jobId, trigger)),
     wrapped$.pipe(
       mergeMap(result => merge(
         of(result).pipe(pipe),
-        of(markJobAsSucceeded(jobId, result)),
+        of(markJobAsSucceeded(trigger.jobId, result)),
       )),
       catchError((err) => {
         if (err.response === undefined) { throw err; }
         const errors = get(err, 'response.errors') || [];
-        return of(markJobAsFailed(jobId, errors));
+        return of(markJobAsFailed(trigger.jobId, errors));
       }),
-      endWith(removeJob(jobId)),
+      endWith(removeJob(trigger.jobId)),
     )
   )
 );

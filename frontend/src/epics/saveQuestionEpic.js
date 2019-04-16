@@ -129,7 +129,7 @@ export default saveQuestionEpic;
 
 const processAction = (action, dependencies) => (
   withJob(
-    action.jobId,
+    action,
     saveQuestionAndRedirect$(action, dependencies),
     mergeMap(result => merge(
       of(receiveEntity(result.question)),
