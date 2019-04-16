@@ -60,11 +60,10 @@ describe('QuestionFormContainer', () => {
       };
     });
 
-    describe('given filled store', () => {
+    describe('given store with question and options', () => {
       let question;
       let optionA;
       let optionB;
-      let job;
 
       beforeEach(() => {
         question = factories.singleChoiceQuestion.entity({ id: 123 });
@@ -73,7 +72,6 @@ describe('QuestionFormContainer', () => {
         const optionCollection = factories.questionOption.collectionWithIds([
           426, 429
         ]);
-        job = factories.job.started({ id: 'saveQuestionJob' });
 
         component.store = {
           entities: {
@@ -83,6 +81,37 @@ describe('QuestionFormContainer', () => {
           collections: {
             [QUESTION_OPTION]: { '{"questionId":123}': optionCollection },
           },
+        };
+      });
+
+      it('passes question to component', () => {
+        expect(component.givenQuestion).toEqual(question);
+      });
+
+      it('passes options to component', () => {
+        expect(component.givenOptions).toEqual([optionA, optionB]);
+      });
+    });
+
+    describe('given store with job', () => {
+      let question;
+      let optionA;
+      let optionB;
+      let job;
+
+      beforeEach(() => {
+        question = factories.singleChoiceQuestion.entity({ id: 123 });
+        optionA = factories.questionOption.entity({ id: 426 });
+        optionB = factories.questionOption.entity({ id: 429 });
+        job = factories.job.started({
+          id: 'saveQuestionJob',
+          trigger: {
+            question: question,
+            options: [optionA, optionB],
+          },
+        });
+
+        component.store = {
           jobs: {
             'saveQuestionJob': job,
           },

@@ -10,17 +10,24 @@ import { getEntitiesOfCollection, getEntity, getJob } from '../selectors';
 import QuestionForm from '../components/QuestionForm';
 
 const mapStateToProps = (state, { match }) => {
-  const props = {
-    saveJob: getJob(state, saveQuestionJobId),
-  };
+  const saveJob = getJob(state, saveQuestionJobId);
+  if (saveJob !== undefined) {
+    return {
+      saveJob,
+      question: saveJob.trigger.question,
+      options: saveJob.trigger.options,
+    }
+  }
 
   const questionIdentifier = getIdentifierOfQuestion(match);
   if (questionIdentifier !== undefined) {
-    props.question = getEntity(state, questionIdentifier);
-    props.options = getOptionsOfQuestion(state, questionIdentifier);
+    return {
+      question: getEntity(state, questionIdentifier),
+      options: getOptionsOfQuestion(state, questionIdentifier)
+    };
   }
 
-  return props;
+  return {};
 };
 
 const mapDispatchToProps = (dispatch, { match }) => {
