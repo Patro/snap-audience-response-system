@@ -382,4 +382,15 @@ describe('QuestionForm', () => {
       });
     });
   });
+
+  describe('on mount', () => {
+    it('calls on refresh handler', () => {
+      const refreshHandler = jest.fn();
+      component.props.onRefresh = refreshHandler;
+
+      component._render().dive();
+
+      expect(refreshHandler).toBeCalled();
+    });
+  });
 });

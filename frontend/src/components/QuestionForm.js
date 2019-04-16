@@ -186,6 +186,10 @@ class QuestionForm extends Component {
     )
   }
 
+  componentDidMount() {
+    this.refresh();
+  }
+
   addOption() {
     const keys = this.form.getFieldValue('optionKeys');
     const newKey = [prefixes.new, this.nextOptionKey++].join('_');
@@ -279,6 +283,12 @@ class QuestionForm extends Component {
         correct: fieldsValue.options[key].correct || false,
       },
     }));
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
   }
 }
 
