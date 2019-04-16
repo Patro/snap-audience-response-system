@@ -3,7 +3,7 @@ import { Button, List } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
-import DeleteButton from './DeleteButton';
+import DeleteButtonContainer from './../containers/DeleteButtonContainer';
 import QuestionList from './QuestionList';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -15,8 +15,8 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(Button).filter('.question_list__edit_button');
   }
 
-  get deleteButtons() {
-    return this.wrapper.find(DeleteButton);
+  get deleteButtonContainers() {
+    return this.wrapper.find(DeleteButtonContainer);
   }
 
   get addButton() {
@@ -24,9 +24,9 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   _render() {
-    return mount(this._addStaticRouter(
+    return mount(this._addStaticRouter(this._addStoreProvider(
       <QuestionList {...this.props} />
-    ));
+    )));
   }
 }
 
@@ -66,8 +66,8 @@ describe('QuestionList', () => {
       expect(component.editButtons).toHaveLength(2);
     });
 
-    it('renders a delete button for every question', () => {
-      expect(component.deleteButtons).toHaveLength(2);
+    it('renders a delete button containers for every question', () => {
+      expect(component.deleteButtonContainers).toHaveLength(2);
     });
 
     it('renders button to add new question', () => {
