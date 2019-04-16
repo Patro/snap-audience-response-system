@@ -11,11 +11,19 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.text();
   }
 
-  get questionFormContainer() {
+  get questionForm() {
     return this.wrapper.find(QuestionFormContainer).first();
   }
 
-  get questionListContainer() {
+  get givenQuestionTypeOfForm() {
+    return this.questionForm.props().match.params.questionType;
+  }
+
+  get givenQuestionIdOfForm() {
+    return this.questionForm.props().match.params.questionId;
+  }
+
+  get questionList() {
     return this.wrapper.find(QuestionListContainer).first();
   }
 
@@ -32,6 +40,12 @@ class TestWrapper extends AbstractTestWrapper {
   setNewQuestionPath() {
     this.location = {
       pathname: '/interactive_sessions/12/owner/questions/new'
+    };
+  }
+
+  setEditQuestionPath() {
+    this.location = {
+      pathname: '/interactive_sessions/12/owner/questions/multiple_choice/1/edit'
     };
   }
 }
@@ -59,8 +73,8 @@ describe('OwnerScreen', () => {
       component.setOwnerPath();
     });
 
-    it('renders question list container', () => {
-      expect(component.questionListContainer).toHaveLength(1);
+    it('renders question list', () => {
+      expect(component.questionList).toHaveLength(1);
     });
   });
 
@@ -69,8 +83,26 @@ describe('OwnerScreen', () => {
       component.setNewQuestionPath();
     });
 
-    it('renders question form container', () => {
-      expect(component.questionFormContainer).toHaveLength(1);
+    it('renders question form', () => {
+      expect(component.questionForm).toHaveLength(1);
+    });
+  });
+
+  describe('given edit question path', () => {
+    beforeEach(() => {
+      component.setEditQuestionPath();
+    });
+
+    it('renders question form', () => {
+      expect(component.questionForm).toHaveLength(1);
+    });
+
+    it('passes question type to form', () => {
+      expect(component.givenQuestionTypeOfForm).toBe('multiple_choice');
+    });
+
+    it('passes question id to form', () => {
+      expect(component.givenQuestionIdOfForm).toBe('1');
     });
   });
 });

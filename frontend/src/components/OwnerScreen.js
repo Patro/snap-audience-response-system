@@ -31,6 +31,9 @@ class OwnerScreen extends Component {
           path="/interactive_sessions/:id/owner/questions/new"
           component={props => this.renderQuestionForm(props)} />
         <Route
+          path="/interactive_sessions/:id/owner/questions/:questionType/:questionId/edit"
+          component={props => this.renderQuestionForm(props)} />
+        <Route
           component={props => this.renderQuestionList(props)} />
       </Switch>
     );
