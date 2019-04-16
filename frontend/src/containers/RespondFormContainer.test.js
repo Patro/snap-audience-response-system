@@ -120,7 +120,9 @@ describe('RespondFormContainer', () => {
     component.refresh();
 
     const actions = component.store.getActions();
-    const expectedAction = fetchEntity(SINGLE_CHOICE_QUESTION, 123);
+    const expectedAction = fetchEntity(
+      SINGLE_CHOICE_QUESTION, 123, expect.anything()
+    );
     expect(actions).toContainEqual(expectedAction);
   });
 
@@ -130,7 +132,7 @@ describe('RespondFormContainer', () => {
     const actions = component.store.getActions();
     const expectedAction = fetchCollection(QUESTION_OPTION, {
       questionId: 123,
-    });
+    }, expect.anything());
     expect(actions).toContainEqual(expectedAction);
   });
 

@@ -11,32 +11,35 @@ export const MARK_JOB_AS_SUCCEEDED = 'MARK_JOB_AS_SUCCEEDED';
 export const MARK_JOB_AS_FAILED = 'MARK_JOB_AS_FAILED';
 export const REMOVE_JOB = 'REMOVE_JOB';
 
-export const joinSession = (attendanceCode, jobId = 'joinSession') => ({
+let jobId = 0;
+const nextJobId = () => jobId++;
+
+export const joinSession = (attendanceCode, jobId = nextJobId()) => ({
   type: JOIN_SESSION,
   attendanceCode,
   jobId
 });
 
-export const startSession = (label, jobId = 'startSession') => ({
+export const startSession = (label, jobId = nextJobId()) => ({
   type: START_SESSION,
   label,
   jobId
 });
 
-export const saveQuestion = (question, options, jobId = 'saveQuestion') => ({
+export const saveQuestion = (question, options, jobId = nextJobId()) => ({
   type: SAVE_QUESTION,
   question,
   options,
   jobId
 });
 
-export const createEntity = (entity, jobId = 'createEntity') => ({
+export const createEntity = (entity, jobId = nextJobId()) => ({
   type: CREATE_ENTITY,
   entity,
   jobId
 });
 
-export const fetchEntity = (entityType, entityId, jobId = 'fetchEntity') => ({
+export const fetchEntity = (entityType, entityId, jobId = nextJobId()) => ({
   type: FETCH_ENTITY,
   entityType,
   entityId,
@@ -48,7 +51,7 @@ export const receiveEntity = (entity) => ({
   entity
 });
 
-export const fetchCollection = (entityType, filterParams, jobId = 'fetchCollection') => ({
+export const fetchCollection = (entityType, filterParams, jobId = nextJobId()) => ({
   type: FETCH_COLLECTION,
   entityType,
   filterParams,

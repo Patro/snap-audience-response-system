@@ -69,7 +69,9 @@ describe('SessionScreenContainer', () => {
     component.refresh();
 
     const action = component.store.getActions().slice(-1)[0];
-    const expectedAction = fetchEntity(INTERACTIVE_SESSION, '100');
+    const expectedAction = fetchEntity(
+      INTERACTIVE_SESSION, '100', expect.anything()
+    );
     expect(action).toMatchObject(expectedAction);
   });
 });

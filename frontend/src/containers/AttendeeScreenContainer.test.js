@@ -80,7 +80,7 @@ describe('AttendeeScreenContainer', () => {
       interactiveSessionId: 100,
       status: 'open',
       responded: false
-    });
+    }, expect.anything());
     expect(action).toMatchObject(expectedAction);
   });
 });

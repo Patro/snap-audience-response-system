@@ -78,7 +78,7 @@ describe('QuestionListContainer', () => {
     const actions = component.store.getActions();
     const expectedAction = fetchCollection(QUESTION, {
       interactiveSessionId: 100,
-    });
+    }, expect.anything());
     expect(actions).toContainEqual(expectedAction);
   });
 });

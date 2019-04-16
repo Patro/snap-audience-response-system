@@ -154,7 +154,9 @@ describe('QuestionFormContainer', () => {
         component.refresh();
 
         const actions = component.store.getActions();
-        const expectedAction = fetchEntity(SINGLE_CHOICE_QUESTION, 123);
+        const expectedAction = fetchEntity(
+          SINGLE_CHOICE_QUESTION, 123, expect.anything(),
+        );
         expect(actions).toContainEqual(expectedAction);
       });
 
@@ -164,7 +166,7 @@ describe('QuestionFormContainer', () => {
         const actions = component.store.getActions();
         const expectedAction = fetchCollection(QUESTION_OPTION, {
           questionId: 123,
-        });
+        }, expect.anything());
         expect(actions).toContainEqual(expectedAction);
       });
     });
@@ -206,7 +208,9 @@ describe('QuestionFormContainer', () => {
         component.refresh();
 
         const actions = component.store.getActions();
-        const expectedAction = fetchEntity(SINGLE_CHOICE_QUESTION, 123);
+        const expectedAction = fetchEntity(
+          SINGLE_CHOICE_QUESTION, 123, expect.anything()
+        );
         expect(actions).not.toContainEqual(expectedAction);
       });
 
@@ -216,7 +220,7 @@ describe('QuestionFormContainer', () => {
         const actions = component.store.getActions();
         const expectedAction = fetchCollection(QUESTION_OPTION, {
           questionId: 123,
-        });
+        }, expect.anything());
         expect(actions).not.toContainEqual(expectedAction);
       });
     });
