@@ -296,7 +296,7 @@ export default Form.create({
   name: 'question_form',
   mapPropsToFields: (props) => mapQuestionAndOptionsToFields({
     question: props.question || defaultQuestion(),
-    options: props.options || defaultOptions(),
+    options: rejectDeletedOptions(props.options) || defaultOptions(),
   })
 })(QuestionForm);
 
@@ -321,6 +321,12 @@ const defaultOption = (idSuffix) => ({
   type: QUESTION_OPTION,
   attributes: { text: '', correct: false },
 });
+
+const rejectDeletedOptions = (options) => {
+  if (options === undefined) { return; }
+
+  return options.filter(option => option.deleted !== true);
+};
 
 const mapQuestionAndOptionsToFields = ({ question, options }) => ({
   question: mapQuestionToFields(question),

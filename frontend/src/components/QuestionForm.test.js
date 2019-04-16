@@ -328,6 +328,39 @@ describe('QuestionForm', () => {
     });
   });
 
+  describe('given deleted option', () => {
+    let question;
+    let options;
+
+    beforeEach(() => {
+      question = factories.multipleChoiceQuestion.entity({
+        attributes: { text: 'What is the meaning of life?' },
+      });
+      options = [
+        factories.questionOption.entity({
+          id: 234,
+          attributes: { text: 'Eat, Sleep, Rave, Repeat', correct: false },
+        }),
+        factories.questionOption.entity({
+          id: 123,
+          attributes: { text: '42', correct: true },
+          deleted: true,
+        }),
+        factories.questionOption.entity({
+          id: 923,
+          attributes: { text: 'I don\'t know', correct: false },
+        }),
+      ];
+      component.props.question = question;
+      component.props.options = options;
+    });
+
+    it('does not render text input for deleted option', () => {
+      const inputs = component.optionTextInputs;
+      expect(inputs).toHaveLength(2);
+    });
+  });
+
   describe('without question and options', () => {
     it('renders three option text inputs as default', () => {
       const inputs = component.optionTextInputs;
