@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, List } from 'antd';
-import {
-  MULTIPLE_CHOICE_QUESTION,
-  SINGLE_CHOICE_QUESTION,
-} from '../constants/entityTypes';
-import DeleteButtonContainer from './../containers/DeleteButtonContainer';
+import QuestionListItem from './QuestionListItem';
 
 class QuestionList extends Component {
   constructor(props) {
     super(props);
 
-    this.renderQuestion = this.renderQuestion.bind(this);
+    this.renderItem = this.renderItem.bind(this);
     this.refresh = this.refresh.bind(this);
   }
 
@@ -28,25 +24,6 @@ class QuestionList extends Component {
     return `/interactive_sessions/${id}/owner/questions/new`;
   }
 
-  questionUrlType(question) {
-    switch(question.type) {
-      case MULTIPLE_CHOICE_QUESTION:
-        return 'multiple_choice';
-      case SINGLE_CHOICE_QUESTION:
-        return 'single_choice';
-      default:
-        throw new Error('Unsupported question type');
-    }
-  }
-
-  editQuestionPath(question) {
-    const sessionId = this.interactiveSession.id;
-    const ownerPath = `/interactive_sessions/${sessionId}/owner`;
-    const type = this.questionUrlType(question);
-    const questionIdentifier = `${type}/${question.id}`;
-    return `${ownerPath}/questions/${questionIdentifier}/edit`;
-  }
-
   render() {
     if (this.questions === undefined) { return false; }
 
@@ -56,7 +33,7 @@ class QuestionList extends Component {
             header={this.renderHeader()}
             bordered
             dataSource={this.questions}
-            renderItem={this.renderQuestion} />
+            renderItem={this.renderItem} />
       </div>
     );
   }
@@ -75,23 +52,8 @@ class QuestionList extends Component {
     )
   }
 
-  renderQuestion(question) {
-    return (
-      <List.Item key={question.id}>
-        {question.attributes.text}
-        <Link to={this.editQuestionPath(question)}>
-          <Button
-            type="primary"
-            icon="edit"
-            className="question_list__edit_button" />
-        </Link>
-        <DeleteButtonContainer
-          entity={question}
-          confirmMessage="Are you sure to delete this question?"
-          onSuccess={this.refresh}
-          className="question_list__delete_button" />
-      </List.Item>
-    )
+  renderItem(question) {
+    return <QuestionListItem question={question} onDelete={this.refresh} />
   }
 
   componentDidMount() {

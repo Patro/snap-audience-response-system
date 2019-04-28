@@ -1,22 +1,14 @@
 import React from 'react';
-import { Button, List } from 'antd';
+import { Button } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
-import DeleteButtonContainer from './../containers/DeleteButtonContainer';
+import QuestionListItem from './QuestionListItem';
 import QuestionList from './QuestionList';
 
 class TestWrapper extends AbstractTestWrapper {
   get listItems() {
-    return this.wrapper.find(List.Item);
-  }
-
-  get editButtons() {
-    return this.wrapper.find(Button).filter('.question_list__edit_button');
-  }
-
-  get deleteButtonContainers() {
-    return this.wrapper.find(DeleteButtonContainer);
+    return this.wrapper.find(QuestionListItem);
   }
 
   get addButton() {
@@ -55,19 +47,6 @@ describe('QuestionList', () => {
 
     it('renders one list item per question', () => {
       expect(component.listItems).toHaveLength(2);
-    });
-
-    it('renders text of question', () => {
-      const firstListItem = component.listItems.at(0);
-      expect(firstListItem.text()).toEqual('Question A');
-    });
-
-    it('renders an edit button for every question', () => {
-      expect(component.editButtons).toHaveLength(2);
-    });
-
-    it('renders a delete button containers for every question', () => {
-      expect(component.deleteButtonContainers).toHaveLength(2);
     });
 
     it('renders button to add new question', () => {
