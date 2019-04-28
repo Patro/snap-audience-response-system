@@ -4,10 +4,11 @@ import destroyEntityEpic from './destroyEntityEpic';
 import fetchCollectionEpic from './fetchCollectionEpic';
 import fetchEntityEpic from './fetchEntityEpic';
 import joinSessionEpic from './joinSessionEpic';
+import respondToPollEpic from './respondToPollEpic';
 import saveQuestionEpic from './saveQuestionEpic';
 import startSessionEpic from './startSessionEpic';
 
 export default combineEpics(
   createEntityEpic, destroyEntityEpic, fetchCollectionEpic, fetchEntityEpic,
-  joinSessionEpic, saveQuestionEpic, startSessionEpic
+  joinSessionEpic, respondToPollEpic, saveQuestionEpic, startSessionEpic
 );

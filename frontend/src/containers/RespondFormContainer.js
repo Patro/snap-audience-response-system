@@ -1,8 +1,8 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { createEntity, fetchCollection, fetchEntity } from '../actions';
+import { respondToPoll, fetchCollection, fetchEntity } from '../actions';
 import RespondForm from '../components/RespondForm';
-import { QUESTION_OPTION, RESPONSE } from '../constants/entityTypes';
+import { QUESTION_OPTION } from '../constants/entityTypes';
 import { getEntity, getEntitiesOfCollection, getJob } from '../selectors';
 import withJob from './withJob';
 
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch, { poll }) => {
   return {
     onRefresh: () => fetchQuestionAndOptions(dispatch, questionIdentifier),
     onSubmit: (optionsIds) =>
-      createResponses(dispatch, poll, optionsIds),
+      dispatch(respondToPoll(poll, optionsIds, respondJobId)),
   }
 };
 
@@ -47,18 +47,6 @@ const fetchQuestionAndOptions = (dispatch, identifier) => {
   dispatch(fetchEntity(identifier.type, identifier.id));
   dispatch(fetchCollection(QUESTION_OPTION, buildFilterParams(identifier)));
 };
-
-const createResponses = (dispatch, poll, optionIds) => (
-  optionIds.forEach(optionId => (
-    dispatch(createEntity({
-      type: RESPONSE,
-      relationships: {
-        poll: { id: poll.id, type: poll.type },
-        pickedQuestionOption: { id: optionId, type: QUESTION_OPTION },
-      }
-    }, respondJobId))
-  ))
-);
 
 const buildFilterParams = (questionIdentifier) => ({
   questionId: questionIdentifier.id,

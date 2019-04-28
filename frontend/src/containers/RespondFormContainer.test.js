@@ -2,9 +2,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
-import { fetchCollection, fetchEntity, createEntity } from '../actions';
+import { fetchCollection, fetchEntity, respondToPoll } from '../actions';
 import {
-  QUESTION_OPTION, RESPONSE, SINGLE_CHOICE_QUESTION
+  QUESTION_OPTION,
+  SINGLE_CHOICE_QUESTION
 } from './../constants/entityTypes';
 import RespondForm from '../components/RespondForm';
 import RespondFormContainer from './RespondFormContainer';
@@ -136,18 +137,11 @@ describe('RespondFormContainer', () => {
     expect(actions).toContainEqual(expectedAction);
   });
 
-  it('dispatches create entity action for given id on submit', () => {
+  it('dispatches respond to poll action on submit', () => {
     component.submit([1]);
 
     const actions = component.store.getActions();
-    const response = {
-      type: RESPONSE,
-      relationships: {
-        poll: { id: poll.id, type: poll.type },
-        pickedQuestionOption: { id: 1, type: QUESTION_OPTION },
-      },
-    };
-    const expectedAction = createEntity(response, 'respondJob');
+    const expectedAction = respondToPoll(poll, [1], 'respondJob');
     expect(actions).toContainEqual(expectedAction);
   });
 });

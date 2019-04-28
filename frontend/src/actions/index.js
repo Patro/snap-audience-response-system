@@ -1,6 +1,7 @@
 export const JOIN_SESSION = 'JOIN_SESSION';
 export const START_SESSION = 'START_SESSION';
 export const SAVE_QUESTION = 'SAVE_QUESTION';
+export const RESPOND_TO_POLL = 'RESPOND_TO_POLL';
 export const CREATE_ENTITY = 'CREATE_ENTITY';
 export const DESTROY_ENTITY = 'DESTROY_ENTITY';
 export const FETCH_ENTITY = 'FETCH_ENTITY';
@@ -34,6 +35,13 @@ export const saveQuestion = (question, options, jobId = nextJobId()) => ({
   jobId
 });
 
+export const respondToPoll = (poll, pickedOptionIds, jobId = nextJobId()) => ({
+  type: RESPOND_TO_POLL,
+  poll,
+  pickedOptionIds,
+  jobId
+});
+
 export const createEntity = (entity, jobId = nextJobId()) => ({
   type: CREATE_ENTITY,
   entity,
@@ -58,7 +66,8 @@ export const receiveEntity = (entity) => ({
   entity
 });
 
-export const fetchCollection = (entityType, filterParams, jobId = nextJobId()) => ({
+export const fetchCollection =
+(entityType, filterParams, jobId = nextJobId()) => ({
   type: FETCH_COLLECTION,
   entityType,
   filterParams,
