@@ -1,7 +1,6 @@
 import React from 'react';
 import { Form, Button, Input } from 'antd';
 import { mount } from 'enzyme';
-import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import JobErrorAlert from './JobErrorAlert';
 import JoinSessionForm from './JoinSessionForm';
@@ -58,11 +57,19 @@ describe('JoinSessionForm', () => {
   });
 
   describe('on submit', () => {
-    describe('without join job', () => {
-      it('calls on submit handler with attendance', () => {
-        const onSubmit = jest.fn();
-        component.props.onSubmit = onSubmit;
+    let onSubmit;
 
+    beforeEach(() => {
+      onSubmit = jest.fn();
+      component.props.onSubmit = onSubmit;
+    });
+
+    describe('given processing flag set to false', () => {
+      beforeEach(() => {
+        component.props.processing = false;
+      });
+
+      it('calls on submit handler with attendance', () => {
         component.setAttendanceCode('ABCD');
         component.submit();
 
@@ -70,15 +77,12 @@ describe('JoinSessionForm', () => {
       });
     });
 
-    describe('given join job', () => {
+    describe('given processing flag set to true', () => {
       beforeEach(() => {
-        component.props.joinJob = factories.job.started();
+        component.props.processing = true;
       });
 
       it('does not call on submit handler', () => {
-        const onSubmit = jest.fn();
-        component.props.onSubmit = onSubmit;
-
         component.setAttendanceCode('ABCD');
         component.submit();
 

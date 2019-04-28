@@ -313,10 +313,9 @@ describe('QuestionForm', () => {
         });
       });
 
-      describe('with save job', () => {
+      describe('given processing flag set to true', () => {
         beforeEach(() => {
-          const job = factories.job.started();
-          component.props.saveJob = job;
+          component.props.processing = true;
         });
 
         it('does not call handler', () => {

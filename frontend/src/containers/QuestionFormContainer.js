@@ -1,3 +1,4 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { fetchCollection, fetchEntity, saveQuestion } from '../actions';
@@ -8,6 +9,7 @@ import {
 } from '../constants/entityTypes';
 import { getEntitiesOfCollection, getEntity, getJob } from '../selectors';
 import QuestionForm from '../components/QuestionForm';
+import withJob from './withJob';
 
 const mapStateToProps = (state, { match }) => {
   const saveJob = getJob(state, saveQuestionJobId);
@@ -48,9 +50,9 @@ const mapDispatchToProps = (dispatch, { match }) => {
   return props;
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withJob(props => props.saveJob),
 )(QuestionForm);
 
 ///////////////////////////////////////////////////////////////////////////////

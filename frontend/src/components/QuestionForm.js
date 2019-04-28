@@ -40,8 +40,8 @@ class QuestionForm extends Component {
     return this.props.options || [];
   }
 
-  get loading() {
-    return this.props.saveJob !== undefined;
+  get processing() {
+    return this.props.processing;
   }
 
   render() {
@@ -179,7 +179,7 @@ class QuestionForm extends Component {
   renderSubmitButton() {
     return (
       <Form.Item wrapperCol={ { offset: 4 } }>
-        <Button type="primary" htmlType="submit" loading={this.loading}>
+        <Button type="primary" htmlType="submit" loading={this.processing}>
           Save
         </Button>
       </Form.Item>
@@ -209,7 +209,7 @@ class QuestionForm extends Component {
 
   submit(event) {
     event.preventDefault();
-    if (this.loading) { return; }
+    if (this.processing) { return; }
 
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) { return; }

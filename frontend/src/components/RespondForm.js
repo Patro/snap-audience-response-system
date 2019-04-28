@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Form, Button, Radio, Checkbox, List } from 'antd';
 import isArray from 'lodash/isArray';
 import { MULTIPLE_CHOICE_QUESTION } from '../constants/entityTypes';
-import { SUCCEEDED } from '../constants/jobStatus';
 
 class RespondForm extends Component {
   constructor(props) {
@@ -15,21 +14,6 @@ class RespondForm extends Component {
     this.refresh();
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.jobStatusChangedToSucceeded(prevProps)) {
-      this.props.onSuccess();
-    }
-  }
-
-  jobStatusChangedToSucceeded(prevProps) {
-    const job = this.props.respondJob;
-    if (!job) { return false; }
-    const prevJob = prevProps.respondJob;
-    if (!prevJob) { return false; }
-
-    return job.status !== prevJob.status && job.status === SUCCEEDED;
-  }
-
   refresh() {
     if (this.props.onRefresh) {
       this.props.onRefresh();
@@ -40,8 +24,8 @@ class RespondForm extends Component {
     return this.props.question.type === MULTIPLE_CHOICE_QUESTION;
   }
 
-  get loading() {
-    return this.props.respondJob !== undefined;
+  get processing() {
+    return this.props.processing;
   }
 
   get itemComponent() {
@@ -50,7 +34,7 @@ class RespondForm extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    if (this.loading) { return; }
+    if (this.processing) { return; }
 
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) { return; }
@@ -83,7 +67,7 @@ class RespondForm extends Component {
             ],
           })(this.renderSelection()) }
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={this.loading}>
+            <Button type="primary" htmlType="submit" loading={this.processing}>
               Send
             </Button>
           </Form.Item>

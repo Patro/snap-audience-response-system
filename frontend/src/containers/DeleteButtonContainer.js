@@ -1,7 +1,9 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { destroyEntity } from '../actions';
 import DeleteButton from '../components/DeleteButton';
 import { getJob } from '../selectors';
+import withJob from './withJob';
 
 const mapStateToProps = (state, { entity }) => ({
   deleteJob: getJob(state, jobId(entity)),
@@ -13,10 +15,10 @@ const mapDispatchToProps = (dispatch, { entity }) => ({
   ),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteButton)
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withJob(props => props.deleteJob),
+)(DeleteButton);
 
 ///////////////////////////////////////////////////////////////////////////////
 

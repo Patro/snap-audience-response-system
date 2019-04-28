@@ -1,8 +1,10 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createEntity, fetchCollection, fetchEntity } from '../actions';
 import RespondForm from '../components/RespondForm';
 import { QUESTION_OPTION, RESPONSE } from '../constants/entityTypes';
 import { getEntity, getEntitiesOfCollection, getJob } from '../selectors';
+import withJob from './withJob';
 
 const mapStateToProps = (state, { poll }) => {
   const questionIdentifier = getIdentifierOfQuestion(poll);
@@ -22,9 +24,9 @@ const mapDispatchToProps = (dispatch, { poll }) => {
   }
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withJob(props => props.respondJob),
 )(RespondForm);
 
 ///////////////////////////////////////////////////////////////////////////////

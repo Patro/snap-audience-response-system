@@ -15,8 +15,8 @@ class DeleteButton extends Component {
     };
   }
 
-  get loading() {
-    return this.props.saveJob !== undefined;
+  get processing() {
+    return this.props.processing;
   }
 
   get onDelete() {
@@ -30,7 +30,7 @@ class DeleteButton extends Component {
         type="danger"
         icon="delete"
         onClick={this.showConfirmationModal}
-        loading={this.loading} />
+        loading={this.processing} />
     );
   }
 

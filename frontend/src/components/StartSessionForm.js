@@ -8,13 +8,13 @@ class StartSessionForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  get loading() {
-    return this.props.startJob !== undefined;
+  get processing() {
+    return this.props.processing;
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    if (this.loading) { return; }
+    if (this.processing) { return; }
 
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) { return; }
@@ -36,7 +36,7 @@ class StartSessionForm extends Component {
             ) }
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={this.loading}>
+            <Button type="primary" htmlType="submit" loading={this.processing}>
               Start
             </Button>
           </Form.Item>

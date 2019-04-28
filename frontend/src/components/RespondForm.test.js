@@ -110,7 +110,11 @@ describe('RespondForm', () => {
       expect(component.checkboxes).toHaveLength(3);
     });
 
-    describe('without respond job', () => {
+    describe('given processing flag set to false', () => {
+      beforeEach(() => {
+        component.props.processing = false;
+      });
+
       it('calls on submit handler with ids of selected options', () => {
         const onSubmit = jest.fn();
         component.props.onSubmit = onSubmit;
@@ -123,9 +127,9 @@ describe('RespondForm', () => {
       });
     });
 
-    describe('given respond job', () => {
+    describe('given processing flag set to true', () => {
       beforeEach(() => {
-        component.props.respondJob = factories.job.started();
+        component.props.processing = true;
       });
 
       it('does not call on submit handler on form submit', () => {
@@ -150,7 +154,11 @@ describe('RespondForm', () => {
       expect(component.radioBoxes).toHaveLength(3);
     });
 
-    describe('without respond job', () => {
+    describe('given processing flag set to false', () => {
+      beforeEach(() => {
+        component.props.processing = false;
+      });
+
       it('calls on submit handler with id of selected option', () => {
         const onSubmit = jest.fn();
         component.props.onSubmit = onSubmit;
@@ -162,9 +170,9 @@ describe('RespondForm', () => {
       });
     });
 
-    describe('given respond job', () => {
+    describe('given processing flag set to true', () => {
       beforeEach(() => {
-        component.props.respondJob = factories.job.started();
+        component.props.processing = true;
       });
 
       it('does not call on submit handler on form submit', () => {
@@ -175,24 +183,6 @@ describe('RespondForm', () => {
         component.submit();
 
         expect(onSubmit).not.toBeCalled();
-      });
-    });
-  });
-
-  describe('given started respond job', () => {
-    describe('when job status changes to succeeded', () => {
-      it('does call on success handler', () => {
-        const onSuccess = jest.fn();
-        component.props.onSuccess = onSuccess;
-
-        const startedJob = factories.job.started();
-        component.setJob(startedJob);
-        expect(onSuccess).not.toBeCalled();
-
-        const succeededJob = factories.job.succeeded();
-        component.setJob(succeededJob);
-
-        expect(onSuccess).toBeCalled();
       });
     });
   });
