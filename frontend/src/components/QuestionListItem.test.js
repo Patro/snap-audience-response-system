@@ -18,6 +18,10 @@ class TestWrapper extends AbstractTestWrapper {
     return this.header.find('.question_list_item__text').text();
   }
 
+  get startPollButton() {
+    return this.extra.find('.question_list__start_poll_button');
+  }
+
   get editButton() {
     return this.extra.find('.question_list__edit_button');
   }
@@ -49,6 +53,10 @@ describe('QuestionListItem', () => {
 
   it('renders text of question', () => {
     expect(component.questionText).toEqual('Question A');
+  });
+
+  it('renders start poll button', () => {
+    expect(component.startPollButton).toHaveLength(1);
   });
 
   it('renders edit button', () => {

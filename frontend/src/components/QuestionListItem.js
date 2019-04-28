@@ -6,6 +6,7 @@ import {
   SINGLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
+import StartPollButton from './StartPollButton';
 
 class QuestionListItem extends Component {
   constructor(props) {
@@ -65,6 +66,7 @@ class QuestionListItem extends Component {
   renderMenu() {
     return (
       <div>
+        <StartPollButton className="question_list__start_poll_button" />
         <Link to={this.editQuestionPath}>
           <Button
             type="primary"
