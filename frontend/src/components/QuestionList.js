@@ -12,6 +12,7 @@ class QuestionList extends Component {
     super(props);
 
     this.renderQuestion = this.renderQuestion.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   get interactiveSession() {
@@ -87,6 +88,7 @@ class QuestionList extends Component {
         <DeleteButtonContainer
           entity={question}
           confirmMessage="Are you sure to delete this question?"
+          onSuccess={this.refresh}
           className="question_list__delete_button" />
       </List.Item>
     )
