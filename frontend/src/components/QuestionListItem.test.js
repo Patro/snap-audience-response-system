@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
+import StartPollButtonContainer from './../containers/StartPollButtonContainer';
 import QuestionListItem from './QuestionListItem';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -19,7 +20,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get startPollButton() {
-    return this.extra.find('.question_list__start_poll_button');
+    return this.extra.find(StartPollButtonContainer);
   }
 
   get editButton() {
