@@ -20,6 +20,10 @@ class TestWrapper extends AbstractTestWrapper {
       <QuestionList {...this.props} />
     )));
   }
+
+  givenOpenPoll(itemIndex) {
+    return this.listItems.at(itemIndex).prop('openPoll');
+  }
 }
 
 describe('QuestionList', () => {
@@ -53,6 +57,22 @@ describe('QuestionList', () => {
 
     it('renders button to add new question', () => {
       expect(component.addButton.length).toBe(1);
+    });
+
+    describe('given open poll', () => {
+      let poll;
+
+      beforeEach(() => {
+        poll = factories.poll.entity();
+        const openPollsByQuestionId = {
+          1: poll,
+        }
+        component.props.openPollsByQuestionId = openPollsByQuestionId;
+      });
+
+      it('passes poll to list item', () => {
+        expect(component.givenOpenPoll(0)).toBe(poll);
+      });
     });
   });
 

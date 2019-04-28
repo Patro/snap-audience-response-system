@@ -19,9 +19,20 @@ class QuestionList extends Component {
     return this.props.questions;
   }
 
+  get openPollsByQuestionId() {
+    const openPollsByQuestionId = this.props.openPollsByQuestionId;
+    if (openPollsByQuestionId === undefined) { return {}; }
+
+    return openPollsByQuestionId;
+  }
+
   get newQuestionPath() {
     const id = this.interactiveSession.id;
     return `/interactive_sessions/${id}/owner/questions/new`;
+  }
+
+  openPollOfQuestion(question) {
+    return this.openPollsByQuestionId[question.id];
   }
 
   render() {
@@ -54,6 +65,7 @@ class QuestionList extends Component {
   renderItem(question) {
     return <QuestionListItem key={question.id}
                              question={question}
+                             openPoll={this.openPollOfQuestion(question)}
                              onDelete={this.refresh} />
   }
 

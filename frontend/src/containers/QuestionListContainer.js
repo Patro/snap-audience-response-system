@@ -1,15 +1,16 @@
 import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
 import QuestionList from '../components/QuestionList';
-import { QUESTION } from '../constants/entityTypes';
-import { getCollection, getEntity } from '../selectors';
+import { POLL, QUESTION } from '../constants/entityTypes';
+import { getEntitiesOfCollection } from '../selectors';
 
 const mapStateToProps = (state, { interactiveSession }) => ({
-  questions: getQuestionsOfSession(state, interactiveSession),
+  questions: getQuestions(state, interactiveSession),
+  openPollsByQuestionId: getOpenPolls(state, interactiveSession),
 });
 
 const mapDispatchToProps = (dispatch, { interactiveSession }) => ({
-  onRefresh: () => fetchQuestions(dispatch, interactiveSession),
+  onRefresh: () => fetchDependencies(dispatch, interactiveSession),
 });
 
 export default connect(
@@ -19,18 +20,46 @@ export default connect(
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const getQuestionsOfSession = (state, interactiveSession) => {
-  const collection = getCollection(
-    state, QUESTION, buildFilterParams(interactiveSession)
+const getQuestions = (state, interactiveSession) => (
+  getEntitiesOfCollection(
+    state, QUESTION, buildQuestionsFilterParams(interactiveSession)
+  )
+);
+
+const getOpenPolls = (state, interactiveSession) => {
+  const openPolls = getEntitiesOfCollection(
+    state, POLL, buildOpenPollsFilterParams(interactiveSession)
   );
-  if (collection === undefined) { return; }
-  return collection.entities.map(identifier => getEntity(state, identifier));
+  if (openPolls === undefined) { return; }
+
+  return openPolls.reduce((byQuestionId, poll) => {
+    byQuestionId[poll.relationships.question.id] = poll;
+    return byQuestionId;
+  }, {});
 };
+
+const fetchDependencies = (dispatch, interactiveSession) => {
+  fetchQuestions(dispatch, interactiveSession);
+  fetchOpenPolls(dispatch, interactiveSession);
+}
 
 const fetchQuestions = (dispatch, interactiveSession) => {
-  dispatch(fetchCollection(QUESTION, buildFilterParams(interactiveSession)));
+  dispatch(
+    fetchCollection(QUESTION, buildQuestionsFilterParams(interactiveSession))
+  );
 };
 
-const buildFilterParams = (interactiveSession) => ({
+const fetchOpenPolls= (dispatch, interactiveSession) => {
+  dispatch(
+    fetchCollection(POLL, buildOpenPollsFilterParams(interactiveSession))
+  );
+};
+
+const buildQuestionsFilterParams = (interactiveSession) => ({
   interactiveSessionId: interactiveSession.id,
+});
+
+const buildOpenPollsFilterParams = (interactiveSession) => ({
+  interactiveSessionId: interactiveSession.id,
+  status: 'open',
 });
