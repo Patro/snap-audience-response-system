@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, List } from 'antd';
+import { Button, Collapse } from 'antd';
 import {
   MULTIPLE_CHOICE_QUESTION,
   SINGLE_CHOICE_QUESTION,
@@ -8,6 +8,13 @@ import {
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
 
 class QuestionListItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.renderText = this.renderText.bind(this);
+    this.renderMenu = this.renderMenu.bind(this);
+  }
+
   get question() {
     return this.props.question;
   }
@@ -36,11 +43,28 @@ class QuestionListItem extends Component {
   }
 
   render() {
+    if (this.question === undefined) { return false; }
+
     return (
-      <List.Item key={this.question.id} className="question_list_item">
-        <span className="question_list_item__text">
-          {this.question.attributes.text}
-        </span>
+      <Collapse.Panel
+        {...this.props}
+        header={this.renderText()}
+        extra={this.renderMenu()}
+        className="question_list_item"></Collapse.Panel>
+    )
+  }
+
+  renderText() {
+    return (
+      <span className="question_list_item__text">
+        {this.question.attributes.text}
+      </span>
+    )
+  }
+
+  renderMenu() {
+    return (
+      <div>
         <Link to={this.editQuestionPath}>
           <Button
             type="primary"
@@ -52,7 +76,7 @@ class QuestionListItem extends Component {
           confirmMessage="Are you sure to delete this question?"
           onSuccess={this.onDelete}
           className="question_list__delete_button" />
-      </List.Item>
+      </div>
     )
   }
 }

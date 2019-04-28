@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, List } from 'antd';
+import { Button, Collapse } from 'antd';
 import QuestionListItem from './QuestionListItem';
 
 class QuestionList extends Component {
@@ -29,11 +29,10 @@ class QuestionList extends Component {
 
     return (
       <div className="question_list">
-        <List
-            header={this.renderHeader()}
-            bordered
-            dataSource={this.questions}
-            renderItem={this.renderItem} />
+        {this.renderHeader()}
+        <Collapse>
+          {this.questions.map(question => this.renderItem(question))}
+        </Collapse>
       </div>
     );
   }
@@ -53,7 +52,9 @@ class QuestionList extends Component {
   }
 
   renderItem(question) {
-    return <QuestionListItem question={question} onDelete={this.refresh} />
+    return <QuestionListItem key={question.id}
+                             question={question}
+                             onDelete={this.refresh} />
   }
 
   componentDidMount() {

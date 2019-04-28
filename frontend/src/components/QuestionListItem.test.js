@@ -6,22 +6,28 @@ import DeleteButtonContainer from './../containers/DeleteButtonContainer';
 import QuestionListItem from './QuestionListItem';
 
 class TestWrapper extends AbstractTestWrapper {
+  get header() {
+    return shallow(this.wrapper.prop('header'));
+  }
+
+  get extra() {
+    return shallow(this.wrapper.prop('extra'));
+  }
+
   get questionText() {
-    return this.wrapper.find('.question_list_item__text').text();
+    return this.header.find('.question_list_item__text').text();
   }
 
   get editButton() {
-    return this.wrapper.find('.question_list__edit_button');
+    return this.extra.find('.question_list__edit_button');
   }
 
   get deleteButton() {
-    return this.wrapper.find(DeleteButtonContainer);
+    return this.extra.find(DeleteButtonContainer);
   }
 
   _render() {
-    return shallow(
-      <QuestionListItem {...this.props} />
-    );
+    return shallow(<QuestionListItem {...this.props} />);
   }
 
   successfulDeletion() {
