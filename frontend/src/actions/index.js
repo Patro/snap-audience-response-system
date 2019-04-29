@@ -3,6 +3,7 @@ export const START_SESSION = 'START_SESSION';
 export const SAVE_QUESTION = 'SAVE_QUESTION';
 export const RESPOND_TO_POLL = 'RESPOND_TO_POLL';
 export const CREATE_ENTITY = 'CREATE_ENTITY';
+export const UPDATE_ENTITY = 'UPDATE_ENTITY';
 export const DESTROY_ENTITY = 'DESTROY_ENTITY';
 export const FETCH_ENTITY = 'FETCH_ENTITY';
 export const RECEIVE_ENTITY = 'RECEIVE_ENTITY';
@@ -44,6 +45,12 @@ export const respondToPoll = (poll, pickedOptionIds, jobId = nextJobId()) => ({
 
 export const createEntity = (entity, jobId = nextJobId()) => ({
   type: CREATE_ENTITY,
+  entity,
+  jobId
+});
+
+export const updateEntity = (entity, jobId = nextJobId()) => ({
+  type: UPDATE_ENTITY,
   entity,
   jobId
 });
