@@ -9,12 +9,14 @@ describe('collections reducer', () => {
           '{}': { entities: [] },
         },
       };
-      const action = receiveCollection('VEHICLE', { fuel: 'gas' }, {
+      const action = receiveCollection({
+        type: 'VEHICLE',
+        filterParams: { fuel: 'gas' },
         entities: [
           { id: 2, type: 'CAR', attributes: { maxSpeed: 200 } },
           { id: 2, type: 'SPACESHIP', attributes: { maxSpeed: 100000 } },
           { id: 3, type: 'SPACESHIP', attributes: { maxSpeed: 400000 } },
-        ]
+        ],
       });
       const stateAfter = {
         CAR: {
@@ -22,6 +24,8 @@ describe('collections reducer', () => {
         },
         VEHICLE: {
           '{"fuel":"gas"}': {
+            type: 'VEHICLE',
+            filterParams: { fuel: 'gas' },
             entities: [
               { id: 2, type: 'CAR' },
               { id: 2, type: 'SPACESHIP' },

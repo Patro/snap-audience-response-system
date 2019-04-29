@@ -9,7 +9,9 @@ describe('entities reducer', () => {
           1: { id: 1, type: 'CAR' },
         },
       };
-      const action = receiveCollection('VEHICLE', {}, {
+      const action = receiveCollection({
+        type: 'VEHICLE',
+        filterParams: {},
         entities: [
           { id: 2, type: 'CAR', attributes: { maxSpeed: 200 } },
           { id: 2, type: 'SPACESHIP', attributes: { maxSpeed: 100000 } },

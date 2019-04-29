@@ -39,6 +39,8 @@ describe('collections', () => {
       ajax.mockReturnValue(of({ response: originalResponse }));
 
       const mappedResponse = {
+        type: 'SPACESHIP_ENGINE',
+        filterParams: { fuel: 'gas' },
         entities: [
           {
             id: 100,
@@ -49,7 +51,10 @@ describe('collections', () => {
           }
         ]
       }
-      collections.fetch().subscribe(response => {
+      collections.fetch({
+        type: 'SPACESHIP_ENGINE',
+        filterParams: { fuel: 'gas' },
+      }).subscribe(response => {
         expect(response).toEqual(mappedResponse);
         done();
       });

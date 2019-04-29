@@ -11,7 +11,11 @@ export const fetch = ({ type, filterParams } = {}) => (
       'Accept': JSON_API_MIME_TYPE,
     }
   }).pipe(
-    map(xhr => mapResponse(xhr.response))
+    map(xhr => ({
+      ...mapResponse(xhr.response),
+      type,
+      filterParams,
+    }))
   )
 );
 

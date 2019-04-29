@@ -15,9 +15,7 @@ const processAction = (action, dependencies) => (
   withJob(
     action,
     fetchCollection$(action, dependencies),
-    map(collection =>
-      receiveCollection(action.entityType, action.filterParams, collection)
-    )
+    map(receiveCollection)
   )
 );
 

@@ -8,6 +8,8 @@ const action$ = of(
 );
 
 const collection = {
+  type: 'SPACESHIP_ENGINE',
+  filterParams: { fuel: 'gas' },
   entities: [
     { id: 100, type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
     { id: 101, type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
@@ -35,9 +37,7 @@ describe('fetchCollectionEpic', () => {
 
   describe('when request succeeds', () => {
     it('emits receive collection action', (done) => {
-      const expectedAction = receiveCollection(
-        'SPACESHIP_ENGINE', { fuel: 'gas' }, collection
-      )
+      const expectedAction = receiveCollection(collection)
 
       const result$ = callEpic();
       result$.subscribe(actions => {

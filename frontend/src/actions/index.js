@@ -81,10 +81,8 @@ export const fetchCollection =
   jobId
 });
 
-export const receiveCollection = (entityType, filterParams, collection) => ({
+export const receiveCollection = (collection) => ({
   type: RECEIVE_COLLECTION,
-  entityType,
-  filterParams,
   collection
 });
 
