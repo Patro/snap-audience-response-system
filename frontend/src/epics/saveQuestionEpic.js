@@ -1,6 +1,9 @@
-import { zip, merge, of } from 'rxjs';
+import { concat } from 'rxjs';
+import { zip, of } from 'rxjs';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
 import { SAVE_QUESTION, receiveEntity } from '../actions';
+import { QUESTION, QUESTION_OPTION } from '../constants/entityTypes';
+import reloadCollections from './reloadCollections';
 import withJob from './withJob';
 
 class SaveQuestionService {
@@ -116,10 +119,10 @@ class SaveQuestionService {
   }
 }
 
-const saveQuestionEpic = (action$, _, dependencies) => (
+const saveQuestionEpic = (action$, state$, dependencies) => (
   action$.pipe(
     filter(action => action.type === SAVE_QUESTION),
-    mergeMap(action => processAction(action, dependencies))
+    mergeMap(action => processAction$(action, state$, dependencies)),
   )
 )
 
@@ -127,29 +130,36 @@ export default saveQuestionEpic;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const processAction = (action, dependencies) => (
+const processAction$ = (action, state$, dependencies) => (
   withJob(
     action,
-    saveQuestionAndRedirect$(action, dependencies),
-    mergeMap(result => merge(
-      of(receiveEntity(result.question)),
-      ...result.options.map(option => of(receiveEntity(option)))
-    ))
+    saveQuestion$(action, dependencies),
+    onSuccess(state$, dependencies)
   )
 );
 
-const saveQuestionAndRedirect$ = (action, dependencies) => (
-  new SaveQuestionService(action, dependencies).call$().pipe(
-    tap(({ question }) =>
-      redirectToSessionOwner(question, dependencies.history)
+const saveQuestion$ = (action, dependencies) => (
+  new SaveQuestionService(action, dependencies).call$()
+);
+
+const onSuccess = (state$, dependencies) => (
+  mergeMap(({ question, options }) =>
+    concat(
+      of(receiveEntity(question)),
+      ...options.map(option => of(receiveEntity(option))),
+      reloadCollections(state$, QUESTION, dependencies),
+      reloadCollections(state$, QUESTION_OPTION, dependencies),
+      of(question).pipe(
+        tap(question => redirectToQuestionList(question, dependencies.history)),
+      )
     )
   )
 );
 
-const redirectToSessionOwner = (question, history) => (
-  history.push(buildSessionOwnerUrl(question.relationships.interactiveSession))
+const redirectToQuestionList = (question, history) => (
+  history.push(buildQuestionListUrl(question.relationships.interactiveSession))
 );
 
-const buildSessionOwnerUrl = (session) => (
+const buildQuestionListUrl = (session) => (
   `/interactive_sessions/${session.id}/owner`
 );

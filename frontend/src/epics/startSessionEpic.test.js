@@ -7,7 +7,7 @@ import startSessionEpic from './startSessionEpic';
 const action$ = of(
   startSession('My new session', 'jobId')
 );
-const state$ = null;
+const state$ = of({});
 
 const entity = {
   id: 100,

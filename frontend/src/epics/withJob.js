@@ -1,16 +1,16 @@
-import { merge, of } from 'rxjs';
+import { of, concat } from 'rxjs';
 import { mergeMap, catchError, endWith } from 'rxjs/operators';
 import get from 'lodash/get';
 import {
   markJobAsStarted, markJobAsSucceeded, markJobAsFailed, removeJob
 } from '../actions';
 
-const withJob = (trigger, wrapped$, pipe) => (
-  merge(
+const withJob = (trigger, wrapped$, onSuccess) => (
+  concat(
     of(markJobAsStarted(trigger.jobId, trigger)),
     wrapped$.pipe(
-      mergeMap(result => merge(
-        of(result).pipe(pipe),
+      mergeMap(result => concat(
+        of(result).pipe(onSuccess),
         of(markJobAsSucceeded(trigger.jobId, result)),
       )),
       catchError((err) => {

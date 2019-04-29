@@ -7,7 +7,7 @@ import joinSessionEpic from './joinSessionEpic';
 const action$ = of(
   joinSession('ABCD', 'jobId')
 );
-const state$ = null;
+const state$ = of({});
 
 const entity = {
   id: 100,

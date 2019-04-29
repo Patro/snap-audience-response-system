@@ -6,16 +6,16 @@ import {
 import withJob from './withJob';
 
 class TestWrapper {
-  constructor({ trigger, wrapped$, pipe$ } = {}) {
+  constructor({ trigger, wrapped$, onSuccess } = {}) {
     this.root$ = of('root');
     this.trigger = trigger;
     this.wrapped$ = wrapped$;
-    this.pipe$ = pipe$;
+    this.onSuccess = onSuccess;
   }
 
   call$() {
     return this.root$.pipe(
-      mergeMap(_ => withJob(this.trigger, this.wrapped$, this.pipe$)),
+      mergeMap(_ => withJob(this.trigger, this.wrapped$, this.onSuccess)),
       toArray(),
     )
   }
@@ -27,7 +27,7 @@ describe('withJob', () => {
   beforeEach(() => {
     trigger = { jobId: 'jobId' };
     withJob = new TestWrapper({
-      pipe$: map(() => 'pipedResult'),
+      onSuccess: map(() => 'pipedResult'),
       trigger,
     });
   });

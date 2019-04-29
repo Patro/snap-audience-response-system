@@ -5,9 +5,9 @@ import { RESPONSE, QUESTION_OPTION } from '../constants/entityTypes'
 import respondToPollEpic from './respondToPollEpic';
 
 class TestWrapper {
-  constructor({ action$, state$ } = {}) {
+  constructor({ action$ } = {}) {
     this.action$ = action$;
-    this.state$ = state$;
+    this.state$ = of({});
     this.api = {
       _id: 1,
       entities: {

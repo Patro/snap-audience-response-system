@@ -4,9 +4,9 @@ import { updateEntity, receiveEntity } from '../actions';
 import updateEntityEpic from './updateEntityEpic';
 
 class TestWrapper {
-  constructor({ action$, state$ } = {}) {
+  constructor({ action$ }) {
     this.action$ = action$;
-    this.state$ = state$;
+    this.state$ = of({});
     this.api = {
       entities: {
         update: jest.fn(entity => of(entity)),

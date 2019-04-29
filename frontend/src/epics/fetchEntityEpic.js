@@ -4,14 +4,14 @@ import withJob from './withJob';
 
 const fetchEntityEpic = (action$, _, dependencies) => action$.pipe(
   filter(action => action.type === FETCH_ENTITY),
-  mergeMap(action => processAction(action, dependencies))
+  mergeMap(action => processAction$(action, dependencies))
 );
 
 export default fetchEntityEpic;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const processAction = (action, dependencies) => (
+const processAction$ = (action, dependencies) => (
   withJob(
     action,
     fetchEntity$(action, dependencies),

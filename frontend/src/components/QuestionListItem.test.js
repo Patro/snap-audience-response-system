@@ -34,10 +34,6 @@ class TestWrapper extends AbstractTestWrapper {
   _render() {
     return shallow(<QuestionListItem {...this.props} />);
   }
-
-  successfulDeletion() {
-    this.deleteButton.simulate('success');
-  }
 }
 
 describe('QuestionListItem', () => {
@@ -66,19 +62,5 @@ describe('QuestionListItem', () => {
 
   it('renders delete button', () => {
     expect(component.deleteButton).toHaveLength(1);
-  });
-
-  describe('on delete', () => {
-    let onDelete;
-
-    beforeEach(() => {
-      onDelete = jest.fn();
-      component.props.onDelete = onDelete;
-    });
-
-    it('calls handler after successful deletion', () => {
-      component.successfulDeletion();
-      expect(onDelete).toBeCalled();
-    });
   });
 });

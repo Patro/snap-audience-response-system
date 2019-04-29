@@ -1,25 +1,25 @@
-import { of, zip, merge } from 'rxjs';
+import { concat } from 'rxjs';
+import { of, zip } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
 import { RESPOND_TO_POLL, receiveEntity } from '../actions';
 import { RESPONSE, QUESTION_OPTION } from '../constants/entityTypes'
+import reloadCollections from './reloadCollections';
 import withJob from './withJob';
 
-const respondToPollEpic = (action$, _, dependencies) => action$.pipe(
+const respondToPollEpic = (action$, state$, dependencies) => action$.pipe(
   filter(action => action.type === RESPOND_TO_POLL),
-  mergeMap(action => processAction(action, dependencies))
+  mergeMap(action => processAction$(action, state$, dependencies)),
 );
 
 export default respondToPollEpic;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const processAction = (action, dependencies) => (
+const processAction$ = (action, state$, dependencies) => (
   withJob(
     action,
     createResponses$(action, dependencies),
-    mergeMap(options => merge(
-      ...options.map(option => of(receiveEntity(option)))
-    ))
+    onSuccess(action, state$, dependencies),
   )
 );
 
@@ -39,4 +39,13 @@ const createResponse$ = (poll, pickedOptionId, api) => (
       pickedQuestionOption: { id: pickedOptionId, type: QUESTION_OPTION },
     }
   })
+);
+
+const onSuccess = (action, state$, dependencies) => (
+  mergeMap(options =>
+    concat(
+      ...options.map(option => of(receiveEntity(option))),
+      reloadCollections(state$, action.poll.type, dependencies),
+    )
+  )
 );

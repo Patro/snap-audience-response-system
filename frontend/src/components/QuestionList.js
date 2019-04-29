@@ -65,8 +65,7 @@ class QuestionList extends Component {
   renderItem(question) {
     return <QuestionListItem key={question.id}
                              question={question}
-                             openPoll={this.openPollOfQuestion(question)}
-                             onDelete={this.refresh} />
+                             openPoll={this.openPollOfQuestion(question)} />
   }
 
   componentDidMount() {

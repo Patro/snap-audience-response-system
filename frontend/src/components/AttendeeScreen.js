@@ -46,7 +46,6 @@ class AttendeeScreen extends Component {
 
   handleSuccessfulResponse() {
     this.setState({ respondedToPoll: true });
-    this.refresh();
   }
 
   render() {

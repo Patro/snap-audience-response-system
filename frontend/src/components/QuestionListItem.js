@@ -43,10 +43,6 @@ class QuestionListItem extends Component {
     return `${ownerPath}/questions/${questionIdentifier}/edit`;
   }
 
-  get onDelete() {
-    return this.props.onDelete;
-  }
-
   render() {
     if (this.question === undefined) { return false; }
 
@@ -83,7 +79,6 @@ class QuestionListItem extends Component {
         <DeleteButtonContainer
           entity={this.question}
           confirmMessage="Are you sure to delete this question?"
-          onSuccess={this.onDelete}
           className="question_list__delete_button" />
       </div>
     )

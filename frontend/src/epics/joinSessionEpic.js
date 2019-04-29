@@ -1,31 +1,43 @@
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
+import { of, concat } from 'rxjs';
+import { filter, mergeMap, tap } from 'rxjs/operators';
 import { JOIN_SESSION, receiveEntity } from '../actions';
-import { ATTENDANCE } from '../constants/entityTypes'
+import { ATTENDANCE, INTERACTIVE_SESSION } from '../constants/entityTypes'
+import reloadCollections from './reloadCollections';
 import withJob from './withJob';
 
-const joinSessionEpic = (action$, _, dependencies) => action$.pipe(
+const joinSessionEpic = (action$, state$, dependencies) => action$.pipe(
   filter(action => action.type === JOIN_SESSION),
-  mergeMap(action => processAction(action, dependencies))
+  mergeMap(action => processAction$(action, state$, dependencies))
 );
 
 export default joinSessionEpic;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const processAction = (action, dependencies) => (
+const processAction$ = (action, state$, dependencies) => (
   withJob(
     action,
     createAttendance$(action, dependencies),
-    map(receiveEntity)
+    onSuccess(state$, dependencies)
   )
 );
 
-const createAttendance$ = ({ attendanceCode }, { api, history }) => (
+const createAttendance$ = ({ attendanceCode }, { api }) => (
   api.entities.create({
     type: ATTENDANCE,
     attributes: { attendanceCode },
-  }).pipe(
-    tap(attendance => redirectToSession(attendance, history))
+  })
+);
+
+const onSuccess = (state$, dependencies) => (
+  mergeMap(entity =>
+    concat(
+      of(receiveEntity(entity)),
+      reloadCollections(state$, INTERACTIVE_SESSION, dependencies),
+      of(entity).pipe(
+        tap(attendance => redirectToSession(attendance, dependencies.history))
+      )
+    )
   )
 );
 

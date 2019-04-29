@@ -6,9 +6,9 @@ import { SINGLE_CHOICE_QUESTION } from '../constants/entityTypes';
 import saveQuestionEpic from './saveQuestionEpic';
 
 class TestWrapper {
-  constructor({ action$, state$, entity } = {}) {
+  constructor({ action$, entity } = {}) {
     this.action$ = action$;
-    this.state$ = state$;
+    this.state$ = of({});
     this.entity = entity;
     this.api = {
       _id: 1,
@@ -98,7 +98,7 @@ describe('joinSessionEpic', () => {
     });
 
     describe('when request succeeds', () => {
-      it('redirects to interactive session owner', (done) => {
+      it('redirects to question list', (done) => {
         const result$ = epic.call();
         result$.subscribe(_actions => {
           expect(epic.history.push).toBeCalledWith('/interactive_sessions/100/owner');

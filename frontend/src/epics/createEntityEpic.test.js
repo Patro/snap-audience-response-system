@@ -12,7 +12,7 @@ const setupCreateMock = () => (jest.fn((_) => of(entity)));
 
 const callEpic = (createMock = setupCreateMock()) => {
   const dependencies = { api: { entities: { create: createMock }} }
-  return createEntityEpic(action$, null, dependencies).pipe(toArray())
+  return createEntityEpic(action$, of({}), dependencies).pipe(toArray())
 };
 
 describe('createEntityEpic', () => {

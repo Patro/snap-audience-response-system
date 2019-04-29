@@ -4,9 +4,9 @@ import { destroyEntity, receiveEntity } from '../actions';
 import destroyEntityEpic from './destroyEntityEpic';
 
 class TestWrapper {
-  constructor({ action$, state$ } = {}) {
+  constructor({ action$ } = {}) {
     this.action$ = action$;
-    this.state$ = state$;
+    this.state$ = of({});
     this.api = {
       entities: {
         destroy: jest.fn(entity => of({ ...entity, deleted: true })),
