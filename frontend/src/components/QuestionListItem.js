@@ -6,7 +6,7 @@ import {
   SINGLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
-import StartPollButtonContainer from './../containers/StartPollButtonContainer';
+import QuestionPollControl from './QuestionPollControl';
 
 class QuestionListItem extends Component {
   constructor(props) {
@@ -18,6 +18,10 @@ class QuestionListItem extends Component {
 
   get question() {
     return this.props.question;
+  }
+
+  get openPoll() {
+    return this.props.openPoll;
   }
 
   get questionUrlType() {
@@ -66,9 +70,10 @@ class QuestionListItem extends Component {
   renderMenu() {
     return (
       <div>
-        <StartPollButtonContainer
+        <QuestionPollControl
           question={this.question}
-          className="question_list__start_poll_button" />
+          openPoll={this.openPoll}
+          className="question_list__poll_control" />
         <Link to={this.editQuestionPath}>
           <Button
             type="primary"

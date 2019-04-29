@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
-import StartPollButtonContainer from './../containers/StartPollButtonContainer';
+import QuestionPollControl from './QuestionPollControl';
 import QuestionListItem from './QuestionListItem';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -19,8 +19,8 @@ class TestWrapper extends AbstractTestWrapper {
     return this.header.find('.question_list_item__text').text();
   }
 
-  get startPollButton() {
-    return this.extra.find(StartPollButtonContainer);
+  get questionPollControl() {
+    return this.extra.find(QuestionPollControl);
   }
 
   get editButton() {
@@ -56,8 +56,8 @@ describe('QuestionListItem', () => {
     expect(component.questionText).toEqual('Question A');
   });
 
-  it('renders start poll button', () => {
-    expect(component.startPollButton).toHaveLength(1);
+  it('renders question poll control', () => {
+    expect(component.questionPollControl).toHaveLength(1);
   });
 
   it('renders edit button', () => {
