@@ -25,6 +25,10 @@ class PollPolicy < ApplicationPolicy
     owner_of_session? || attendee_of_session?
   end
 
+  def update?
+    owner_of_session?
+  end
+
   def destroy?
     owner_of_session?
   end
