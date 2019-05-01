@@ -6,6 +6,7 @@ import job from './job';
 import multipleChoiceQuestion from './multipleChoiceQuestion';
 import poll from './poll';
 import questionOption from './questionOption';
+import questionOptionCount from './questionOptionCount';
 import singleChoiceQuestion from './singleChoiceQuestion';
 
 export default {
@@ -17,5 +18,6 @@ export default {
   multipleChoiceQuestion,
   poll,
   questionOption,
+  questionOptionCount,
   singleChoiceQuestion,
 };
