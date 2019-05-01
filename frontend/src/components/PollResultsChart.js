@@ -35,6 +35,16 @@ class PollResultsChart extends Component {
                             questionOptionCount={questionOptionCount} />
     )
   }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
+  }
 }
 
 export default PollResultsChart;
