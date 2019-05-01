@@ -32,7 +32,7 @@ RSpec.describe Poll, type: :model do
     end
   end
 
-  describe '::responded_by' do
+  describe '::not_responded_by' do
     let(:user) { create(:user) }
     subject { Poll.not_responded_by(user) }
 
