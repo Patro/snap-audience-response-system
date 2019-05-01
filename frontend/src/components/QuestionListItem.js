@@ -6,7 +6,8 @@ import {
   SINGLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
-import QuestionPollsScreen from './QuestionPollsScreen';
+import QuestionPollsScreenContainer
+  from './../containers/QuestionPollsScreenContainer';
 import QuestionPollControl from './QuestionPollControl';
 
 class QuestionListItem extends Component {
@@ -86,7 +87,7 @@ class QuestionListItem extends Component {
   }
 
   renderContent() {
-    return <QuestionPollsScreen />;
+    return <QuestionPollsScreenContainer question={this.question} />;
   }
 }
 

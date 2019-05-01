@@ -3,8 +3,9 @@ import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
+import QuestionPollsScreenContainer
+  from './../containers/QuestionPollsScreenContainer';
 import QuestionPollControl from './QuestionPollControl';
-import QuestionPollsScreen from './QuestionPollsScreen';
 import QuestionListItem from './QuestionListItem';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -33,7 +34,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get questionPollsScreen() {
-    return this.wrapper.find(QuestionPollsScreen);
+    return this.wrapper.find(QuestionPollsScreenContainer);
   }
 
   _render() {
