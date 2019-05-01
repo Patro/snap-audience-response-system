@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PollResultsChartContainer
+  from './../containers/PollResultsChartContainer';
 import PollsMenu from './PollsMenu';
-import PollResultsChart from './PollResultsChart';
 
 class QuestionPollsScreen extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class QuestionPollsScreen extends Component {
         <PollsMenu polls={this.polls}
                    activePoll={this.activePoll}
                    onSelect={this.selectPoll} />
-        <PollResultsChart poll={this.activePoll} />
+        <PollResultsChartContainer poll={this.activePoll} />
       </div>
     );
   }

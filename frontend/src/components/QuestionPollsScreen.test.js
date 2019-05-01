@@ -2,7 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
-import PollResultsChart from './PollResultsChart';
+import PollResultsChartContainer
+  from './../containers/PollResultsChartContainer';
 import PollsMenu from './PollsMenu';
 import QuestionPollsScreen from './QuestionPollsScreen';
 
@@ -12,7 +13,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get pollResultsChart() {
-    return this.wrapper.find(PollResultsChart).first();
+    return this.wrapper.find(PollResultsChartContainer).first();
   }
 
   get givenPollsOfMenu() {
