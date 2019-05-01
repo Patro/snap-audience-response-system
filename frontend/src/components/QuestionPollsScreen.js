@@ -43,6 +43,16 @@ class QuestionPollsScreen extends Component {
     );
   }
 
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
+  }
+
   selectPoll(poll) {
     this.setState({ activePoll: poll });
   }
