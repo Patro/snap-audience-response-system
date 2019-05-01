@@ -2,7 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
-import PollResultsChartItem from './PollResultsChartItem';
+import PollResultsChartItemContainer
+  from '../containers/PollResultsChartItemContainer';
 import PollResultsChart from './PollResultsChart';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -11,7 +12,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get items() {
-    return this.wrapper.find(PollResultsChartItem);
+    return this.wrapper.find(PollResultsChartItemContainer);
   }
 
   _render() {

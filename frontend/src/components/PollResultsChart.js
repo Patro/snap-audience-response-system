@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import PollResultsChartItem from './PollResultsChartItem';
+import PollResultsChartItemContainer
+  from '../containers/PollResultsChartItemContainer';
 
 class PollResultsChart extends Component {
   get poll() {
@@ -30,9 +31,10 @@ class PollResultsChart extends Component {
 
   renderItem(questionOptionCount) {
     return (
-      <PollResultsChartItem key={questionOptionCount.id}
-                            poll={this.poll}
-                            questionOptionCount={questionOptionCount} />
+      <PollResultsChartItemContainer
+        key={questionOptionCount.id}
+        poll={this.poll}
+        questionOptionCount={questionOptionCount} />
     )
   }
 
