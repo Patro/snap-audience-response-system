@@ -34,7 +34,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   selectPoll(poll) {
-    this.pollsMenu.simulate('change', poll);
+    this.pollsMenu.simulate('select', poll);
   }
 }
 

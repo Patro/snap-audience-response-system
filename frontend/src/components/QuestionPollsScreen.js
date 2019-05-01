@@ -37,7 +37,7 @@ class QuestionPollsScreen extends Component {
       <div className="question_polls_screen">
         <PollsMenu polls={this.polls}
                    activePoll={this.activePoll}
-                   onChange={this.selectPoll} />
+                   onSelect={this.selectPoll} />
         <PollResultsChart poll={this.activePoll} />
       </div>
     );
