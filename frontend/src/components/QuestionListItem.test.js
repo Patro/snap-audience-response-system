@@ -4,6 +4,7 @@ import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
 import QuestionPollControl from './QuestionPollControl';
+import QuestionPollsScreen from './QuestionPollsScreen';
 import QuestionListItem from './QuestionListItem';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -29,6 +30,10 @@ class TestWrapper extends AbstractTestWrapper {
 
   get deleteButton() {
     return this.extra.find(DeleteButtonContainer);
+  }
+
+  get questionPollsScreen() {
+    return this.wrapper.find(QuestionPollsScreen);
   }
 
   _render() {
@@ -62,5 +67,9 @@ describe('QuestionListItem', () => {
 
   it('renders delete button', () => {
     expect(component.deleteButton).toHaveLength(1);
+  });
+
+  it('renders question polls screen', () => {
+    expect(component.questionPollsScreen).toHaveLength(1);
   });
 });

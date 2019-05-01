@@ -6,6 +6,7 @@ import {
   SINGLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
 import DeleteButtonContainer from './../containers/DeleteButtonContainer';
+import QuestionPollsScreen from './QuestionPollsScreen';
 import QuestionPollControl from './QuestionPollControl';
 
 class QuestionListItem extends Component {
@@ -51,8 +52,8 @@ class QuestionListItem extends Component {
         {...this.props}
         header={this.renderText()}
         extra={this.renderMenu()}
-        className="question_list_item"></Collapse.Panel>
-    )
+        className="question_list_item">{this.renderContent()}</Collapse.Panel>
+    );
   }
 
   renderText() {
@@ -60,7 +61,7 @@ class QuestionListItem extends Component {
       <span className="question_list_item__text">
         {this.question.attributes.text}
       </span>
-    )
+    );
   }
 
   renderMenu() {
@@ -81,7 +82,11 @@ class QuestionListItem extends Component {
           confirmMessage="Are you sure to delete this question?"
           className="question_list__delete_button" />
       </div>
-    )
+    );
+  }
+
+  renderContent() {
+    return <QuestionPollsScreen />;
   }
 }
 
