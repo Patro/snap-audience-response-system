@@ -73,6 +73,39 @@ RSpec.describe Poll, type: :model do
     end
   end
 
+  describe '#number_of_respondents' do
+    subject { poll.number_of_respondents }
+
+    context 'given poll with two responses' do
+      let!(:poll) { create(:poll, :with_responses, responses_count: 2) }
+
+      it 'should return 2' do
+        is_expected.to eq(2)
+      end
+    end
+
+    context 'given poll with two responses of the same respondent' do
+      let(:question) { create(:multiple_choice_question) }
+      let(:respondent) { create(:respondent) }
+      let!(:poll) do
+        create(:poll, :with_responses,
+               responses_count: 2, respondent: respondent)
+      end
+
+      it 'should return 1' do
+        is_expected.to eq(1)
+      end
+    end
+
+    context 'given poll with no responses' do
+      let(:poll) { create(:poll) }
+
+      it 'should return 0' do
+        is_expected.to eq(0)
+      end
+    end
+  end
+
   describe '#responded_by?' do
     let(:user) { create(:user) }
     subject { poll.responded_by?(user) }

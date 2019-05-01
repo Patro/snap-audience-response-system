@@ -18,6 +18,10 @@ class Poll < ApplicationRecord
   after_update :broadcast_update_event
   after_destroy :broadcast_destroy_event
 
+  def number_of_respondents
+    responses.select(:respondent_id).distinct.count
+  end
+
   def responded_by?(user)
     responses.where(respondent: user).any?
   end
