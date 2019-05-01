@@ -111,15 +111,15 @@ describe('QuestionForm', () => {
       });
       options = [
         factories.questionOption.entity({
-          id: 234,
+          id: '234',
           attributes: { text: 'Eat, Sleep, Rave, Repeat', correct: false },
         }),
         factories.questionOption.entity({
-          id: 123,
+          id: '123',
           attributes: { text: '42', correct: true },
         }),
         factories.questionOption.entity({
-          id: 923,
+          id: '923',
           attributes: { text: 'I don\'t know', correct: false },
         }),
       ];
@@ -337,16 +337,16 @@ describe('QuestionForm', () => {
       });
       options = [
         factories.questionOption.entity({
-          id: 234,
+          id: '234',
           attributes: { text: 'Eat, Sleep, Rave, Repeat', correct: false },
         }),
         factories.questionOption.entity({
-          id: 123,
+          id: '123',
           attributes: { text: '42', correct: true },
           deleted: true,
         }),
         factories.questionOption.entity({
-          id: 923,
+          id: '923',
           attributes: { text: 'I don\'t know', correct: false },
         }),
       ];

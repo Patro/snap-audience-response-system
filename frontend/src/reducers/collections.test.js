@@ -13,9 +13,9 @@ describe('collections reducer', () => {
         type: 'VEHICLE',
         filterParams: { fuel: 'gas' },
         entities: [
-          { id: 2, type: 'CAR', attributes: { maxSpeed: 200 } },
-          { id: 2, type: 'SPACESHIP', attributes: { maxSpeed: 100000 } },
-          { id: 3, type: 'SPACESHIP', attributes: { maxSpeed: 400000 } },
+          { id: '2', type: 'CAR', attributes: { maxSpeed: 200 } },
+          { id: '2', type: 'SPACESHIP', attributes: { maxSpeed: 100000 } },
+          { id: '3', type: 'SPACESHIP', attributes: { maxSpeed: 400000 } },
         ],
       });
       const stateAfter = {
@@ -27,9 +27,9 @@ describe('collections reducer', () => {
             type: 'VEHICLE',
             filterParams: { fuel: 'gas' },
             entities: [
-              { id: 2, type: 'CAR' },
-              { id: 2, type: 'SPACESHIP' },
-              { id: 3, type: 'SPACESHIP' },
+              { id: '2', type: 'CAR' },
+              { id: '2', type: 'SPACESHIP' },
+              { id: '3', type: 'SPACESHIP' },
             ]
           }
         },

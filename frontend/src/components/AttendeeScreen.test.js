@@ -47,7 +47,7 @@ describe('AttendeeScreen', () => {
   let component;
 
   beforeEach(() => {
-    const session = factories.interactiveSession.entity({ id: 100 });
+    const session = factories.interactiveSession.entity({ id: '100' });
     component = new TestWrapper({ props: {
       interactiveSession: session,
     } });

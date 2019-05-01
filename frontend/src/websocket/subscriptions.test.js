@@ -14,7 +14,7 @@ describe('subscriptions', () => {
       const createMock = jest.fn();
       setupCreateSubscriptionMock(createMock);
 
-      subscriptions.subscribeForPollEvents(100, () => {});
+      subscriptions.subscribeForPollEvents('100', () => {});
 
       expect(createMock).toBeCalled();
     });
@@ -27,7 +27,7 @@ describe('subscriptions', () => {
         setupCreateSubscriptionMock(createImpl);
 
         const onEvent = jest.fn();
-        subscriptions.subscribeForPollEvents(100, onEvent);
+        subscriptions.subscribeForPollEvents('100', onEvent);
 
         const expectedEvent = { type: POLL_CREATED, pollId: '200' };
         expect(onEvent).toBeCalledWith(expectedEvent);
@@ -42,7 +42,7 @@ describe('subscriptions', () => {
         setupCreateSubscriptionMock(createImpl);
 
         const onEvent = jest.fn();
-        subscriptions.subscribeForPollEvents(100, onEvent);
+        subscriptions.subscribeForPollEvents('100', onEvent);
 
         expect(onEvent).not.toBeCalled();
       });
@@ -56,7 +56,7 @@ describe('subscriptions', () => {
         setupCreateSubscriptionMock(createImpl);
 
         const onEvent = jest.fn();
-        subscriptions.subscribeForPollEvents(100, onEvent);
+        subscriptions.subscribeForPollEvents('100', onEvent);
 
         expect(onEvent).not.toBeCalled();
       });

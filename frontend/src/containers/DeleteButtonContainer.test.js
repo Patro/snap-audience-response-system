@@ -30,7 +30,7 @@ describe('DeleteButtonContainer', () => {
   let component, entity;
 
   beforeEach(() => {
-    entity = { type: 'SPACESHIP', id: 12 };
+    entity = { type: 'SPACESHIP', id: '12' };
     component = new TestWrapper({
       props: { entity },
     });

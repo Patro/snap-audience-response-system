@@ -7,7 +7,7 @@ const action$ = of(
   createEntity({ type: 'SPACESHIP' })
 );
 
-const entity = { id: 100, type: 'SPACESHIP' };
+const entity = { id: '100', type: 'SPACESHIP' };
 const setupCreateMock = () => (jest.fn((_) => of(entity)));
 
 const callEpic = (createMock = setupCreateMock()) => {

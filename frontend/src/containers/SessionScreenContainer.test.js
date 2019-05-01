@@ -42,10 +42,10 @@ describe('SessionScreenContainer', () => {
     let session;
 
     beforeEach(() => {
-      factories.interactiveSession.entity({ id: 100 });
+      factories.interactiveSession.entity({ id: '100' });
       component.store = {
         entities: {
-          INTERACTIVE_SESSION: { 100: session },
+          [INTERACTIVE_SESSION]: { '100': session },
         }
       };
     });

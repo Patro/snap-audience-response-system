@@ -2,9 +2,9 @@ import buildBody from './buildBody';
 
 describe('buildBody', () => {
   it('builds hash with id', () => {
-    const body = buildBody({ id: 3 });
+    const body = buildBody({ id: '3' });
 
-    expect(body).toEqual({ data: { id: 3 }});
+    expect(body).toEqual({ data: { id: '3' }});
   });
 
   it('builds hash with type', () => {
@@ -32,7 +32,7 @@ describe('buildBody', () => {
 
   it('builds hash with relationships', () => {
     const body = buildBody({
-      relationships: { initialAuthor: { id: 1, type: 'AUTHOR' } }
+      relationships: { initialAuthor: { id: '1', type: 'AUTHOR' } }
     });
 
     const expectedBody = {
@@ -40,7 +40,7 @@ describe('buildBody', () => {
         relationships: {
           initial_author: {
             data: {
-              id: 1,
+              id: '1',
               type: 'author',
             },
           },

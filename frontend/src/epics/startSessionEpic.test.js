@@ -10,7 +10,7 @@ const action$ = of(
 const state$ = of({});
 
 const entity = {
-  id: 100,
+  id: '100',
   type: INTERACTIVE_SESSION,
 };
 const setupCreateMock = () => (jest.fn((_) => of(entity)));

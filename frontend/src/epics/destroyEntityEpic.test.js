@@ -28,7 +28,7 @@ describe('destroyEntityEpic', () => {
   let entity, epic;
 
   beforeEach(() => {
-    entity = { id: 100, type: 'SPACESHIP' };
+    entity = { id: '100', type: 'SPACESHIP' };
     epic = new TestWrapper({
       action$: of(
         destroyEntity(entity)

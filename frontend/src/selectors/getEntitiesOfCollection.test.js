@@ -4,8 +4,8 @@ const collection = {
   type: 'SPACESHIP',
   filterParams: { color: 'black' },
   entities: [
-    { id: 100, type: 'SPACESHIP'},
-    { id: 102, type: 'SPACESHIP'},
+    { id: '100', type: 'SPACESHIP'},
+    { id: '102', type: 'SPACESHIP'},
   ],
 };
 
@@ -19,9 +19,9 @@ describe('getEntitesOfCollection', () => {
       },
       entities: {
         SPACESHIP: {
-          100: { id: 100, type: 'SPACESHIP', attributes: { name: 'A' } },
-          101: { id: 101, type: 'SPACESHIP', attributes: { name: 'B' } },
-          102: { id: 102, type: 'SPACESHIP', attributes: { name: 'C' } },
+          '100': { id: '100', type: 'SPACESHIP', attributes: { name: 'A' } },
+          '101': { id: '101', type: 'SPACESHIP', attributes: { name: 'B' } },
+          '102': { id: '102', type: 'SPACESHIP', attributes: { name: 'C' } },
         },
       },
     };
@@ -32,8 +32,8 @@ describe('getEntitesOfCollection', () => {
       );
 
       expect(entities).toEqual([
-        { id: 100, type: 'SPACESHIP', attributes: { name: 'A' } },
-        { id: 102, type: 'SPACESHIP', attributes: { name: 'C' } },
+        { id: '100', type: 'SPACESHIP', attributes: { name: 'A' } },
+        { id: '102', type: 'SPACESHIP', attributes: { name: 'C' } },
       ]);
     });
   });

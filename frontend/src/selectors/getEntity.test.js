@@ -5,7 +5,7 @@ describe('getEntitiy', () => {
     const state = {
       entities: {
         SPACESHIP: {
-          100: { id: 100 },
+          '100': { id: '100' },
         },
       },
     };
@@ -13,7 +13,7 @@ describe('getEntitiy', () => {
     describe('when entity with id exists', () => {
       it('returns entity', () => {
         const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
-        expect(entity).toEqual({ id: 100 });
+        expect(entity).toEqual({ id: '100' });
       });
     });
 
@@ -29,7 +29,7 @@ describe('getEntitiy', () => {
     const state = {
       entities: {
         CAR: {
-          100: { id: 100 },
+          '100': { id: '100' },
         },
       },
     };

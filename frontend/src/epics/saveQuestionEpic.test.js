@@ -47,7 +47,7 @@ describe('joinSessionEpic', () => {
     let question, optionA, optionB, relationshipToQuestion;
 
     beforeEach(() => {
-      const session = factories.interactiveSession.entity({ id: 100 });
+      const session = factories.interactiveSession.entity({ id: '100' });
       question = factories.singleChoiceQuestion.entity({
         relationships: {
           interactiveSession: { id: session.id, type: session.type }

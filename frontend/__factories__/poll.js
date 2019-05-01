@@ -7,11 +7,11 @@ const nextId = () => id++;
 
 export const identifier = (obj) => (defaultsDeep({}, obj, {
   type: POLL,
-  id: nextId(),
+  id: `${nextId()}`,
 }));
 
 export const entity = (obj) => (defaultsDeep({}, obj, {
-  id: nextId(),
+  id: `${nextId()}`,
   type: POLL,
   attributes: { status: 'open' },
   relationships: {

@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { fetchCollection } from '../actions';
-import { POLL } from '../constants/entityTypes';
+import { POLL, INTERACTIVE_SESSION } from '../constants/entityTypes';
 import AttendeeScreen from '../components/AttendeeScreen';
 import AttendeeScreenContainer from './AttendeeScreenContainer';
 
@@ -12,7 +12,7 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(AttendeeScreen);
   }
 
-  get givenUnsrespondedPoll() {
+  get givenUnrespondedPoll() {
     return this.attendeeScreen.prop('unrespondedPoll');
   }
 
@@ -32,7 +32,7 @@ describe('AttendeeScreenContainer', () => {
   let component;
 
   beforeEach(() => {
-    session = factories.interactiveSession.entity({ id: 100 });
+    session = factories.interactiveSession.entity({ id: '100' });
     component = new TestWrapper({ props: {
       interactiveSession: session,
     }});
@@ -41,24 +41,25 @@ describe('AttendeeScreenContainer', () => {
   describe('given filled store', () => {
     let poll;
     beforeEach(() => {
-      poll = factories.poll.entity({ id: 100 });
-      const collection = factories.poll.collectionWithIds([100]);
+      poll = factories.poll.entity({ id: '100' });
+      const collection = factories.poll.collectionWithIds(['100']);
 
-      const filter = '{"interactiveSessionId":100,"status":"open","responded":false}'
+      const filter =
+        '{"interactiveSessionId":"100","status":"open","responded":false}'
       const filledStore = {
         entities: {
-          INTERACTIVE_SESSION: { 100: session },
-          POLL: { 100: poll },
+          [INTERACTIVE_SESSION]: { '100': session },
+          [POLL]: { '100': poll },
         },
         collections: {
-          POLL: { [filter]: collection },
+          [POLL]: { [filter]: collection },
         },
       };
       component.store = filledStore;
     });
 
     it('passes first poll to component', () => {
-      expect(component.givenUnsrespondedPoll).toEqual(poll);
+      expect(component.givenUnrespondedPoll).toEqual(poll);
     });
   });
 
@@ -68,7 +69,7 @@ describe('AttendeeScreenContainer', () => {
     });
 
     it('passes undefined as poll to component', () => {
-      expect(component.givenUnsrespondedPoll).toBeUndefined();
+      expect(component.givenUnrespondedPoll).toBeUndefined();
     });
   });
 
@@ -77,7 +78,7 @@ describe('AttendeeScreenContainer', () => {
 
     const action = component.store.getActions().slice(-1)[0];
     const expectedAction = fetchCollection(POLL, {
-      interactiveSessionId: 100,
+      interactiveSessionId: '100',
       status: 'open',
       responded: false
     }, expect.anything());

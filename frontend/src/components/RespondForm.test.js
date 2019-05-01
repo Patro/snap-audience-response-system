@@ -66,15 +66,15 @@ describe('RespondForm', () => {
     });
     const options = [
       factories.questionOption.entity({
-        id: 234,
+        id: '234',
         attributes: { text: 'Eat, Sleep, Rave, Repeat' },
       }),
       factories.questionOption.entity({
-        id: 123,
+        id: '123',
         attributes: { text: '42' },
       }),
       factories.questionOption.entity({
-        id: 923,
+        id: '923',
         attributes: { text: 'I don\'t know' },
       }),
     ];
@@ -123,7 +123,7 @@ describe('RespondForm', () => {
         component.checkCheckbox(2);
         component.submit();
 
-        expect(onSubmit).toBeCalledWith([234, 923]);
+        expect(onSubmit).toBeCalledWith(['234', '923']);
       });
     });
 
@@ -166,7 +166,7 @@ describe('RespondForm', () => {
         component.checkRadioBox(1);
         component.submit();
 
-        expect(onSubmit).toBeCalledWith([123]);
+        expect(onSubmit).toBeCalledWith(['123']);
       });
     });
 

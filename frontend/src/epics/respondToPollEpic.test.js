@@ -30,26 +30,26 @@ describe('respondToPollEpic', () => {
   let epic, expectedResponseA, expectedResponseB;
 
   beforeEach(() => {
-    const poll = { id: 100, type: 'POLL' };
+    const poll = { id: '100', type: 'POLL' };
     epic = new TestWrapper({
       action$: of(
-        respondToPoll(poll, [600, 601])
+        respondToPoll(poll, ['600', '601'])
       )
     });
 
     expectedResponseA = {
       type: RESPONSE,
       relationships: {
-        poll: { id: 100, type: 'POLL' },
-        pickedQuestionOption: { id: 600, type: QUESTION_OPTION },
+        poll: { id: '100', type: 'POLL' },
+        pickedQuestionOption: { id: '600', type: QUESTION_OPTION },
       },
     };
 
     expectedResponseB = {
       type: RESPONSE,
       relationships: {
-        poll: { id: 100, type: 'POLL' },
-        pickedQuestionOption: { id: 601, type: QUESTION_OPTION },
+        poll: { id: '100', type: 'POLL' },
+        pickedQuestionOption: { id: '601', type: QUESTION_OPTION },
       },
     };
   });

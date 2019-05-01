@@ -4,7 +4,7 @@ describe('getCollection', () => {
   describe('given state with collections', () => {
     const collection = {
       entities: [
-        { type: 'SPACESHIP_ENGINE', id: 100 }
+        { type: 'SPACESHIP_ENGINE', id: '100' }
       ]
     };
     const state = {
@@ -35,7 +35,7 @@ describe('getCollection', () => {
   describe('given state with collections in differnt group', () => {
     const collection = {
       entities: [
-        { type: 'CAR', id: 100 }
+        { type: 'CAR', id: '100' }
       ]
     };
     const state = {

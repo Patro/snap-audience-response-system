@@ -30,7 +30,7 @@ describe('StartPollButtonContainer', () => {
   let component, question;
 
   beforeEach(() => {
-    question = factories.singleChoiceQuestion.entity({ id: 964 });
+    question = factories.singleChoiceQuestion.entity({ id: '964' });
     component = new TestWrapper({
       props: { question },
     });

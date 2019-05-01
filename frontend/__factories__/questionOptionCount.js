@@ -8,11 +8,11 @@ const nextId = () => id++;
 
 export const identifier = (obj) => (defaultsDeep({}, obj, {
   type: QUESTION_OPTION_COUNT,
-  id: nextId(),
+  id: `${nextId()}`,
 }));
 
 export const entity = (obj) => (defaultsDeep({}, obj, {
-  id: nextId(),
+  id: `${nextId()}`,
   type: QUESTION_OPTION_COUNT,
   attributes: { numberOfResponses: 10 },
   relationships: {

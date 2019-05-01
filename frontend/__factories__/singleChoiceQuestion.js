@@ -7,11 +7,11 @@ const nextId = () => id++;
 
 export const identifier = (obj) => (defaultsDeep({}, obj, {
   type: SINGLE_CHOICE_QUESTION,
-  id: nextId(),
+  id: `${nextId()}`,
 }));
 
 export const entity = (obj) => (defaultsDeep({}, obj, {
-  id: nextId(),
+  id: `${nextId()}`,
   type: SINGLE_CHOICE_QUESTION,
   attributes: { text: 'What is 2 + 4?' },
   relationships: {

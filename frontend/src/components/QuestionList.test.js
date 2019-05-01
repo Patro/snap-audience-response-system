@@ -40,11 +40,11 @@ describe('QuestionList', () => {
     beforeEach(() => {
       const questions = [
         factories.singleChoiceQuestion.entity({
-          id: 1,
+          id: '1',
           attributes: { text: 'Question A' },
         }),
         factories.multipleChoiceQuestion.entity({
-          id: 2,
+          id: '2',
           attributes: { text: 'Question B' },
         }),
       ];

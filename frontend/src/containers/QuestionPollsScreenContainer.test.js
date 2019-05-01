@@ -31,7 +31,7 @@ describe('QuestionPollsScreenContainer', () => {
   let question, component;
 
   beforeEach(() => {
-    question = factories.singleChoiceQuestion.entity({ id: 100 });
+    question = factories.singleChoiceQuestion.entity({ id: '100' });
     component = new TestWrapper({ props: { question }});
   });
 
@@ -39,20 +39,20 @@ describe('QuestionPollsScreenContainer', () => {
     let pollA, pollB;
 
     beforeEach(() => {
-      pollA = factories.poll.entity({ id: 301, relationships: { question }});
-      pollB = factories.poll.entity({ id: 302, relationships: { question }});
+      pollA = factories.poll.entity({ id: '301', relationships: { question }});
+      pollB = factories.poll.entity({ id: '302', relationships: { question }});
       const collection = factories.collection.withEntities([pollA, pollB]);
 
       component.store = {
         entities: {
           [POLL]: {
-            301: pollA,
-            302: pollB,
+            '301': pollA,
+            '302': pollB,
           },
         },
         collections: {
           [POLL]: {
-            '{"questionId":100}': collection ,
+            '{"questionId":"100"}': collection ,
           }
         },
       };
@@ -79,7 +79,7 @@ describe('QuestionPollsScreenContainer', () => {
 
       const actions = component.store.getActions();
       const expectedAction = fetchCollection(POLL, {
-        questionId: 100,
+        questionId: '100',
       }, expect.anything());
       expect(actions).toContainEqual(expectedAction);
     });

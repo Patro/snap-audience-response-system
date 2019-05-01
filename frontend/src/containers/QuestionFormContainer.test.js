@@ -4,8 +4,7 @@ import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { fetchCollection, fetchEntity, saveQuestion } from '../actions';
 import {
-  QUESTION_OPTION,
-  SINGLE_CHOICE_QUESTION
+  QUESTION_OPTION, SINGLE_CHOICE_QUESTION
 } from './../constants/entityTypes';
 import QuestionForm from '../components/QuestionForm';
 import QuestionFormContainer from './QuestionFormContainer';
@@ -54,32 +53,30 @@ describe('QuestionFormContainer', () => {
     beforeEach(() => {
       component.props.match = {
         params: {
-          questionId: 123,
+          questionId: '123',
           questionType: 'single_choice',
         },
       };
     });
 
     describe('given store with question and options', () => {
-      let question;
-      let optionA;
-      let optionB;
+      let question, optionA, optionB;
 
       beforeEach(() => {
-        question = factories.singleChoiceQuestion.entity({ id: 123 });
-        optionA = factories.questionOption.entity({ id: 426 });
-        optionB = factories.questionOption.entity({ id: 429 });
+        question = factories.singleChoiceQuestion.entity({ id: '123' });
+        optionA = factories.questionOption.entity({ id: '426' });
+        optionB = factories.questionOption.entity({ id: '429' });
         const optionCollection = factories.questionOption.collectionWithIds([
-          426, 429
+          '426', '429',
         ]);
 
         component.store = {
           entities: {
-            [SINGLE_CHOICE_QUESTION]: { 123: question },
-            [QUESTION_OPTION]: { 426: optionA, 429: optionB },
+            [SINGLE_CHOICE_QUESTION]: { '123': question },
+            [QUESTION_OPTION]: { '426': optionA, '429': optionB },
           },
           collections: {
-            [QUESTION_OPTION]: { '{"questionId":123}': optionCollection },
+            [QUESTION_OPTION]: { '{"questionId":"123"}': optionCollection },
           },
         };
       });
@@ -94,15 +91,12 @@ describe('QuestionFormContainer', () => {
     });
 
     describe('given store with job', () => {
-      let question;
-      let optionA;
-      let optionB;
-      let job;
+      let question, optionA, optionB, job;
 
       beforeEach(() => {
-        question = factories.singleChoiceQuestion.entity({ id: 123 });
-        optionA = factories.questionOption.entity({ id: 426 });
-        optionB = factories.questionOption.entity({ id: 429 });
+        question = factories.singleChoiceQuestion.entity({ id: '123' });
+        optionA = factories.questionOption.entity({ id: '426' });
+        optionB = factories.questionOption.entity({ id: '429' });
         job = factories.job.started({
           id: 'saveQuestionJob',
           trigger: {
@@ -155,7 +149,7 @@ describe('QuestionFormContainer', () => {
 
         const actions = component.store.getActions();
         const expectedAction = fetchEntity(
-          SINGLE_CHOICE_QUESTION, 123, expect.anything(),
+          SINGLE_CHOICE_QUESTION, '123', expect.anything(),
         );
         expect(actions).toContainEqual(expectedAction);
       });
@@ -165,7 +159,7 @@ describe('QuestionFormContainer', () => {
 
         const actions = component.store.getActions();
         const expectedAction = fetchCollection(QUESTION_OPTION, {
-          questionId: 123,
+          questionId: '123',
         }, expect.anything());
         expect(actions).toContainEqual(expectedAction);
       });
@@ -173,9 +167,9 @@ describe('QuestionFormContainer', () => {
 
     describe('on submit', () => {
       it('dispatches save question with options action on submit', () => {
-        const question = factories.singleChoiceQuestion.entity({ id: 123 });
-        const optionA = factories.questionOption.entity({ id: 426 });
-        const optionB = factories.questionOption.entity({ id: 429 });
+        const question = factories.singleChoiceQuestion.entity({ id: '123' });
+        const optionA = factories.questionOption.entity({ id: '426' });
+        const optionB = factories.questionOption.entity({ id: '429' });
 
         component.submit(question, [optionA, optionB]);
 
@@ -209,7 +203,7 @@ describe('QuestionFormContainer', () => {
 
         const actions = component.store.getActions();
         const expectedAction = fetchEntity(
-          SINGLE_CHOICE_QUESTION, 123, expect.anything()
+          SINGLE_CHOICE_QUESTION, '123', expect.anything()
         );
         expect(actions).not.toContainEqual(expectedAction);
       });
@@ -219,7 +213,7 @@ describe('QuestionFormContainer', () => {
 
         const actions = component.store.getActions();
         const expectedAction = fetchCollection(QUESTION_OPTION, {
-          questionId: 123,
+          questionId: '123',
         }, expect.anything());
         expect(actions).not.toContainEqual(expectedAction);
       });

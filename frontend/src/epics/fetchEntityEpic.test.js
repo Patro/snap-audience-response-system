@@ -4,11 +4,11 @@ import { fetchEntity, receiveEntity } from '../actions';
 import fetchEntityEpic from './fetchEntityEpic';
 
 const action$ = of(
-  fetchEntity('SPACESHIP', 100)
+  fetchEntity('SPACESHIP', '100')
 );
 
 const entity = {
-  id: 100,
+  id: '100',
   type: 'SPACESHIP',
   attributes: { name: 'ENTERPRISE' },
 };
@@ -25,7 +25,7 @@ describe('fetchEntityEpic', () => {
 
     const result$ = callEpic(fetchMock);
     result$.subscribe((_actions) => {
-      expect(fetchMock).toBeCalledWith({ type: 'SPACESHIP', id: 100 });
+      expect(fetchMock).toBeCalledWith({ type: 'SPACESHIP', id: '100' });
       done();
     });
   });

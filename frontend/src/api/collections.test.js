@@ -28,7 +28,7 @@ describe('collections', () => {
       const originalResponse = {
         data: [
           {
-            id: 100,
+            id: '100',
             type: 'spaceship_engine',
             attributes: {
               max_speed: 100000,
@@ -43,7 +43,7 @@ describe('collections', () => {
         filterParams: { fuel: 'gas' },
         entities: [
           {
-            id: 100,
+            id: '100',
             type: 'SPACESHIP_ENGINE',
             attributes: {
               maxSpeed: 100000,

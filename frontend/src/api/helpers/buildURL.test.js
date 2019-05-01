@@ -10,13 +10,13 @@ describe('buildURL', () => {
   });
 
   it('builds URL of entity', () => {
-    const url = buildURL({ type: 'SPACESHIP', id: 100 });
+    const url = buildURL({ type: 'SPACESHIP', id: '100' });
 
     expect(url).toBe('/test_api/spaceships/100');
   });
 
   it('builds URL of entity using parent type map', () => {
-    const url = buildURL({ type: 'JET', id: 100 });
+    const url = buildURL({ type: 'JET', id: '100' });
 
     expect(url).toBe('/test_api/airplanes/100');
   });

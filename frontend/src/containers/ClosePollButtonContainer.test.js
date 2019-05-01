@@ -30,7 +30,7 @@ describe('ClosePollButtonContainer', () => {
   let component, poll;
 
   beforeEach(() => {
-    poll = factories.poll.entity({ id: 791 });
+    poll = factories.poll.entity({ id: '791' });
     component = new TestWrapper({
       props: { poll },
     });

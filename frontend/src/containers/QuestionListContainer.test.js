@@ -3,7 +3,9 @@ import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { fetchCollection } from '../actions';
-import { POLL, QUESTION } from '../constants/entityTypes';
+import {
+  POLL, QUESTION, SINGLE_CHOICE_QUESTION, MULTIPLE_CHOICE_QUESTION
+} from '../constants/entityTypes';
 import QuestionList from '../components/QuestionList';
 import QuestionListContainer from './QuestionListContainer';
 
@@ -35,7 +37,7 @@ describe('QuestionListContainer', () => {
   let component;
 
   beforeEach(() => {
-    const session = factories.interactiveSession.entity({ id: 100 });
+    const session = factories.interactiveSession.entity({ id: '100' });
     component = new TestWrapper({ props: { interactiveSession: session } });
   });
 
@@ -44,19 +46,20 @@ describe('QuestionListContainer', () => {
       let questionA, questionB;
 
       beforeEach(() => {
-        questionA = factories.singleChoiceQuestion.entity({ id: 913 });
-        questionB = factories.multipleChoiceQuestion.entity({ id: 914 });
+        questionA = factories.singleChoiceQuestion.entity({ id: '913' });
+        questionB = factories.multipleChoiceQuestion.entity({ id: '914' });
         const questionCollection = factories.collection.withEntities([
           questionA, questionB
         ]);
 
+        const filter = '{"interactiveSessionId":"100"}';
         component.store = {
           entities: {
-            SINGLE_CHOICE_QUESTION: { 913: questionA },
-            MULTIPLE_CHOICE_QUESTION: { 914: questionB },
+            [SINGLE_CHOICE_QUESTION]: { '913': questionA },
+            [MULTIPLE_CHOICE_QUESTION]: { '914': questionB },
           },
           collections: {
-            QUESTION: { '{"interactiveSessionId":100}': questionCollection },
+            [QUESTION]: { [filter]: questionCollection },
           },
         };
       });
@@ -82,27 +85,31 @@ describe('QuestionListContainer', () => {
       let pollA, pollB;
 
       beforeEach(() => {
-        let questionA = factories.singleChoiceQuestion.identifier({ id: 913 });
+        let questionA = factories.singleChoiceQuestion.identifier({
+          id: '913',
+        });
         pollA = factories.poll.entity({
-          id: 1001,
+          id: '1001',
           relationships: { question: questionA },
         });
-        let questionB = factories.singleChoiceQuestion.identifier({ id: 914 });
+        let questionB = factories.singleChoiceQuestion.identifier({
+          id: '914',
+        });
         pollB = factories.poll.entity({
-          id: 1002,
+          id: '1002',
           relationships: { question: questionB },
         });
         const pollCollection = factories.collection.withEntities([
-          pollA, pollB
+          pollA, pollB,
         ]);
 
         component.store = {
           entities: {
-            POLL: { 1001: pollA, 1002: pollB },
+            [POLL]: { '1001': pollA, '1002': pollB },
           },
           collections: {
-            POLL: {
-              '{"interactiveSessionId":100,"status":"open"}': pollCollection,
+            [POLL]: {
+              '{"interactiveSessionId":"100","status":"open"}': pollCollection,
             },
           },
         };
@@ -110,8 +117,8 @@ describe('QuestionListContainer', () => {
 
       it('passes open polls to component', () => {
         expect(component.givenOpenPollsByQuestionId).toEqual({
-          913: pollA,
-          914: pollB,
+          '913': pollA,
+          '914': pollB,
         });
       });
     });
@@ -133,7 +140,7 @@ describe('QuestionListContainer', () => {
 
       const actions = component.store.getActions();
       const expectedAction = fetchCollection(QUESTION, {
-        interactiveSessionId: 100,
+        interactiveSessionId: '100',
       }, expect.anything());
       expect(actions).toContainEqual(expectedAction);
     });
@@ -143,7 +150,7 @@ describe('QuestionListContainer', () => {
 
       const actions = component.store.getActions();
       const expectedAction = fetchCollection(POLL, {
-        interactiveSessionId: 100,
+        interactiveSessionId: '100',
         status: 'open',
       }, expect.anything());
       expect(actions).toContainEqual(expectedAction);

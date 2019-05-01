@@ -10,11 +10,11 @@ const action$ = of(
 const state$ = of({});
 
 const entity = {
-  id: 100,
+  id: '100',
   type: ATTENDANCE,
   relationships: {
     interactiveSession: {
-      id: 200,
+      id: '200',
       type: INTERACTIVE_SESSION,
     },
   }

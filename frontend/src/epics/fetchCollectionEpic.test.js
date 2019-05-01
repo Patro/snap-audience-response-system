@@ -11,8 +11,8 @@ const collection = {
   type: 'SPACESHIP_ENGINE',
   filterParams: { fuel: 'gas' },
   entities: [
-    { id: 100, type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
-    { id: 101, type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
+    { id: '100', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
+    { id: '101', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
   ]
 };
 const setupFetchMock = () => (jest.fn((_) => of(collection)));

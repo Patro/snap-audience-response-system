@@ -9,7 +9,7 @@ const itMapsResponse = (trigger) => {
   it('maps response to entity', (done) => {
     const originalResponse = {
       data: {
-        id: 100,
+        id: '100',
         type: 'spaceship_engine',
         attributes: {
           max_speed: 100000,
@@ -19,7 +19,7 @@ const itMapsResponse = (trigger) => {
     ajax.mockReturnValue(of({ response: originalResponse }));
 
     const mappedResponse = {
-      id: 100,
+      id: '100',
       type: 'SPACESHIP_ENGINE',
       attributes: {
         maxSpeed: 100000,
@@ -70,7 +70,7 @@ describe('entities', () => {
       ajax.mockReturnValue(of({}));
 
       entities.fetch({
-        id: 100,
+        id: '100',
         type: 'SPACESHIP',
       });
 
@@ -91,7 +91,7 @@ describe('entities', () => {
       ajax.mockReturnValue(of({}));
 
       entities.update({
-        id: 100,
+        id: '100',
         type: 'SPACESHIP',
         attributes: {
           name: 'Enterprise',
@@ -107,7 +107,7 @@ describe('entities', () => {
         },
         body: JSON.stringify({
           data: {
-            id: 100,
+            id: '100',
             type: 'spaceship',
             attributes: {
               name: 'Enterprise',
@@ -125,7 +125,7 @@ describe('entities', () => {
       ajax.mockReturnValue(of({}));
 
       entities.destroy({
-        id: 100,
+        id: '100',
         type: 'SPACESHIP',
         attributes: {
           name: 'Enterprise',

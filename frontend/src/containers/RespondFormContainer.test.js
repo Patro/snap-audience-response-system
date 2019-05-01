@@ -4,8 +4,7 @@ import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import { fetchCollection, fetchEntity, respondToPoll } from '../actions';
 import {
-  QUESTION_OPTION,
-  SINGLE_CHOICE_QUESTION
+  POLL, QUESTION_OPTION, SINGLE_CHOICE_QUESTION,
 } from './../constants/entityTypes';
 import RespondForm from '../components/RespondForm';
 import RespondFormContainer from './RespondFormContainer';
@@ -44,12 +43,10 @@ class TestWrapper extends AbstractTestWrapper {
 }
 
 describe('RespondFormContainer', () => {
-  let question;
-  let poll;
-  let component;
+  let question, poll, component;
 
   beforeEach(() => {
-    question = factories.singleChoiceQuestion.entity({ id: 123 });
+    question = factories.singleChoiceQuestion.entity({ id: '123' });
     poll = factories.poll.entity({
       relationships: {
         question: factories.singleChoiceQuestion.identifier(question),
@@ -59,26 +56,24 @@ describe('RespondFormContainer', () => {
   });
 
   describe('given filled store', () => {
-    let optionA;
-    let optionB;
-    let job;
+    let optionA, optionB, job;
 
     beforeEach(() => {
-      optionA = factories.questionOption.entity({ id: 426 });
-      optionB = factories.questionOption.entity({ id: 429 });
+      optionA = factories.questionOption.entity({ id: '426' });
+      optionB = factories.questionOption.entity({ id: '429' });
       const optionCollection = factories.questionOption.collectionWithIds([
-        426, 429
+        '426', '429'
       ]);
       job = factories.job.started({ id: 'respondJob' });
 
       component.store = {
         entities: {
-          POLL: { 923: poll },
-          SINGLE_CHOICE_QUESTION: { 123: question },
-          QUESTION_OPTION: { 426: optionA, 429: optionB },
+          [POLL]: { '923': poll },
+          [SINGLE_CHOICE_QUESTION]: { '123': question },
+          [QUESTION_OPTION]: { '426': optionA, '429': optionB },
         },
         collections: {
-          QUESTION_OPTION: { '{"questionId":123}': optionCollection },
+          [QUESTION_OPTION]: { '{"questionId":"123"}': optionCollection },
         },
         jobs: {
           'respondJob': job,
@@ -122,7 +117,7 @@ describe('RespondFormContainer', () => {
 
     const actions = component.store.getActions();
     const expectedAction = fetchEntity(
-      SINGLE_CHOICE_QUESTION, 123, expect.anything()
+      SINGLE_CHOICE_QUESTION, '123', expect.anything()
     );
     expect(actions).toContainEqual(expectedAction);
   });
@@ -132,16 +127,16 @@ describe('RespondFormContainer', () => {
 
     const actions = component.store.getActions();
     const expectedAction = fetchCollection(QUESTION_OPTION, {
-      questionId: 123,
+      questionId: '123',
     }, expect.anything());
     expect(actions).toContainEqual(expectedAction);
   });
 
   it('dispatches respond to poll action on submit', () => {
-    component.submit([1]);
+    component.submit(['1']);
 
     const actions = component.store.getActions();
-    const expectedAction = respondToPoll(poll, [1], 'respondJob');
+    const expectedAction = respondToPoll(poll, ['1'], 'respondJob');
     expect(actions).toContainEqual(expectedAction);
   });
 });
