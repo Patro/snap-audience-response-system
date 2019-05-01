@@ -9,7 +9,7 @@ class TestWrapper {
     this.type = type;
     this.api = {
       collections: {
-        fetch: jest.fn(collection => of(collection)),
+        fetch: jest.fn(collection => of({ ...collection, entities: [] })),
       },
     };
   }
@@ -76,10 +76,10 @@ describe('reloadCollections', () => {
 
     it('emits receive collection actions', (done) => {
       const expectedActionA = receiveCollection({
-        type: 'SPACESHIP', filterParams: { fuel: 'hydrogen' },
+        type: 'SPACESHIP', filterParams: { fuel: 'hydrogen' }, entities: [],
       }, expect.anything());
       const expectedActionB = receiveCollection({
-        type: 'SPACESHIP', filterParams: { fuel: 'antimatter' },
+        type: 'SPACESHIP', filterParams: { fuel: 'antimatter' }, entities: [],
       }, expect.anything());
 
       const result$ = reloadCollections.call$();
@@ -123,7 +123,7 @@ describe('reloadCollections', () => {
 
     it('emits receive collection actions', (done) => {
       const expectedAction = receiveCollection({
-        type: 'SHIP', filterParams: {},
+        type: 'SHIP', filterParams: {}, entities: [],
       }, expect.anything());
 
       const result$ = reloadCollections.call$();

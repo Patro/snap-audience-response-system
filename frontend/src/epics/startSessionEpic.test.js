@@ -4,33 +4,44 @@ import { startSession, receiveEntity } from '../actions';
 import { INTERACTIVE_SESSION } from '../constants/entityTypes';
 import startSessionEpic from './startSessionEpic';
 
-const action$ = of(
-  startSession('My new session', 'jobId')
-);
-const state$ = of({});
+class TestWrapper {
+  constructor({ action$ } = {}) {
+    this.action$ = action$;
+    this.state$ = of({});
+    this.api = {
+      _id: 1,
+      entities: {
+        create: jest.fn(entity => of({ ...entity, id: '_' + this.api._id++ })),
+      },
+    };
+    this.history = { push: jest.fn() };
+  }
 
-const entity = {
-  id: '100',
-  type: INTERACTIVE_SESSION,
-};
-const setupCreateMock = () => (jest.fn((_) => of(entity)));
-const setupPushMock = () => (jest.fn());
+  get dependencies() {
+    return { api: this.api, history: this.history };
+  }
 
-const callEpic = (createMock, pushMock) => {
-  const dependencies = {
-    api: { entities: { create: createMock || setupCreateMock() }},
-    history: { push: pushMock || setupPushMock() },
-  };
-  return startSessionEpic(action$, state$, dependencies).pipe(toArray())
-};
+  call$() {
+    return startSessionEpic(this.action$, this.state$, this.dependencies)
+             .pipe(toArray());
+  }
+}
 
 describe('startSessionEpic', () => {
-  it('triggers create request', (done) => {
-    const createMock = setupCreateMock();
+  let epic;
 
-    const result$ = callEpic(createMock);
+  beforeEach(() => {
+    epic = new TestWrapper({
+      action$: of(
+        startSession('My new session', 'jobId')
+      )
+    });
+  });
+
+  it('triggers create request', (done) => {
+    const result$ = epic.call$();
     result$.subscribe(_actions => {
-      expect(createMock).toBeCalledWith({
+      expect(epic.api.entities.create).toBeCalledWith({
         type: INTERACTIVE_SESSION,
         attributes: { label: 'My new session' },
       });
@@ -40,19 +51,22 @@ describe('startSessionEpic', () => {
 
   describe('when request succeeds', () => {
     it('redirects to interactive session owner', (done) => {
-      const pushMock = setupPushMock();
-
-      const result$ = callEpic(null, pushMock);
+      const result$ = epic.call$();
       result$.subscribe(_actions => {
-        expect(pushMock).toBeCalledWith('/interactive_sessions/100/owner');
+        expect(epic.history.push)
+          .toBeCalledWith('/interactive_sessions/_1/owner');
         done();
       });
     });
 
     it('emits receive entity action', (done) => {
-      const expectedAction = receiveEntity(entity);
+      const expectedAction = receiveEntity({
+        id: '_1',
+        type: INTERACTIVE_SESSION,
+        attributes: { label: 'My new session' },
+      });
 
-      const result$ = callEpic();
+      const result$ = epic.call$();
       result$.subscribe(actions => {
         expect(actions).toContainEqual(expectedAction);
         done();

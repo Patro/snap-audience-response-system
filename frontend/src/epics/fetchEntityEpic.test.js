@@ -3,38 +3,55 @@ import { toArray } from 'rxjs/operators';
 import { fetchEntity, receiveEntity } from '../actions';
 import fetchEntityEpic from './fetchEntityEpic';
 
-const action$ = of(
-  fetchEntity('SPACESHIP', '100')
-);
+class TestWrapper {
+  constructor({ action$ } = {}) {
+    this.action$ = action$;
+    this.state$ = of({});
+    this.api = {
+      entities: {
+        fetch: jest.fn(entity => of({ ...entity, attributes: {} })),
+      },
+    };
+  }
 
-const entity = {
-  id: '100',
-  type: 'SPACESHIP',
-  attributes: { name: 'ENTERPRISE' },
-};
-const setupFetchMock = () => (jest.fn((_) => of(entity)));
+  get dependencies() {
+    return { api: this.api };
+  }
 
-const callEpic = (fetchMock = setupFetchMock()) => {
-  const dependencies = { api: { entities: { fetch: fetchMock }} }
-  return fetchEntityEpic(action$, null, dependencies).pipe(toArray())
-};
+  call$() {
+    return fetchEntityEpic(this.action$, this.state$, this.dependencies)
+             .pipe(toArray());
+  }
+}
 
 describe('fetchEntityEpic', () => {
-  it('triggers fetch request', (done) => {
-    const fetchMock = setupFetchMock();
+  let epic;
 
-    const result$ = callEpic(fetchMock);
+  beforeEach(() => {
+    epic = new TestWrapper({
+      action$: of(
+        fetchEntity('SPACESHIP', '100')
+      )
+    });
+  });
+
+  it('triggers fetch request', (done) => {
+    const result$ = epic.call$();
     result$.subscribe((_actions) => {
-      expect(fetchMock).toBeCalledWith({ type: 'SPACESHIP', id: '100' });
+      expect(epic.api.entities.fetch).toBeCalledWith({
+        type: 'SPACESHIP', id: '100',
+      });
       done();
     });
   });
 
   describe('when request succeeds', () => {
     it('emits receive entity action', (done) => {
-      const expectedAction = receiveEntity(entity);
+      const expectedAction = receiveEntity({
+        type: 'SPACESHIP', id: '100', attributes: {},
+      });
 
-      const result$ = callEpic();
+      const result$ = epic.call$();
       result$.subscribe(actions => {
         expect(actions).toContainEqual(expectedAction);
         done();

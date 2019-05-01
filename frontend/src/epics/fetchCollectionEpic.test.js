@@ -3,32 +3,42 @@ import { toArray } from 'rxjs/operators';
 import { fetchCollection, receiveCollection } from '../actions';
 import fetchCollectionEpic from './fetchCollectionEpic';
 
-const action$ = of(
-  fetchCollection('SPACESHIP_ENGINE', { fuel: 'hydrogen' })
-);
+class TestWrapper {
+  constructor({ action$ } = {}) {
+    this.action$ = action$;
+    this.state$ = of({});
+    this.api = {
+      collections: {
+        fetch: jest.fn(collection => of({ ...collection, entities: [] })),
+      },
+    };
+  }
 
-const collection = {
-  type: 'SPACESHIP_ENGINE',
-  filterParams: { fuel: 'hydrogen' },
-  entities: [
-    { id: '100', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'hydrogen' } },
-    { id: '101', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'hydrogen' } },
-  ]
-};
-const setupFetchMock = () => (jest.fn((_) => of(collection)));
+  get dependencies() {
+    return { api: this.api };
+  }
 
-const callEpic = (fetchMock = setupFetchMock()) => {
-  const dependencies = { api: { collections: { fetch: fetchMock }} };
-  return fetchCollectionEpic(action$, null, dependencies).pipe(toArray());
-};
+  call$() {
+    return fetchCollectionEpic(this.action$, this.state$, this.dependencies)
+             .pipe(toArray());
+  }
+}
 
 describe('fetchCollectionEpic', () => {
-  it('triggers fetch request', (done) => {
-    const fetchMock = setupFetchMock();
+  let epic;
 
-    const result$ = callEpic(fetchMock);
+  beforeEach(() => {
+    epic = new TestWrapper({
+      action$: of(
+        fetchCollection('SPACESHIP_ENGINE', { fuel: 'hydrogen' })
+      )
+    });
+  });
+
+  it('triggers fetch request', (done) => {
+    const result$ = epic.call$();
     result$.subscribe((_actions) => {
-      expect(fetchMock).toBeCalledWith({
+      expect(epic.api.collections.fetch).toBeCalledWith({
         type: 'SPACESHIP_ENGINE', filterParams: { fuel: 'hydrogen' },
       });
       done();
@@ -37,9 +47,13 @@ describe('fetchCollectionEpic', () => {
 
   describe('when request succeeds', () => {
     it('emits receive collection action', (done) => {
-      const expectedAction = receiveCollection(collection)
+      const expectedAction = receiveCollection({
+        type: 'SPACESHIP_ENGINE',
+        filterParams: { fuel: 'hydrogen' },
+        entities: [],
+      })
 
-      const result$ = callEpic();
+      const result$ = epic.call$();
       result$.subscribe(actions => {
         expect(actions).toContainEqual(expectedAction);
         done();

@@ -3,34 +3,52 @@ import { toArray } from 'rxjs/operators';
 import { createEntity, receiveEntity } from '../actions';
 import createEntityEpic from './createEntityEpic';
 
-const action$ = of(
-  createEntity({ type: 'SPACESHIP' })
-);
+class TestWrapper {
+  constructor({ action$ } = {}) {
+    this.action$ = action$;
+    this.state$ = of({});
+    this.api = {
+      _id: 1,
+      entities: {
+        create: jest.fn(entity => of({ ...entity, id: '_' + this.api._id++ })),
+      },
+    };
+  }
 
-const entity = { id: '100', type: 'SPACESHIP' };
-const setupCreateMock = () => (jest.fn((_) => of(entity)));
+  get dependencies() {
+    return { api: this.api };
+  }
 
-const callEpic = (createMock = setupCreateMock()) => {
-  const dependencies = { api: { entities: { create: createMock }} }
-  return createEntityEpic(action$, of({}), dependencies).pipe(toArray())
-};
+  call$() {
+    return createEntityEpic(this.action$, this.state$, this.dependencies)
+             .pipe(toArray());
+  }
+}
 
 describe('createEntityEpic', () => {
-  it('triggers create request', (done) => {
-    const createMock = setupCreateMock();
+  let epic;
 
-    const result$ = callEpic(createMock);
+  beforeEach(() => {
+    epic = new TestWrapper({
+      action$: of(
+        createEntity({ type: 'SPACESHIP' })
+      )
+    });
+  });
+
+  it('triggers create request', (done) => {
+    const result$ = epic.call$();
     result$.subscribe((_actions) => {
-      expect(createMock).toBeCalledWith({ type: 'SPACESHIP' });
+      expect(epic.api.entities.create).toBeCalledWith({ type: 'SPACESHIP' });
       done();
     });
   });
 
   describe('when request succeeds', () => {
     it('emits receive entity action', (done) => {
-      const expectedAction = receiveEntity(entity);
+      const expectedAction = receiveEntity({ id: '_1', type: 'SPACESHIP' });
 
-      const result$ = callEpic();
+      const result$ = epic.call$();
       result$.subscribe(actions => {
         expect(actions).toContainEqual(expectedAction);
         done();
