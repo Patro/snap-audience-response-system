@@ -40,7 +40,7 @@ describe('collections', () => {
 
       const mappedResponse = {
         type: 'SPACESHIP_ENGINE',
-        filterParams: { fuel: 'gas' },
+        filterParams: { fuel: 'hydrogen' },
         entities: [
           {
             id: '100',
@@ -53,7 +53,7 @@ describe('collections', () => {
       }
       collections.fetch({
         type: 'SPACESHIP_ENGINE',
-        filterParams: { fuel: 'gas' },
+        filterParams: { fuel: 'hydrogen' },
       }).subscribe(response => {
         expect(response).toEqual(mappedResponse);
         done();

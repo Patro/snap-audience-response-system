@@ -11,11 +11,11 @@ describe('collections reducer', () => {
       };
       const action = receiveCollection({
         type: 'VEHICLE',
-        filterParams: { fuel: 'gas' },
+        filterParams: { fuel: 'diesel' },
         entities: [
           { id: '2', type: 'CAR', attributes: { maxSpeed: 200 } },
-          { id: '2', type: 'SPACESHIP', attributes: { maxSpeed: 100000 } },
-          { id: '3', type: 'SPACESHIP', attributes: { maxSpeed: 400000 } },
+          { id: '2', type: 'TRUCK', attributes: { maxSpeed: 100 } },
+          { id: '3', type: 'TRUCK', attributes: { maxSpeed: 100 } },
         ],
       });
       const stateAfter = {
@@ -23,15 +23,15 @@ describe('collections reducer', () => {
           '{}': { entities: [] },
         },
         VEHICLE: {
-          '{"fuel":"gas"}': {
+          '{"fuel":"diesel"}': {
             type: 'VEHICLE',
-            filterParams: { fuel: 'gas' },
+            filterParams: { fuel: 'diesel' },
             entities: [
               { id: '2', type: 'CAR' },
-              { id: '2', type: 'SPACESHIP' },
-              { id: '3', type: 'SPACESHIP' },
-            ]
-          }
+              { id: '2', type: 'TRUCK' },
+              { id: '3', type: 'TRUCK' },
+            ],
+          },
         },
       };
 

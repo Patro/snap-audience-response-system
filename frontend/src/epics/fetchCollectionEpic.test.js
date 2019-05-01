@@ -4,15 +4,15 @@ import { fetchCollection, receiveCollection } from '../actions';
 import fetchCollectionEpic from './fetchCollectionEpic';
 
 const action$ = of(
-  fetchCollection('SPACESHIP_ENGINE', { fuel: 'gas' })
+  fetchCollection('SPACESHIP_ENGINE', { fuel: 'hydrogen' })
 );
 
 const collection = {
   type: 'SPACESHIP_ENGINE',
-  filterParams: { fuel: 'gas' },
+  filterParams: { fuel: 'hydrogen' },
   entities: [
-    { id: '100', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
-    { id: '101', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'gas' } },
+    { id: '100', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'hydrogen' } },
+    { id: '101', type: 'SPACESHIP_ENGINE', attributes: { fuel: 'hydrogen' } },
   ]
 };
 const setupFetchMock = () => (jest.fn((_) => of(collection)));
@@ -29,7 +29,7 @@ describe('fetchCollectionEpic', () => {
     const result$ = callEpic(fetchMock);
     result$.subscribe((_actions) => {
       expect(fetchMock).toBeCalledWith({
-        type: 'SPACESHIP_ENGINE', filterParams: { fuel: 'gas' },
+        type: 'SPACESHIP_ENGINE', filterParams: { fuel: 'hydrogen' },
       });
       done();
     });

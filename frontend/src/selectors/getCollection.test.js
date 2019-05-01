@@ -10,14 +10,14 @@ describe('getCollection', () => {
     const state = {
       collections: {
         SPACESHIP_ENGINE: {
-          '{"fuel":"gas"}': collection,
+          '{"fuel":"hydrogen"}': collection,
         },
       },
     };
 
     describe('when collection with filter params exists', () => {
       it('returns collection', () => {
-        const filterParams = { fuel: 'gas' }
+        const filterParams = { fuel: 'hydrogen' }
         const result = getCollection(state, 'SPACESHIP_ENGINE', filterParams)
         expect(result).toEqual(collection);
       });
@@ -41,13 +41,13 @@ describe('getCollection', () => {
     const state = {
       collections: {
         CAR: {
-          '{"fuel":"gas"}': collection,
+          '{"fuel":"hydrogen"}': collection,
         },
       },
     };
 
     it('returns undefined', () => {
-      const filterParams = { fuel: 'gas' }
+      const filterParams = { fuel: 'hydrogen' }
       const result = getCollection(state, 'SPACESHIP_ENGINE', filterParams)
       expect(result).toBeUndefined();
     });
@@ -57,7 +57,7 @@ describe('getCollection', () => {
     const state = {};
 
     it('returns undefined', () => {
-      const filterParams = { fuel: 'gas' }
+      const filterParams = { fuel: 'hydrogen' }
       const result = getCollection(state, 'SPACESHIP_ENGINE', filterParams)
       expect(result).toBeUndefined()
     });
