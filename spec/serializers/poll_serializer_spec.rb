@@ -21,6 +21,7 @@ RSpec.describe PollSerializer do
 
       it { is_expected.to include(status: :open) }
       it { is_expected.to include(responded: false) }
+      it { is_expected.to include(number_of_respondents: 0) }
     end
 
     describe '> relationships' do

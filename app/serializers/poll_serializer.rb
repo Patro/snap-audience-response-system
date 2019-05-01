@@ -6,4 +6,5 @@ class PollSerializer < ApplicationSerializer
   attributes :responded do |record, params|
     record.responded_by?(params[:current_user])
   end
+  attributes :number_of_respondents
 end
