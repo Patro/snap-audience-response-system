@@ -16,6 +16,16 @@ class PresenterScreen extends Component {
       </div>
     );
   }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
+  }
 }
 
 export default PresenterScreen;
