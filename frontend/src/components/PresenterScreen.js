@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import { Button } from 'antd';
 import PollResultsChartContainer
   from '../containers/PollResultsChartContainer';
+import withFullscreenStatus from './withFullscreenStatus';
 
 class PresenterScreen extends Component {
   get poll() {
     return this.props.poll;
+  }
+
+  get showFullscreenButton() {
+    return !this.props.shownFullscreen;
   }
 
   render() {
@@ -13,8 +19,15 @@ class PresenterScreen extends Component {
     return (
       <div className="presenter_screen">
         <PollResultsChartContainer poll={this.poll} />
+        {this.renderFullscreenButton()}
       </div>
     );
+  }
+
+  renderFullscreenButton() {
+    if (!this.showFullscreenButton) { return false; }
+
+    return <Button onClick={this.showFullscreen}>Show full screen</Button>;
   }
 
   componentDidMount() {
@@ -26,6 +39,10 @@ class PresenterScreen extends Component {
       this.props.onRefresh();
     }
   }
+
+  showFullscreen() {
+    document.documentElement.requestFullscreen();
+  }
 }
 
-export default PresenterScreen;
+export default withFullscreenStatus(PresenterScreen);

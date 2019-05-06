@@ -7,8 +7,12 @@ import PollResultsChartContainer
 import PresenterScreen from './PresenterScreen';
 
 class TestWrapper extends AbstractTestWrapper {
+  get inner() {
+    return this.wrapper.dive();
+  }
+
   get pollResultsChart() {
-    return this.wrapper.find(PollResultsChartContainer);
+    return this.inner.find(PollResultsChartContainer);
   }
 
   get givenPoll() {
@@ -44,7 +48,7 @@ describe('PresenterScreen', () => {
 
   describe('without poll', () => {
     it('renders nothing', () => {
-      expect(component.wrapper.isEmptyRender()).toBe(true);
+      expect(component.inner.isEmptyRender()).toBe(true);
     });
   });
 
@@ -53,7 +57,7 @@ describe('PresenterScreen', () => {
       const refreshHandler = jest.fn();
       component.props.onRefresh = refreshHandler;
 
-      component._render();
+      component.wrapper.dive();
 
       expect(refreshHandler).toBeCalled();
     });
