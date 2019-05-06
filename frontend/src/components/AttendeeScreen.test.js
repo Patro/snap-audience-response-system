@@ -7,17 +7,7 @@ import subscriptions from '../websocket/subscriptions';
 import AttendeeScreen from './AttendeeScreen';
 import RespondFormContainer from '../containers/RespondFormContainer';
 
-jest.mock('../websocket/subscriptions', () => {
-  let _onEvent;
-  return {
-    subscribeForPollEvents: jest.fn((_, onEvent) => {
-      _onEvent = onEvent;
-    }),
-    _publishPollEvent: (event) => {
-      _onEvent(event);
-    }
-  };
-});
+jest.mock('../websocket/subscriptions');
 
 class TestWrapper extends AbstractTestWrapper {
   get alert() {
