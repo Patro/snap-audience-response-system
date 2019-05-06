@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
+import PresenterScreen from './PresenterScreen';
 import OwnerScreen from './OwnerScreen';
 
 class SessionScreen extends Component {
@@ -40,6 +41,9 @@ class SessionScreen extends Component {
           path="/interactive_sessions/:id/owner"
           component={props => this.renderOwnerScreen(props)} />
         <Route
+          path="/interactive_sessions/:id/presenter/polls/:pollId"
+          component={props => this.renderPresenterScreen(props)} />
+        <Route
           component={props => this.renderAttendeeScreen(props)} />
       </Switch>
     );
@@ -48,6 +52,12 @@ class SessionScreen extends Component {
   renderOwnerScreen(routeProps) {
     return (
       <OwnerScreen interactiveSession={this.session} {...routeProps} />
+    );
+  }
+
+  renderPresenterScreen(routeProps) {
+    return (
+      <PresenterScreen interactiveSession={this.session} {...routeProps} />
     );
   }
 

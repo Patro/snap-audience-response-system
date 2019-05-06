@@ -1,12 +1,10 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { StaticRouter } from 'react-router-dom';
-import configureStore from 'redux-mock-store'
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import SessionScreen from './SessionScreen';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
+import PresenterScreen from './PresenterScreen';
 import OwnerScreen from './OwnerScreen';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -16,6 +14,10 @@ class TestWrapper extends AbstractTestWrapper {
 
   get attendeeScreenContainer() {
     return this.wrapper.find(AttendeeScreenContainer);
+  }
+
+  get presenterScreen() {
+    return this.wrapper.find(PresenterScreen);
   }
 
   get ownerScreen() {
@@ -30,6 +32,10 @@ class TestWrapper extends AbstractTestWrapper {
 
   setAttendeePath() {
     this.location = { pathname: '/interactive_sessions/12' };
+  }
+
+  setPresenterPath() {
+    this.location = { pathname: '/interactive_sessions/12/presenter/polls/21' };
   }
 
   setOwnerPath() {
@@ -60,6 +66,16 @@ describe('SessionScreen', () => {
 
     it('renders attendee screen container', () => {
       expect(component.attendeeScreenContainer).toHaveLength(1);
+    });
+  });
+
+  describe('given presenter path', () => {
+    beforeEach(() => {
+      component.setPresenterPath();
+    });
+
+    it('renders presenter screen', () => {
+      expect(component.presenterScreen).toHaveLength(1);
     });
   });
 
