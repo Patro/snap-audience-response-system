@@ -16,6 +16,10 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(PollResultsChartContainer).first();
   }
 
+  get presentButton() {
+    return this.wrapper.find('.question_polls_screen__present_button');
+  }
+
   get givenPollsOfMenu() {
     return this.pollsMenu.prop('polls');
   }
@@ -69,6 +73,10 @@ describe('QuestionPollsScreen', () => {
       expect(component.givenPollToShowResultsFor).toEqual(closedPolls[1]);
     });
 
+    it('renders present button', () => {
+      expect(component.presentButton).toHaveLength(1);
+    });
+
     describe('on select of first closed poll', () => {
       beforeEach(() => {
         component.selectPoll(closedPolls[0]);
@@ -105,6 +113,10 @@ describe('QuestionPollsScreen', () => {
       expect(component.givenPollToShowResultsFor).toEqual(openPoll);
     });
 
+    it('renders present button', () => {
+      expect(component.presentButton).toHaveLength(1);
+    });
+
     describe('on select of closed poll', () => {
       beforeEach(() => {
         component.selectPoll(closedPoll);
@@ -132,6 +144,10 @@ describe('QuestionPollsScreen', () => {
     it('does not render results chart', () => {
       expect(component.pollResultsChart).toHaveLength(0);
     });
+
+    it('does not render present button', () => {
+      expect(component.presentButton).toHaveLength(0);
+    });
   });
 
   describe('without polls', () => {
@@ -141,6 +157,10 @@ describe('QuestionPollsScreen', () => {
 
     it('does not render results chart', () => {
       expect(component.pollResultsChart).toHaveLength(0);
+    });
+
+    it('does not render present button', () => {
+      expect(component.presentButton).toHaveLength(0);
     });
   });
 

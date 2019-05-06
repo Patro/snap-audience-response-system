@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from 'antd';
 import PollResultsChartContainer
   from './../containers/PollResultsChartContainer';
 import PollsMenu from './PollsMenu';
@@ -9,6 +10,7 @@ class QuestionPollsScreen extends Component {
 
     this.state = {};
     this.selectPoll = this.selectPoll.bind(this);
+    this.presentActivePoll = this.presentActivePoll.bind(this);
   }
 
   get polls() {
@@ -40,6 +42,10 @@ class QuestionPollsScreen extends Component {
                    activePoll={this.activePoll}
                    onSelect={this.selectPoll} />
         <PollResultsChartContainer poll={this.activePoll} />
+        <Button icon="desktop" onClick={this.presentActivePoll}
+                className="question_polls_screen__present_button">
+          Present results
+        </Button>
       </div>
     );
   }
@@ -56,6 +62,11 @@ class QuestionPollsScreen extends Component {
 
   selectPoll(poll) {
     this.setState({ activePoll: poll });
+  }
+
+  presentActivePoll() {
+    const path = `presenter/polls/${this.activePoll.id}`;
+    window.open(path, 'presenter', 'status=0');
   }
 }
 
