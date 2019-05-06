@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
-import PresenterScreen from './PresenterScreen';
+import PresenterScreenContainer from '../containers/PresenterScreenContainer';
 import OwnerScreen from './OwnerScreen';
 
 class SessionScreen extends Component {
@@ -57,7 +57,9 @@ class SessionScreen extends Component {
 
   renderPresenterScreen(routeProps) {
     return (
-      <PresenterScreen interactiveSession={this.session} {...routeProps} />
+      <PresenterScreenContainer
+        interactiveSession={this.session}
+        {...routeProps} />
     );
   }
 

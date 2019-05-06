@@ -4,7 +4,7 @@ import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import SessionScreen from './SessionScreen';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
-import PresenterScreen from './PresenterScreen';
+import PresenterScreenContainer from '../containers/PresenterScreenContainer';
 import OwnerScreen from './OwnerScreen';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -17,7 +17,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get presenterScreen() {
-    return this.wrapper.find(PresenterScreen);
+    return this.wrapper.find(PresenterScreenContainer);
   }
 
   get ownerScreen() {
