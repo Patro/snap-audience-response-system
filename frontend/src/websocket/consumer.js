@@ -6,7 +6,7 @@ const consumer = {
       channel,
       id: interactiveSessionId,
     }, { received });
-    return { unsubscribe: internal.unsubscribe };
+    return { unsubscribe: internal.unsubscribe.bind(internal) };
   },
 };
 
