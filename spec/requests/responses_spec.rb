@@ -105,6 +105,27 @@ RSpec.describe 'Responses API', type: :request do
       include_examples 'create resource with relationship',
                        model_class: Response
     end
+
+    describe 'given relationship to poll and picked question option' do
+      let(:data) { response_data }
+
+      context 'given policy that permits access' do
+        permit_action(Response, :create?)
+
+        it 'should broadcast response created event' do
+          expect { fire_post }
+          .to have_broadcasted_to(question.interactive_session)
+          .from_channel(ApplicationCable::InteractiveSessionChannel)
+          .with(an_object_satisfying { |message|
+            message.deep_symbolize_keys.eql?(event: {
+              type: 'RESPONSE_CREATED',
+              poll_id: poll.id.to_s,
+              response_id: json['data']['id'],
+            })
+          })
+        end
+      end
+    end
   end
 
   describe 'POST /api/polls/:id/responses' do
