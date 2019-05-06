@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import subscriptions from '../websocket/subscriptions';
 import PollResultsChartItemContainer
   from '../containers/PollResultsChartItemContainer';
 
@@ -39,7 +40,35 @@ class PollResultsChart extends Component {
   }
 
   componentDidMount() {
+    this.subscribe();
     this.refresh();
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.poll !== this.poll || prevProps.question !== this.question) {
+      this.unsubscribe();
+      this.subscribe();
+    }
+  }
+
+  subscribe() {
+    if (this.question === undefined) { return; }
+
+    this.subscription = subscriptions.subscribeForResponseEvents(
+      this.question.relationships.interactiveSession.id,
+      this.poll.id,
+      () => this.refresh(),
+    );
+  }
+
+  unsubscribe() {
+    if (this.subscription === undefined) { return; }
+
+    this.subscription.unsubscribe();
   }
 
   refresh() {

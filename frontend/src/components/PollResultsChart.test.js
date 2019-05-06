@@ -2,9 +2,12 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import subscriptions from '../websocket/subscriptions';
 import PollResultsChartItemContainer
   from '../containers/PollResultsChartItemContainer';
 import PollResultsChart from './PollResultsChart';
+
+jest.mock('../websocket/subscriptions');
 
 class TestWrapper extends AbstractTestWrapper {
   get questionText() {
@@ -19,6 +22,14 @@ class TestWrapper extends AbstractTestWrapper {
     return shallow(
       <PollResultsChart {...this.props} />
     )
+  }
+
+  setPoll(poll) {
+    this.wrapper.setProps({ poll });
+  }
+
+  setQuestion(question) {
+    this.wrapper.setProps({ question });
   }
 }
 
@@ -71,6 +82,108 @@ describe('PollResultsChart', () => {
       component._render();
 
       expect(refreshHandler).toBeCalled();
+    });
+  });
+
+  describe('subscription for response events', () => {
+    describe('given question', () => {
+      let question;
+
+      beforeEach(() => {
+        question = factories.singleChoiceQuestion.entity({
+          relationships: {
+            interactiveSession: factories.interactiveSession.identifier({
+              id: '900',
+            }),
+          },
+        });
+        component.props.question = question;
+      });
+
+      it('subscribes for response events', () => {
+        component._render();
+
+        expect(subscriptions.subscribeForResponseEvents).toBeCalledWith(
+          '900', '100', expect.anything(),
+        );
+      });
+
+      describe('when poll is changed', () => {
+        it('unsubscribes for response events', () => {
+          const subscription = { unsubscribe: jest.fn() };
+          subscriptions.subscribeForResponseEvents.mockReturnValue(
+            subscription
+          );
+
+          component.setPoll(factories.poll.entity());
+
+          expect(subscription.unsubscribe).toBeCalled();
+        });
+
+        it('subscribes for response events', () => {
+          let newPoll = factories.poll.entity({ id: '101' });
+          component.setPoll(newPoll);
+
+          expect(subscriptions.subscribeForResponseEvents).toBeCalledWith(
+            '900', '101', expect.anything(),
+          );
+        });
+      });
+
+      describe('when question is changed', () => {
+        it('unsubscribes for response events', () => {
+          const subscription = { unsubscribe: jest.fn() };
+          subscriptions.subscribeForResponseEvents.mockReturnValue(
+            subscription
+          );
+
+          component.setQuestion(factories.multipleChoiceQuestion.entity());
+
+          expect(subscription.unsubscribe).toBeCalled();
+        });
+
+        it('subscribes for response events', () => {
+          let newQuestion = factories.multipleChoiceQuestion.entity({
+            relationships: {
+              interactiveSession: factories.interactiveSession.identifier({
+                id: '901',
+              }),
+            },
+          });
+          component.setQuestion(newQuestion);
+
+          expect(subscriptions.subscribeForResponseEvents).toBeCalledWith(
+            '901', '100', expect.anything(),
+          );
+        });
+      });
+    });
+
+    describe('without question', () => {
+      it('does not subscribe for response events', () => {
+        component._render();
+
+        expect(subscriptions.subscribeForResponseEvents).toBeCalled();
+      })
+    });
+  });
+
+  describe('on unmount', () => {
+    describe('given question', () => {
+      beforeEach(() => {
+        component.props.question = factories.singleChoiceQuestion.entity();
+      });
+
+      it('unsubscribes for response events', () => {
+        const subscription = { unsubscribe: jest.fn() };
+        subscriptions.subscribeForResponseEvents.mockReturnValue(
+          subscription
+        );
+
+        component.wrapper.unmount();
+
+        expect(subscription.unsubscribe).toBeCalled();
+      });
     });
   });
 });
