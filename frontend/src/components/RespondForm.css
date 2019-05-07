@@ -1,0 +1,18 @@
+.respond_form #selection {
+  display: block;
+}
+
+.respond_form__title {
+  white-space: normal;
+}
+
+.respond_form__list_item {
+  padding: 0 !important;
+}
+
+.respond_form__option {
+  display: block;
+  padding: 12px;
+  white-space: normal;
+  width: 100%;
+}

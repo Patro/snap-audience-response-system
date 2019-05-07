@@ -10,8 +10,8 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(Form).first();
   }
 
-  get header() {
-    return this.wrapper.find('.respond_form__header');
+  get title() {
+    return this.wrapper.find('.respond_form__title');
   }
 
   get checkboxes() {
@@ -84,8 +84,8 @@ describe('RespondForm', () => {
     }});
   });
 
-  it('renders text of question to header', () => {
-    expect(component.header.text()).toEqual('What is the meaning of life?');
+  it('renders text of question to title', () => {
+    expect(component.title.text()).toEqual('What is the meaning of life?');
   });
 
   it('renders option labels', () => {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Form, Button, Radio, Checkbox, List } from 'antd';
 import isArray from 'lodash/isArray';
 import { MULTIPLE_CHOICE_QUESTION } from '../constants/entityTypes';
+import './RespondForm.css';
 
 class RespondForm extends Component {
   constructor(props) {
@@ -62,11 +63,13 @@ class RespondForm extends Component {
       <div className="respond_form">
         <Card title={this.renderTitle()}>
           <Form onSubmit={this.handleSubmit}>
-            { getFieldDecorator(`selection`, {
-              rules: [
-                { required: true, message: 'Please select an option!' },
-              ],
-            })(this.renderSelection()) }
+            <Form.Item>
+              { getFieldDecorator(`selection`, {
+                rules: [
+                  { required: true, message: 'Please select an option!' },
+                ],
+              })(this.renderSelection()) }
+            </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" loading={this.processing}>
                 Send
@@ -93,7 +96,7 @@ class RespondForm extends Component {
 
   renderTitle() {
     return (
-      <div className="respond_form__header">
+      <div className="respond_form__title">
         {this.props.question.attributes.text}
       </div>
     );
@@ -102,7 +105,7 @@ class RespondForm extends Component {
   renderOption(option) {
     const Item = this.itemComponent;
     return (
-      <List.Item key={option.id}>
+      <List.Item key={option.id} className="respond_form__list_item">
         <Item value={option.id} className="respond_form__option">
           {option.attributes.text}
         </Item>
