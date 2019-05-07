@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Menu } from 'antd';
+import ordinal from 'ordinal';
+import './PollsMenu.css';
 
 class PollsMenu extends Component {
   constructor(props) {
@@ -27,18 +29,21 @@ class PollsMenu extends Component {
 
   render() {
     return (
-      <Menu
-        mode="horizontal"
-        selectedKeys={this.selectedKeys}
-        onSelect={this.onSelect}
-        className="polls_menu">{this.polls.map(this.renderItem)}</Menu>
+      <div className="polls_menu">
+        <span className="polls_menu__prefix">Polls:</span>
+        <Menu
+          mode="horizontal"
+          selectedKeys={this.selectedKeys}
+          onSelect={this.onSelect}
+          className="polls_menu__menu">{this.polls.map(this.renderItem)}</Menu>
+      </div>
     );
   }
 
   renderItem(poll, index) {
     return (
       <Menu.Item key={poll.id} className="polls_menu_item">
-        { index + 1 }
+        { ordinal(index + 1) }
       </Menu.Item>
     )
   }
