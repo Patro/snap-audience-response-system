@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Tooltip } from 'antd';
 
 class DeleteButton extends Component {
   constructor(props) {
@@ -23,7 +23,21 @@ class DeleteButton extends Component {
     return this.props.onDelete;
   }
 
+  get tooltip() {
+    return this.props.tooltip;
+  }
+
   render() {
+    if (this.tooltip === undefined) { return this.renderButton(); }
+
+    return (
+      <Tooltip title={this.tooltip}>
+        {this.renderButton()}
+      </Tooltip>
+    )
+  }
+
+  renderButton() {
     return (
       <Button
         { ...this.buttonProps }

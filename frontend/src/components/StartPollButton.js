@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 
 class StartPollButton extends Component {
   constructor(props) {
@@ -18,11 +18,13 @@ class StartPollButton extends Component {
 
   render() {
     return (
-      <Button
-        icon="caret-right"
-        onClick={this.onClick}
-        loading={this.processing}
-        className="start_poll_button" />
+      <Tooltip title="Start poll">
+        <Button
+          icon="caret-right"
+          onClick={this.onClick}
+          loading={this.processing}
+          className="start_poll_button" />
+      </Tooltip>
     );
   }
 

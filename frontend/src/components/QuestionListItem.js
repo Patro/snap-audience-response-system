@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Collapse } from 'antd';
+import { Button, Collapse, Tooltip } from 'antd';
 import {
   MULTIPLE_CHOICE_QUESTION,
   SINGLE_CHOICE_QUESTION,
@@ -9,6 +9,7 @@ import DeleteButtonContainer from './../containers/DeleteButtonContainer';
 import QuestionPollsScreenContainer
   from './../containers/QuestionPollsScreenContainer';
 import QuestionPollControl from './QuestionPollControl';
+import './QuestionListItem.css';
 
 class QuestionListItem extends Component {
   constructor(props) {
@@ -67,19 +68,18 @@ class QuestionListItem extends Component {
 
   renderMenu() {
     return (
-      <div>
+      <div className="question_list_item__menu">
         <QuestionPollControl
           question={this.question}
-          openPoll={this.openPoll}
-          className="question_list__poll_control" />
+          openPoll={this.openPoll} />
         <Link to={this.editQuestionPath}>
-          <Button
-            type="primary"
-            icon="edit"
-            className="question_list__edit_button" />
+          <Tooltip title="Edit question">
+            <Button icon="edit" className="question_list__edit_button" />
+          </Tooltip>
         </Link>
         <DeleteButtonContainer
           entity={this.question}
+          tooltip="Delete question"
           confirmMessage="Are you sure to delete this question?"
           className="question_list__delete_button" />
       </div>
