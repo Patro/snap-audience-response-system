@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Input, Radio, Switch, Icon, Divider } from 'antd';
+import { Card, Form, Button, Input, Radio, Switch, Icon, Divider } from 'antd';
 import {
   MULTIPLE_CHOICE_QUESTION,
   QUESTION_OPTION,
@@ -40,6 +40,10 @@ class QuestionForm extends Component {
     return this.props.options || [];
   }
 
+  get isNewQuestion() {
+    return this.question.id === undefined;
+  }
+
   get processing() {
     return this.props.processing;
   }
@@ -51,15 +55,26 @@ class QuestionForm extends Component {
     }
     return (
       <div className="question_form">
-        <JobErrorAlert job={this.props.saveJob} />
-        <Form {...layout} onSubmit={this.submit}>
-          {this.renderQuestionFields()}
-          {this.renderOptionsFields()}
-          {this.renderAddOptionButton()}
-          {this.renderSubmitButton()}
-        </Form>
+        <Card title={this.renderTitle()}>
+          <JobErrorAlert job={this.props.saveJob} />
+          <Form {...layout} onSubmit={this.submit}>
+            {this.renderQuestionFields()}
+            {this.renderOptionsFields()}
+            {this.renderAddOptionButton()}
+            {this.renderSubmitButton()}
+          </Form>
+        </Card>
       </div>
     );
+  }
+
+  renderTitle() {
+    if (this.isNewQuestion) {
+      return 'Create question';
+    }
+    else {
+      return 'Edit question';
+    }
   }
 
   renderQuestionFields() {
