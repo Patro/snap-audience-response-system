@@ -34,11 +34,11 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   get optionTextInputs() {
-    return this.inner.find('.question_form__option__text');
+    return this.inner.find('.question_form__option_text_input');
   }
 
   get optionCorrectFlagSwitches() {
-    return this.inner.find('.question_form__option__correct_flag');
+    return this.inner.find('.question_form__option_correct_flag');
   }
 
   get addOptionButton() {

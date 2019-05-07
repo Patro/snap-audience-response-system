@@ -6,6 +6,7 @@ import {
   SINGLE_CHOICE_QUESTION
 } from '../constants/entityTypes';
 import JobErrorAlert from './JobErrorAlert';
+import './QuestionForm.css';
 
 class QuestionForm extends Component {
   constructor(props) {
@@ -48,19 +49,29 @@ class QuestionForm extends Component {
     return this.props.processing;
   }
 
-  render() {
-    const layout = {
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+  get formLayout() {
+    return {
+      labelCol: { sm: { span: 4 } },
+      wrapperCol: { sm: { span: 18 } },
     }
+  }
+
+  get itemWithoutLabelLayout() {
+    return {
+      wrapperCol: {
+        sm: { offset: 4, span: 18 },
+      }
+    }
+  }
+
+  render() {
     return (
       <div className="question_form">
         <Card title={this.renderTitle()}>
           <JobErrorAlert job={this.props.saveJob} />
-          <Form {...layout} onSubmit={this.submit}>
+          <Form {...this.formLayout} onSubmit={this.submit}>
             {this.renderQuestionFields()}
             {this.renderOptionsFields()}
-            {this.renderAddOptionButton()}
             {this.renderSubmitButton()}
           </Form>
         </Card>
@@ -118,13 +129,16 @@ class QuestionForm extends Component {
       <>
         {this.renderOptionKeys()}
         {optionKeys.map(this.renderOptionFields)}
+        <Divider />
+        {this.renderAddOptionButton()}
+        <Divider />
       </>
     )
   }
 
   renderOptionKeys() {
     return (
-      <Form.Item wrapperCol={ { offset: 4 } }>
+      <Form.Item {...this.itemWithoutLabelLayout} >
         { this.form.getFieldDecorator('optionKeys', {
             rules: [{
               validator: (_rule, value, callback) => {
@@ -144,16 +158,20 @@ class QuestionForm extends Component {
       <div key={optionKey} className="question_form__option">
         <Divider>{`Option ${index + 1}`}</Divider>
         <Form.Item label="Text">
-          { this.form.getFieldDecorator(`options.${optionKey}.text`, {
-              rules: [{
-                required: true,
-                whitespace: true,
-                message: "Please provide some text or remove this option.",
-              }],
-          })(
-            <Input className="question_form__option__text" />
-          ) }
-          {this.renderActionsOfOption(optionKey)}
+          <div className="question_form__option_text">
+            <div className="question_form__option_text_wrapper">
+              { this.form.getFieldDecorator(`options.${optionKey}.text`, {
+                  rules: [{
+                    required: true,
+                    whitespace: true,
+                    message: "Please provide some text or remove this option.",
+                  }],
+              })(
+                <Input className="question_form__option_text_input" />
+              ) }
+            </div>
+            {this.renderActionsOfOption(optionKey)}
+          </div>
         </Form.Item>
         <Form.Item label="Is correct?">
           { this.form.getFieldDecorator(
@@ -163,7 +181,7 @@ class QuestionForm extends Component {
             <Switch
               checkedChildren={<Icon type="check" />}
               unCheckedChildren={<Icon type="close" />}
-              className="question_form__option__correct_flag" />
+              className="question_form__option_correct_flag" />
           ) }
         </Form.Item>
       </div>
@@ -182,7 +200,7 @@ class QuestionForm extends Component {
 
   renderAddOptionButton() {
     return (
-      <Form.Item wrapperCol={ { offset: 4 } }>
+      <Form.Item {...this.itemWithoutLabelLayout}>
         <Button
           icon="plus"
           onClick={this.addOption}
@@ -193,7 +211,7 @@ class QuestionForm extends Component {
 
   renderSubmitButton() {
     return (
-      <Form.Item wrapperCol={ { offset: 4 } }>
+      <Form.Item {...this.itemWithoutLabelLayout}>
         <Button type="primary" htmlType="submit" loading={this.processing}>
           Save
         </Button>

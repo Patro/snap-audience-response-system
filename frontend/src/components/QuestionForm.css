@@ -1,0 +1,22 @@
+.question_form__option_text {
+  position: relative;
+  padding: 4px 11px;
+  height: 40px;
+}
+
+.question_form__option_text_wrapper {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 38px;
+}
+
+.question_form__remove_option_button {
+  position: absolute;
+  top: 4px;
+  right: 0;
+}
+
+.question_form__add_option_button {
+  width: 100%;
+}

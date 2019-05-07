@@ -23,7 +23,7 @@ RSpec.feature 'Owner creates new question', type: :feature do
         end
         within(options.at(1)) do
           fill_in('Text', with: '6')
-          find('.question_form__option__correct_flag').click()
+          find('.question_form__option_correct_flag').click()
         end
         within(options.at(2)) do
           fill_in('Text', with: '7')
