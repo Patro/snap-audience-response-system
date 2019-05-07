@@ -29,7 +29,7 @@ class PollsMenu extends Component {
 
   render() {
     return (
-      <div className="polls_menu">
+      <div className={`polls_menu ${this.props.className}`}>
         <span className="polls_menu__prefix">Polls:</span>
         <Menu
           mode="horizontal"

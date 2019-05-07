@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import PollResultsChartContainer
   from './../containers/PollResultsChartContainer';
 import PollsMenu from './PollsMenu';
+import './QuestionPollsScreen.css';
 
 class QuestionPollsScreen extends Component {
   constructor(props) {
@@ -40,7 +41,8 @@ class QuestionPollsScreen extends Component {
       <div className="question_polls_screen">
         <PollsMenu polls={this.polls}
                    activePoll={this.activePoll}
-                   onSelect={this.selectPoll} />
+                   onSelect={this.selectPoll}
+                   className="question_polls_screen__polls_menu" />
         <PollResultsChartContainer poll={this.activePoll} extra={
           <Button icon="desktop" onClick={this.presentActivePoll}
                   className="question_polls_screen__present_button">
