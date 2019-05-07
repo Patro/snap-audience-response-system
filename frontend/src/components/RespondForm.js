@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Radio, Checkbox, List } from 'antd';
+import { Card, Form, Button, Radio, Checkbox, List } from 'antd';
 import isArray from 'lodash/isArray';
 import { MULTIPLE_CHOICE_QUESTION } from '../constants/entityTypes';
 
@@ -54,24 +54,26 @@ class RespondForm extends Component {
 
   render() {
     if (this.props.question === undefined || this.props.options === undefined) {
-      return <></>;
+      return false;
     }
 
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="respond_form">
-        <Form onSubmit={this.handleSubmit}>
-          { getFieldDecorator(`selection`, {
-            rules: [
-              { required: true, message: 'Please select an option!' },
-            ],
-          })(this.renderSelection()) }
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={this.processing}>
-              Send
-            </Button>
-          </Form.Item>
-        </Form>
+        <Card title={this.renderTitle()}>
+          <Form onSubmit={this.handleSubmit}>
+            { getFieldDecorator(`selection`, {
+              rules: [
+                { required: true, message: 'Please select an option!' },
+              ],
+            })(this.renderSelection()) }
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={this.processing}>
+                Send
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
       </div>
     );
   }
@@ -81,7 +83,6 @@ class RespondForm extends Component {
     return (
       <Item.Group>
         <List
-          header={this.renderHeader()}
           bordered
           dataSource={this.props.options}
           renderItem={this.renderOption}
@@ -90,7 +91,7 @@ class RespondForm extends Component {
     )
   }
 
-  renderHeader() {
+  renderTitle() {
     return (
       <div className="respond_form__header">
         {this.props.question.attributes.text}
