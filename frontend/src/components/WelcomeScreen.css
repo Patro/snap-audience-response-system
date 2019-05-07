@@ -1,0 +1,13 @@
+.welcome_screen {
+  height: 100%;
+}
+
+.welcome_screen__row {
+  padding-top: -8px;
+}
+
+.welcome_screen__column {
+  padding: 8px;
+}
+
+

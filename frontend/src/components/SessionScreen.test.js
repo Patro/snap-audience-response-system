@@ -9,7 +9,7 @@ import OwnerScreen from './OwnerScreen';
 
 class TestWrapper extends AbstractTestWrapper {
   get label() {
-    return this.wrapper.find('.interactive_session__label');
+    return this.wrapper.find('.layout__header_title');
   }
 
   get attendeeScreenContainer() {

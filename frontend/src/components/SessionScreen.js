@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
 import PresenterScreenContainer from '../containers/PresenterScreenContainer';
+import Layout from './Layout';
 import OwnerScreen from './OwnerScreen';
+import './SessionScreen.css';
 
 class SessionScreen extends Component {
   componentDidMount() {
@@ -23,13 +25,18 @@ class SessionScreen extends Component {
     return this.session.attributes;
   }
 
+  get label() {
+    return this.attributes.label;
+  }
+
   render() {
     if (this.session === undefined) { return false; }
 
     return (
-      <div className="interactive_session">
-        <h1 className="interactive_session__label">{this.attributes.label}</h1>
-        {this.renderRoutes()}
+      <div className="session_screen">
+        <Layout title={this.label}>
+          {this.renderRoutes()}
+        </Layout>
       </div>
     );
   }

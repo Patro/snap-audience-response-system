@@ -1,0 +1,23 @@
+.layout__header {
+  padding: 0;
+}
+
+.layout__header_content_wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.layout__header_title {
+  color: white;
+}
+
+.layout__header_extra {
+  float: right;
+}
+
+.layout__content_wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
