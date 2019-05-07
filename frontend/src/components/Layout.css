@@ -8,8 +8,22 @@
   padding: 0 16px;
 }
 
+.layout__header_logo, .layout__header_logo_icon {
+  float: left;
+  margin-top: -3px;
+}
+
+.layout__header_logo_icon {
+  width: 50px;
+}
+
+.layout__header_logo {
+  width: 110px;
+}
+
 .layout__header_title {
   color: white;
+  height: 64px;
 }
 
 .layout__header_extra {

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Layout as AntDLayout } from 'antd';
+import { Layout as AntDLayout, Row, Col } from 'antd';
+import logo from '../images/logo.png';
+import logoIcon from '../images/logoIcon.png';
 import './Layout.css'
 
 class Layout extends Component {
@@ -16,8 +18,13 @@ class Layout extends Component {
       <AntDLayout className="layout">
         <AntDLayout.Header className="layout__header">
           <div className="layout__header_content_wrapper">
-            {this.renderExtra()}
-            <h1 className="layout__header_title">{this.title}</h1>
+            <Row>
+              {this.renderLogo()}
+              {this.renderExtra()}
+              <Col>
+                <h1 className="layout__header_title">{this.title}</h1>
+              </Col>
+            </Row>
           </div>
         </AntDLayout.Header>
         <AntDLayout.Content className="layout__content">
@@ -33,7 +40,30 @@ class Layout extends Component {
     if (this.extra === undefined) { return false; }
 
     return (
-      <div className="layout__header_extra">{this.extra}</div>
+      <Col className="layout__header_extra">
+        {this.extra}
+      </Col>
+    )
+  }
+
+  renderLogo() {
+    if (this.title === undefined) {
+      return (
+        <Col className="layout__header_logo">
+          <img src={logo} alt="Logo" />
+        </Col>
+      )
+    }
+
+    return (
+      <>
+        <Col className="layout__header_logo_icon" sm={{span: 0}}>
+          <img src={logoIcon} alt="Logo" />
+        </Col>
+        <Col className="layout__header_logo" xs={{span: 0}} sm={{span: 1}}>
+          <img src={logo} alt="Logo" />
+        </Col>
+      </>
     )
   }
 }

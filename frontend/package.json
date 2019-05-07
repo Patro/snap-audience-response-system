@@ -1,5 +1,5 @@
 {
-  "name": "audience-response-system-frontend",
+  "name": "snap-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

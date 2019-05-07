@@ -1,5 +1,5 @@
 {
-  "name": "audience-response-system",
+  "name": "snap",
   "engines": {
     "node": "11.4",
     "yarn": "1.12"

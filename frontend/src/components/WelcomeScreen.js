@@ -10,7 +10,7 @@ class WelcomeScreen extends Component {
   render() {
     return (
       <div className="welcome_screen">
-        <Layout title="Audience Response System">
+        <Layout>
           {this.renderContent()}
         </Layout>
       </div>
