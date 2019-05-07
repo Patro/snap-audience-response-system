@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card } from 'antd';
 import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
@@ -10,8 +11,16 @@ import PollResultsChart from './PollResultsChart';
 jest.mock('../websocket/subscriptions');
 
 class TestWrapper extends AbstractTestWrapper {
+  get card() {
+    return this.wrapper.find(Card);
+  }
+
+  get cardTitle() {
+    return this.card.prop('title');
+  }
+
   get questionText() {
-    return this.wrapper.find('.poll_results_chart__question_text').text();
+    return this.cardTitle;
   }
 
   get items() {

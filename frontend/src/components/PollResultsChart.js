@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Card } from 'antd';
 import subscriptions from '../websocket/subscriptions';
 import PollResultsChartItemContainer
   from '../containers/PollResultsChartItemContainer';
@@ -22,10 +23,9 @@ class PollResultsChart extends Component {
 
     return (
       <div className="poll_results_chart">
-        <h1 className="poll_results_chart__question_text">
-          {this.question.attributes.text}
-        </h1>
-        {this.questionOptionCounts.map(count => this.renderItem(count))}
+        <Card title={this.question.attributes.text}>
+          {this.questionOptionCounts.map(count => this.renderItem(count))}
+        </Card>
       </div>
     );
   }
