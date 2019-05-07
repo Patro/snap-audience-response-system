@@ -8,8 +8,8 @@ import PresenterScreenContainer from '../containers/PresenterScreenContainer';
 import OwnerScreen from './OwnerScreen';
 
 class TestWrapper extends AbstractTestWrapper {
-  get label() {
-    return this.wrapper.find('.layout__header_title');
+  get text() {
+    return this.wrapper.text();
   }
 
   get attendeeScreenContainer() {
@@ -48,7 +48,7 @@ describe('SessionScreen', () => {
 
   beforeEach(() => {
     const session = factories.interactiveSession.entity({
-      attributes: { label: 'My Event' },
+      attributes: { label: 'My Event', attendanceCode: 'ABCD' },
     });
     component = new TestWrapper({ props: {
       interactiveSession: session,
@@ -56,7 +56,11 @@ describe('SessionScreen', () => {
   });
 
   it('renders label of session', () => {
-    expect(component.label.text()).toEqual('My Event');
+    expect(component.text).toContain('My Event');
+  });
+
+  it('renders attendance code', () => {
+    expect(component.text).toContain('ABCD');
   });
 
   describe('given attendee path', () => {

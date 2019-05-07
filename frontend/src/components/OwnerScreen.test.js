@@ -7,10 +7,6 @@ import QuestionFormContainer from './../containers/QuestionFormContainer';
 import QuestionListContainer from './../containers/QuestionListContainer';
 
 class TestWrapper extends AbstractTestWrapper {
-  get text() {
-    return this.wrapper.text();
-  }
-
   get questionForm() {
     return this.wrapper.find(QuestionFormContainer).first();
   }
@@ -54,18 +50,10 @@ describe('OwnerScreen', () => {
   let component;
 
   beforeEach(() => {
-    const session = factories.interactiveSession.entity({
-      attributes: {
-        attendanceCode: 'ABCD',
-      },
-    });
+    const session = factories.interactiveSession.entity();
     component = new TestWrapper({ props: {
       interactiveSession: session,
     } });
-  });
-
-  it('renders attendance code', () => {
-    expect(component.text).toContain('ABCD');
   });
 
   describe('given owner path', () => {

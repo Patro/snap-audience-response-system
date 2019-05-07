@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AttendeeScreenContainer from '../containers/AttendeeScreenContainer';
 import PresenterScreenContainer from '../containers/PresenterScreenContainer';
+import AttendanceCodeTag from './AttendanceCodeTag';
 import Layout from './Layout';
 import OwnerScreen from './OwnerScreen';
 import './SessionScreen.css';
@@ -29,16 +30,28 @@ class SessionScreen extends Component {
     return this.attributes.label;
   }
 
+  get attendanceCode() {
+    return this.attributes.attendanceCode;
+  }
+
   render() {
     if (this.session === undefined) { return false; }
 
     return (
       <div className="session_screen">
-        <Layout title={this.label}>
+        <Layout title={this.label} extra={this.renderAttendanceCode()}>
           {this.renderRoutes()}
         </Layout>
       </div>
     );
+  }
+
+  renderAttendanceCode() {
+    if (this.attendanceCode === undefined) { return false; }
+
+    return (
+      <AttendanceCodeTag attendanceCode={this.attendanceCode} />
+    )
   }
 
   renderRoutes() {

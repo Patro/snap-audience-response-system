@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Card } from 'antd';
 import QuestionFormContainer from './../containers/QuestionFormContainer';
 import QuestionListContainer from './../containers/QuestionListContainer';
 
@@ -9,16 +8,9 @@ class OwnerScreen extends Component {
     return this.props.interactiveSession;
   }
 
-  get attendanceCode() {
-    return this.session.attributes.attendanceCode;
-  }
-
   render() {
     return (
       <div className="owner_screen">
-        <Card title="Attendance Code">
-          { this.attendanceCode }
-        </Card>
         {this.renderRoutes()}
       </div>
     );
