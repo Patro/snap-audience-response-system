@@ -18,8 +18,8 @@ class PresenterScreen extends Component {
 
     return (
       <div className="presenter_screen">
-        <PollResultsChartContainer poll={this.poll} />
-        {this.renderFullscreenButton()}
+        <PollResultsChartContainer poll={this.poll}
+                                   extra={this.renderFullscreenButton()} />
       </div>
     );
   }

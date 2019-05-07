@@ -23,7 +23,7 @@ class PollResultsChart extends Component {
 
     return (
       <div className="poll_results_chart">
-        <Card title={this.question.attributes.text}>
+        <Card title={this.question.attributes.text} extra={this.props.extra}>
           {this.questionOptionCounts.map(count => this.renderItem(count))}
         </Card>
       </div>

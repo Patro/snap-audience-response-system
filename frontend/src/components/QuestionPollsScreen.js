@@ -41,11 +41,12 @@ class QuestionPollsScreen extends Component {
         <PollsMenu polls={this.polls}
                    activePoll={this.activePoll}
                    onSelect={this.selectPoll} />
-        <PollResultsChartContainer poll={this.activePoll} />
-        <Button icon="desktop" onClick={this.presentActivePoll}
-                className="question_polls_screen__present_button">
-          Present results
-        </Button>
+        <PollResultsChartContainer poll={this.activePoll} extra={
+          <Button icon="desktop" onClick={this.presentActivePoll}
+                  className="question_polls_screen__present_button">
+            Present results
+          </Button>
+        } />
       </div>
     );
   }
