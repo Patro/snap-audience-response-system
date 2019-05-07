@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Collapse } from 'antd';
+import { Button, Card, Collapse } from 'antd';
 import QuestionListItem from './QuestionListItem';
 
 class QuestionList extends Component {
@@ -40,25 +40,23 @@ class QuestionList extends Component {
 
     return (
       <div className="question_list">
-        {this.renderHeader()}
-        <Collapse>
-          {this.questions.map(question => this.renderItem(question))}
-        </Collapse>
+        <Card title="Questions" extra={this.renderMenu()}>
+          <Collapse>
+            {this.questions.map(question => this.renderItem(question))}
+          </Collapse>
+        </Card>
       </div>
     );
   }
 
-  renderHeader() {
+  renderMenu() {
     return (
-      <>
-        <span>Questions</span>
-        <Link to={this.newQuestionPath}>
-          <Button
-            type="primary"
-            icon="plus"
-            className="question_list__add_button">Add question</Button>
-        </Link>
-      </>
+      <Link to={this.newQuestionPath}>
+        <Button
+          type="primary"
+          icon="plus"
+          className="question_list__add_button">Add question</Button>
+      </Link>
     )
   }
 
