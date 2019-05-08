@@ -99,5 +99,29 @@ RSpec.describe QuestionOption, type: :model do
         is_expected.to be false
       end
     end
+
+    context 'given option with position set to 0' do
+      let(:option) { build(:question_option, position: 0) }
+
+      it 'should be valid' do
+        is_expected.to be true
+      end
+    end
+
+    context 'given option with position set to negative number' do
+      let(:option) { build(:question_option, position: -1) }
+
+      it 'should not be valid' do
+        is_expected.to be false
+      end
+    end
+
+    context 'given option without position' do
+      let(:option) { build(:question_option, position: nil) }
+
+      it 'should not be valid' do
+        is_expected.to be false
+      end
+    end
   end
 end

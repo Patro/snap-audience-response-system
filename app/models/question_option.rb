@@ -8,4 +8,5 @@ class QuestionOption < ApplicationRecord
 
   validates :text, presence: true
   validates :correct, inclusion: { in: [true, false] }
+  validates :position, numericality: { greater_than_or_equal_to: 0 }
 end
