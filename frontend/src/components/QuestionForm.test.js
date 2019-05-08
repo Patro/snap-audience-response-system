@@ -112,15 +112,27 @@ describe('QuestionForm', () => {
       options = [
         factories.questionOption.entity({
           id: '234',
-          attributes: { text: 'Eat, Sleep, Rave, Repeat', correct: false },
+          attributes: {
+            text: 'Eat, Sleep, Rave, Repeat',
+            correct: false,
+            position: 0,
+          },
         }),
         factories.questionOption.entity({
           id: '123',
-          attributes: { text: '42', correct: true },
+          attributes: {
+            text: '42',
+            correct: true,
+            position: 1,
+          },
         }),
         factories.questionOption.entity({
           id: '923',
-          attributes: { text: 'I don\'t know', correct: false },
+          attributes: {
+            text: 'I don\'t know',
+            correct: false,
+            position: 2,
+          },
         }),
       ];
       component.props.question = question;
@@ -229,8 +241,8 @@ describe('QuestionForm', () => {
           updatedOptions[0] = {
             ...options[0],
             attributes: {
+              ...options[0].attributes,
               text: 'Updated option text',
-              correct: false,
             },
           };
           expect(onSubmit).toBeCalledWith({
@@ -248,7 +260,7 @@ describe('QuestionForm', () => {
           updatedOptions[0] = {
             ...options[0],
             attributes: {
-              text: 'Eat, Sleep, Rave, Repeat',
+              ...options[0].attributes,
               correct: true,
             },
           };
@@ -267,7 +279,7 @@ describe('QuestionForm', () => {
           updatedOptions[1] = {
             ...options[1],
             attributes: {
-              text: '42',
+              ...options[1].attributes,
               correct: false,
             },
           };
@@ -285,8 +297,19 @@ describe('QuestionForm', () => {
           const updatedOptions = options.slice();
           updatedOptions[1] = {
             ...options[1],
-            deleted: true
+            attributes: {
+              ...options[1].attributes,
+              position: -1,
+            },
+            deleted: true,
           };
+          updatedOptions[2] = {
+            ...options[2],
+            attributes: {
+              ...options[2].attributes,
+              position: 1,
+            }
+          }
           expect(onSubmit).toBeCalledWith({
             question, options: updatedOptions
           });
@@ -305,6 +328,7 @@ describe('QuestionForm', () => {
             attributes: {
               text: 'New option text',
               correct: false,
+              position: 3,
             }
           })
           expect(onSubmit).toBeCalledWith({
@@ -338,16 +362,28 @@ describe('QuestionForm', () => {
       options = [
         factories.questionOption.entity({
           id: '234',
-          attributes: { text: 'Eat, Sleep, Rave, Repeat', correct: false },
+          attributes: {
+            text: 'Eat, Sleep, Rave, Repeat',
+            correct: false,
+            position: 0,
+          },
         }),
         factories.questionOption.entity({
           id: '123',
-          attributes: { text: '42', correct: true },
+          attributes: {
+            text: '42',
+            correct: true,
+            position: -1,
+          },
           deleted: true,
         }),
         factories.questionOption.entity({
           id: '923',
-          attributes: { text: 'I don\'t know', correct: false },
+          attributes: {
+            text: 'I don\'t know',
+            correct: false,
+            position: 1,
+          },
         }),
       ];
       component.props.question = question;
@@ -398,15 +434,27 @@ describe('QuestionForm', () => {
             options: [
               {
                 type: QUESTION_OPTION,
-                attributes: { text: 'First option', correct: false },
+                attributes: {
+                  text: 'First option',
+                  correct: false,
+                  position: 0,
+                },
               },
               {
                 type: QUESTION_OPTION,
-                attributes: { text: 'Second option', correct: true },
+                attributes: {
+                  text: 'Second option',
+                  correct: true,
+                  position: 1,
+                },
               },
               {
                 type: QUESTION_OPTION,
-                attributes: { text: 'Third option', correct: false },
+                attributes: {
+                  text: 'Third option',
+                  correct: false,
+                  position: 2,
+                },
               },
             ],
           });

@@ -265,9 +265,10 @@ class QuestionForm extends Component {
   }
 
   mapFieldsValueToOptions(fieldsValue) {
-    let existingOptions = this.mapFieldsValueToExistingOptions(fieldsValue);
-    let newOptions = this.buildNewOptions(fieldsValue);
-    return existingOptions.concat(newOptions);
+    const existingOptions = this.mapFieldsValueToExistingOptions(fieldsValue);
+    const newOptions = this.buildNewOptions(fieldsValue);
+    const options = existingOptions.concat(newOptions);
+    return this.setPositionOfOptions(options);
   }
 
   mapFieldsValueToExistingOptions(fieldsValue) {
@@ -316,6 +317,28 @@ class QuestionForm extends Component {
         correct: fieldsValue.options[key].correct || false,
       },
     }));
+  }
+
+  setPositionOfOptions(options) {
+    let position = 0;
+    return options.map(option => {
+      if (option.deleted === true) {
+        return this.setPositionOfOption(option, -1);
+      }
+      else {
+        return this.setPositionOfOption(option, position++);
+      }
+    });
+  }
+
+  setPositionOfOption(option, position) {
+    return {
+      ...option,
+      attributes: {
+        ...option.attributes,
+        position
+      }
+    };
   }
 
   refresh() {
