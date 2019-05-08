@@ -5,7 +5,10 @@ require 'rails_helper'
 RSpec.describe QuestionOptionSerializer do
   let(:question) { create(:single_choice_question) }
   let(:question_option) do
-    create(:question_option, question: question, text: '42', correct: true)
+    create(:question_option, question: question,
+                             text: '42',
+                             correct: true,
+                             position: 0)
   end
   let(:serializer) do
     QuestionOptionSerializer.new(
@@ -45,6 +48,8 @@ RSpec.describe QuestionOptionSerializer do
 
         it { is_expected.not_to include(:correct) }
       end
+
+      it { is_expected.to include(position: 0) }
     end
 
     describe '> relationships' do
