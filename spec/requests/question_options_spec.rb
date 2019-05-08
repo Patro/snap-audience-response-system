@@ -51,6 +51,7 @@ RSpec.describe 'Question Options API', type: :request do
         attributes: {
           text: 'My Option',
           correct: false,
+          position: 0,
         },
         relationships: {
           question: {
@@ -129,6 +130,7 @@ RSpec.describe 'Question Options API', type: :request do
         attributes: {
           text: 'My Option',
           correct: 'true',
+          position: 0,
         },
       }
     end
@@ -182,6 +184,13 @@ RSpec.describe 'Question Options API', type: :request do
     context 'given correct' do
       let(:data) { { attributes: { correct: 'false' } } }
       let(:expected_record_attributes) { { correct: false } }
+
+      include_examples 'update resource', model_class: QuestionOption
+    end
+
+    context 'given correct' do
+      let(:data) { { attributes: { position: 9999 } } }
+      let(:expected_record_attributes) { { position: 9999 } }
 
       include_examples 'update resource', model_class: QuestionOption
     end

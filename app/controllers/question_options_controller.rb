@@ -23,7 +23,7 @@ class QuestionOptionsController < ApplicationController
     end
 
     def params_for_update
-      mapped_params.slice(:text, :correct)
+      mapped_params.slice(:text, :correct, :position)
     end
 
     def mapped_params
@@ -31,6 +31,7 @@ class QuestionOptionsController < ApplicationController
         question_id: id_of_related_resource(:question),
         text: params.dig(:data, :attributes, :text),
         correct: params.dig(:data, :attributes, :correct),
+        position: params.dig(:data, :attributes, :position),
       }.compact
     end
 
