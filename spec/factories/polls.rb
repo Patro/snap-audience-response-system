@@ -20,8 +20,9 @@ FactoryBot.define do
       end
 
       after(:create) do |poll, evaluator|
-        evaluator.responses_count.times.each do
-          option = create(:question_option, question: poll.question)
+        evaluator.responses_count.times.each do |index|
+          option = create(:question_option, question: poll.question,
+                                            position: index)
           respondent = evaluator.respondent || create(:respondent)
           create(:response, picked_question_option: option,
                             poll: poll,
