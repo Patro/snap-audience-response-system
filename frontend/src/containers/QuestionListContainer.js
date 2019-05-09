@@ -1,8 +1,10 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
 import QuestionList from '../components/QuestionList';
 import { POLL, QUESTION } from '../constants/entityTypes';
 import { getEntitiesOfCollection } from '../selectors';
+import withDependencies from './withDependencies';
 
 const mapStateToProps = (state, { interactiveSession }) => ({
   questions: getQuestions(state, interactiveSession),
@@ -13,9 +15,13 @@ const mapDispatchToProps = (dispatch, { interactiveSession }) => ({
   onRefresh: () => fetchDependencies(dispatch, interactiveSession),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+const shouldRefresh = (prev, next) => (
+  prev.interactiveSession.id !== next.interactiveSession.id
+);
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withDependencies(shouldRefresh),
 )(QuestionList);
 
 ///////////////////////////////////////////////////////////////////////////////

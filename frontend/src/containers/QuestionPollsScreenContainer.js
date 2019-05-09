@@ -1,8 +1,10 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
 import { POLL } from '../constants/entityTypes';
 import { getEntitiesOfCollection } from '../selectors';
 import QuestionPollsScreen from '../components/QuestionPollsScreen';
+import withDependencies from './withDependencies';
 
 const mapStateToProps = (state, { question }) => ({
   polls: getPolls(state, question),
@@ -12,9 +14,11 @@ const mapDispatchToProps = (dispatch, { question }) => ({
   onRefresh: () => fetchPolls(dispatch, question),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+const shouldRefresh = (prev, next) => prev.question.id !== next.question.id;
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withDependencies(shouldRefresh),
 )(QuestionPollsScreen);
 
 ///////////////////////////////////////////////////////////////////////////////

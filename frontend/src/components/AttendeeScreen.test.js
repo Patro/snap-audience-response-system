@@ -64,28 +64,10 @@ describe('AttendeeScreen', () => {
 
         expect(component.alertText).toContain('Thank you');
       });
-
-      it('calls on refresh handler', () => {
-        const refreshHandler = jest.fn();
-        component.props.onRefresh = refreshHandler;
-
-        component.respond();
-
-        expect(refreshHandler).toBeCalled();
-      });
     });
   });
 
   describe('on mount', () => {
-    it('calls on refresh handler', () => {
-      const refreshHandler = jest.fn();
-      component.props.onRefresh = refreshHandler;
-
-      component._render();
-
-      expect(refreshHandler).toBeCalled();
-    });
-
     it('subscribes for poll events', () => {
       component._render();
 

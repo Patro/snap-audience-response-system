@@ -25,6 +25,10 @@ class AbstractTestWrapper {
     return this._wrapper;
   }
 
+  render() {
+    return this.wrapper;
+  }
+
   _render() {
     throw new Error('_render method is not implemented');
   }

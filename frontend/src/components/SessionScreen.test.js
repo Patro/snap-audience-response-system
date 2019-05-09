@@ -92,13 +92,4 @@ describe('SessionScreen', () => {
       expect(component.ownerScreen).toHaveLength(1);
     });
   });
-
-  it('calls on refresh handler on mount', () => {
-    const refreshHandler = jest.fn();
-    component.props.onRefresh = refreshHandler;
-
-    component._render();
-
-    expect(refreshHandler).toBeCalled();
-  });
 });

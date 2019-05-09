@@ -9,6 +9,7 @@ import {
 } from '../constants/entityTypes';
 import { getEntitiesOfCollection, getEntity, getJob } from '../selectors';
 import QuestionForm from '../components/QuestionForm';
+import withDependencies from './withDependencies';
 import withJob from './withJob';
 
 const mapStateToProps = (state, { match }) => {
@@ -50,8 +51,16 @@ const mapDispatchToProps = (dispatch, { match }) => {
   return props;
 };
 
+const shouldRefresh = (prev, next) => (
+  !isEqualIdentifier(
+    getIdentifierOfQuestion(prev.match),
+    getIdentifierOfQuestion(next.match),
+  )
+);
+
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
+  withDependencies(shouldRefresh),
   withJob(props => props.saveJob),
 )(QuestionForm);
 
@@ -94,3 +103,9 @@ const fetchQuestionAndOptions = (dispatch, identifier) => {
 const buildFilterParams = (questionIdentifier) => ({
   questionId: questionIdentifier.id,
 });
+
+const isEqualIdentifier = (a, b) => {
+  if (a === undefined && b === undefined) { return true; }
+  if (a === undefined || b === undefined) { return false; }
+  return a.id === b.id && a.type === b.type
+};

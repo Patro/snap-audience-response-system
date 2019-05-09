@@ -12,7 +12,6 @@ class AttendeeScreen extends Component {
 
   componentDidMount() {
     this.subscribe();
-    this.refresh();
   }
 
   componentWillUnmount() {

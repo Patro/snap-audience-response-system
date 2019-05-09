@@ -30,16 +30,6 @@ class PresenterScreen extends Component {
     return <Button onClick={this.showFullscreen}>Show full screen</Button>;
   }
 
-  componentDidMount() {
-    this.refresh();
-  }
-
-  refresh() {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
-    }
-  }
-
   showFullscreen() {
     document.documentElement.requestFullscreen();
   }

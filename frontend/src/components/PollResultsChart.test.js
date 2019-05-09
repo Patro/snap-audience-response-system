@@ -83,17 +83,6 @@ describe('PollResultsChart', () => {
     })
   });
 
-  describe('on mount', () => {
-    it('calls on refresh handler', () => {
-      const refreshHandler = jest.fn();
-      component.props.onRefresh = refreshHandler;
-
-      component._render();
-
-      expect(refreshHandler).toBeCalled();
-    });
-  });
-
   describe('subscription for response events', () => {
     describe('given question', () => {
       let question;

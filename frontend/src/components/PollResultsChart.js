@@ -41,7 +41,6 @@ class PollResultsChart extends Component {
 
   componentDidMount() {
     this.subscribe();
-    this.refresh();
   }
 
   componentWillUnmount() {

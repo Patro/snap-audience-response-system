@@ -1,8 +1,10 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { fetchCollection, fetchEntity } from '../actions';
 import { QUESTION_OPTION_COUNT } from '../constants/entityTypes';
 import { getEntity, getEntitiesOfCollection } from '../selectors';
 import PollResultsChart from '../components/PollResultsChart';
+import withDependencies from './withDependencies';
 
 const mapStateToProps = (state, { poll }) => ({
   question: getEntity(state, poll.relationships.question),
@@ -13,9 +15,11 @@ const mapDispatchToProps = (dispatch, { poll }) => ({
   onRefresh: () => fetchDependencies(dispatch, poll),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+const shouldRefresh = (prev, next) => prev.poll.id !== next.poll.id;
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withDependencies(shouldRefresh),
 )(PollResultsChart);
 
 ///////////////////////////////////////////////////////////////////////////////

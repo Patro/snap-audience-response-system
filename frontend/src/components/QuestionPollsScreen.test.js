@@ -143,15 +143,4 @@ describe('QuestionPollsScreen', () => {
       expect(component.pollResultsChart).toHaveLength(0);
     });
   });
-
-  describe('on mount', () => {
-    it('calls on refresh handler', () => {
-      const refreshHandler = jest.fn();
-      component.props.onRefresh = refreshHandler;
-
-      component._render();
-
-      expect(refreshHandler).toBeCalled();
-    });
-  });
 });

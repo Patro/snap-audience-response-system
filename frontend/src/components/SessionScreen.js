@@ -8,16 +8,6 @@ import OwnerScreen from './OwnerScreen';
 import './SessionScreen.css';
 
 class SessionScreen extends Component {
-  componentDidMount() {
-    this.refresh();
-  }
-
-  refresh() {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
-    }
-  }
-
   get session() {
     return this.props.interactiveSession;
   }

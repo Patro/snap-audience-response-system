@@ -51,15 +51,4 @@ describe('PresenterScreen', () => {
       expect(component.inner.isEmptyRender()).toBe(true);
     });
   });
-
-  describe('on mount', () => {
-    it('calls on refresh handler', () => {
-      const refreshHandler = jest.fn();
-      component.props.onRefresh = refreshHandler;
-
-      component.wrapper.dive();
-
-      expect(refreshHandler).toBeCalled();
-    });
-  });
 });

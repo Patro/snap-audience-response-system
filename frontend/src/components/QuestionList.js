@@ -8,7 +8,6 @@ class QuestionList extends Component {
     super(props);
 
     this.renderItem = this.renderItem.bind(this);
-    this.refresh = this.refresh.bind(this);
   }
 
   get interactiveSession() {
@@ -64,16 +63,6 @@ class QuestionList extends Component {
     return <QuestionListItem key={question.id}
                              question={question}
                              openPoll={this.openPollOfQuestion(question)} />
-  }
-
-  componentDidMount() {
-    this.refresh();
-  }
-
-  refresh() {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
-    }
   }
 }
 
