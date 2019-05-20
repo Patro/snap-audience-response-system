@@ -68,7 +68,7 @@ class RespondForm extends Component {
             <Form.Item>
               { getFieldDecorator(`selection`, {
                 rules: [
-                  { required: true, message: 'Please select an option!' },
+                  { required: true, message: 'Please select an option.' },
                 ],
               })(this.renderSelection()) }
             </Form.Item>
