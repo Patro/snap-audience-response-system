@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import React from 'react';
+import { Empty } from 'antd';
 import { shallow } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
@@ -15,6 +16,10 @@ class TestWrapper extends AbstractTestWrapper {
 
   get pollResultsChart() {
     return this.wrapper.find(PollResultsChartContainer).first();
+  }
+
+  get emptyStateMessage() {
+    return this.wrapper.find(Empty);
   }
 
   get givenPollsOfMenu() {
@@ -70,6 +75,10 @@ describe('QuestionPollsScreen', () => {
       expect(component.givenPollToShowResultsFor).toEqual(closedPolls.get(1));
     });
 
+    it('does not render empty state message', () => {
+      expect(component.emptyStateMessage).toHaveLength(0);
+    });
+
     describe('on select of first closed poll', () => {
       beforeEach(() => {
         component.selectPoll(closedPolls.get(0));
@@ -108,6 +117,10 @@ describe('QuestionPollsScreen', () => {
       expect(component.givenPollToShowResultsFor).toEqual(openPoll);
     });
 
+    it('does not render empty state message', () => {
+      expect(component.emptyStateMessage).toHaveLength(0);
+    });
+
     describe('on select of closed poll', () => {
       beforeEach(() => {
         component.selectPoll(closedPoll);
@@ -134,6 +147,10 @@ describe('QuestionPollsScreen', () => {
 
     it('does not render results chart', () => {
       expect(component.pollResultsChart).toHaveLength(0);
+    });
+
+    it('renders empty state message', () => {
+      expect(component.emptyStateMessage).toHaveLength(1);
     });
   });
 

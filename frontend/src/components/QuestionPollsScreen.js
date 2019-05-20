@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Empty } from 'antd';
 import PollResultsChartContainer
   from './../containers/PollResultsChartContainer';
 import PollsMenu from './PollsMenu';
@@ -37,10 +37,27 @@ class QuestionPollsScreen extends Component {
   }
 
   render() {
-    if (this.polls === undefined || this.polls.isEmpty()) { return false; }
+    if (this.polls === undefined) { return false; }
 
     return (
       <div className="question_polls_screen">
+        {this.renderContent()}
+      </div>
+    );
+  }
+
+  renderContent() {
+    if (this.polls.count() > 0) {
+      return this.renderMenuAndChart();
+    }
+    else {
+      return this.renderEmptyStateMessage();
+    }
+  }
+
+  renderMenuAndChart() {
+    return (
+      <>
         <PollsMenu polls={this.polls}
                    activePoll={this.activePoll}
                    onSelect={this.selectPoll}
@@ -51,8 +68,12 @@ class QuestionPollsScreen extends Component {
             Present results
           </Button>
         } />
-      </div>
+      </>
     );
+  }
+
+  renderEmptyStateMessage() {
+    return <Empty description="There are no polls for this question yet." />
   }
 
   selectPoll(poll) {
