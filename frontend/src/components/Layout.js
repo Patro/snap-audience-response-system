@@ -59,7 +59,7 @@ class Layout extends Component {
     if (this.title === undefined) {
       return (
         <Col className="layout__header_logo">
-          <img src={logo} alt="Logo" />
+          {this.renderLogoWithText()}
         </Col>
       )
     }
@@ -67,13 +67,21 @@ class Layout extends Component {
     return (
       <>
         <Col className="layout__header_logo_icon" sm={{span: 0}}>
-          <img src={logoIcon} alt="Logo" />
+          {this.renderLogoIcon()}
         </Col>
         <Col className="layout__header_logo" xs={{span: 0}} sm={{span: 1}}>
-          <img src={logo} alt="Logo" />
+          {this.renderLogoWithText()}
         </Col>
       </>
     )
+  }
+
+  renderLogoIcon() {
+    return <Link to="/"><img src={logoIcon} alt="Logo" /></Link>;
+  }
+
+  renderLogoWithText() {
+    return <Link to="/"><img src={logo} alt="Logo" /></Link>;
   }
 }
 
