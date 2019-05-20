@@ -31,8 +31,23 @@ class JoinSessionForm extends Component {
         <JobErrorAlert job={this.props.joinJob} />
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Attendance Code">
-            { getFieldDecorator('attendance_code')(
-              <Input placeholder="ABCD" />
+            { getFieldDecorator('attendance_code', {
+              validateTrigger: 'onSubmit',
+              rules: [
+                {
+                  required: true,
+                  message: `Please fill in the attendance code of
+                    the session you'd like to join.`,
+                },
+                {
+                  len: 4,
+                  message: `Please fill in an attendance code with
+                    four characters.`,
+                }
+              ],
+              normalize: (value) => value.toUpperCase(),
+            })(
+              <Input placeholder="ABCD" maxLength={4} />
             ) }
           </Form.Item>
           <Form.Item>
