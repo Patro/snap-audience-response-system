@@ -8,27 +8,21 @@ import './WelcomeScreen.css';
 
 class WelcomeScreen extends Component {
   render() {
+    const colConfig = { xs: 24, md: 12 };
     return (
       <div className="welcome_screen">
         <Layout>
-          {this.renderContent()}
+          <Row className="welcome_screen__row">
+            <Col {...colConfig} className="welcome_screen__column">
+              <JoinSessionFormContainer />
+            </Col>
+            <Col {...colConfig} className="welcome_screen__column">
+              <StartSessionFormContainer />
+            </Col>
+          </Row>
         </Layout>
       </div>
     );
-  }
-
-  renderContent() {
-    const colConfig = { xs: 24, md: 12 };
-    return (
-      <Row className="welcome_screen__row">
-        <Col {...colConfig} className="welcome_screen__column">
-          <JoinSessionFormContainer />
-        </Col>
-        <Col {...colConfig} className="welcome_screen__column">
-          <StartSessionFormContainer />
-        </Col>
-      </Row>
-    )
   }
 }
 
