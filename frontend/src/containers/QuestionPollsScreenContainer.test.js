@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchCollection } from '../actions';
 import { POLL } from '../constants/entityTypes';
 import QuestionPollsScreen from '../components/QuestionPollsScreen';
@@ -43,29 +45,25 @@ describe('QuestionPollsScreenContainer', () => {
       pollB = factories.poll.entity({ id: '302', relationships: { question }});
       const collection = factories.collection.withEntities([pollA, pollB]);
 
-      component.store = {
-        entities: {
-          [POLL]: {
-            '301': pollA,
-            '302': pollB,
-          },
-        },
-        collections: {
-          [POLL]: {
-            '{"questionId":"100"}': collection ,
-          }
-        },
-      };
+      component.store = buildTestState({
+        entities: [pollA, pollB],
+        collections: [
+          factories.collection.withEntities([pollA, pollB]).merge({
+            type: POLL,
+            filterParams: Immutable.fromJS({ questionId: '100' }),
+          })
+        ],
+      });
     });
 
     it('passes polls to component', () => {
-      expect(component.givenPolls).toEqual([pollA, pollB]);
+      expect(component.givenPolls).toEqual(Immutable.fromJS([pollA, pollB]));
     });
   });
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as polls to component', () => {

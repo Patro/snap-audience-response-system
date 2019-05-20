@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { filter, mergeMap, map } from 'rxjs/operators';
 import { FETCH_ENTITY, receiveEntity } from '../actions';
 import withJob from './withJob';
@@ -19,6 +20,9 @@ const processAction$ = (action, dependencies) => (
   )
 );
 
-const fetchEntity$ = ({ entityType, entityId }, { api }) => (
-  api.entities.fetch({ type: entityType, id: entityId })
+const fetchEntity$ = (action, { api }) => (
+  api.entities.fetch(Immutable.Map({
+    type: action.entityType,
+    id: action.entityId,
+  }))
 );

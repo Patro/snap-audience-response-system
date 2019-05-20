@@ -1,19 +1,32 @@
+import Immutable from 'immutable';
+import buildTestState from '../utils/buildTestState';
 import getEntity from './getEntity';
 
 describe('getEntitiy', () => {
   describe('given state with entities', () => {
-    const state = {
-      entities: {
-        SPACESHIP: {
-          '100': { id: '100' },
-        },
-      },
-    };
+    const entity = Immutable.fromJS({
+      type: 'SPACESHIP',
+      id: '100',
+      attributes: { fuel: 'hydrogen' },
+    });
+    const state = buildTestState({ entities: [entity] });
 
     describe('when entity with id exists', () => {
-      it('returns entity', () => {
-        const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
-        expect(entity).toEqual({ id: '100' });
+      describe('given identifier as object', () => {
+        it('returns entity', () => {
+          const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
+          expect(entity).toEqual(entity);
+        });
+      });
+
+      describe('given identifier as immutable', () => {
+        it('returns entity', () => {
+          const entity = getEntity(state, Immutable.fromJS({
+            type: 'SPACESHIP',
+            id: '100',
+          }));
+          expect(entity).toEqual(entity);
+        });
       });
     });
 
@@ -26,13 +39,12 @@ describe('getEntitiy', () => {
   });
 
   describe('given state with entities in differnt group', () => {
-    const state = {
-      entities: {
-        CAR: {
-          '100': { id: '100' },
-        },
-      },
-    };
+    const entity = Immutable.fromJS({
+      type: 'CAR',
+      id: '100',
+      attributes: { fuel: 'hydrogen' },
+    });
+    const state = buildTestState({ entities: [entity] });
 
     it('returns undefined', () => {
       const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });
@@ -41,7 +53,7 @@ describe('getEntitiy', () => {
   });
 
   describe('given empty state', () => {
-    const state = {};
+    const state = Immutable.Map();
 
     it('returns undefined', () => {
       const entity = getEntity(state, { type: 'SPACESHIP', id: '100' });

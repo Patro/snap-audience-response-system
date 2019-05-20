@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { filter, mergeMap, map } from 'rxjs/operators';
 import { FETCH_COLLECTION, receiveCollection } from '../actions';
 import withJob from './withJob';
@@ -19,6 +20,9 @@ const processAction$ = (action, dependencies) => (
   )
 );
 
-const fetchCollection$ = ({ entityType, filterParams }, { api }) => (
-  api.collections.fetch({ type: entityType, filterParams })
+const fetchCollection$ = (action, { api }) => (
+  api.collections.fetch(Immutable.Map({
+    type: action.entityType,
+    filterParams: action.filterParams,
+  }))
 );

@@ -10,41 +10,20 @@ class AttendeeScreen extends Component {
     this.handleSuccessfulResponse = this.handleSuccessfulResponse.bind(this);
   }
 
-  componentDidMount() {
-    this.subscribe();
+  get interactiveSession() {
+    return this.props.interactiveSession;
   }
 
-  componentWillUnmount() {
-    this.unsubscribe();
+  get unrespondedPoll() {
+    return this.props.unrespondedPoll;
   }
 
-  refresh() {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
-    }
+  get hasUnrespondedPoll() {
+    return this.unrespondedPoll !== undefined;
   }
 
-  subscribe() {
-    this.subscription = subscriptions.subscribeForPollEvents(
-      this.props.interactiveSession.id,
-      ({ pollId }) => {
-        const activePoll = this.props.unrespondedPoll;
-        if (activePoll && activePoll.id !== pollId) { return; }
-        this.refresh();
-      }
-    );
-  }
-
-  unsubscribe() {
-    this.subscription.unsubscribe();
-  }
-
-  hasUnrespondedPoll() {
-    return this.props.unrespondedPoll !== undefined;
-  }
-
-  handleSuccessfulResponse() {
-    this.setState({ respondedToPoll: true });
+  get onRefresh() {
+    return this.props.onRefresh;
   }
 
   render() {
@@ -70,17 +49,16 @@ class AttendeeScreen extends Component {
   }
 
   renderContent() {
-    if (this.hasUnrespondedPoll()) {
+    if (this.hasUnrespondedPoll) {
       return this.renderRespondFormContainer();
     }
     return this.renderWaitingInfo();
   }
 
   renderRespondFormContainer() {
-    const poll = this.props.unrespondedPoll;
     return (
       <RespondFormContainer
-        poll={poll}
+        poll={this.unrespondedPoll}
         onSuccess={this.handleSuccessfulResponse}/>
     )
   }
@@ -95,6 +73,41 @@ class AttendeeScreen extends Component {
         showIcon
       />
     )
+  }
+
+  componentDidMount() {
+    this.subscribe();
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  subscribe() {
+    this.subscription = subscriptions.subscribeForPollEvents(
+      this.interactiveSession.get('id'),
+      (event) => {
+        const activePoll = this.unrespondedPoll;
+        if (activePoll && activePoll.get('id') !== event.get('pollId')) {
+          return;
+        }
+        this.refresh();
+      }
+    );
+  }
+
+  unsubscribe() {
+    this.subscription.unsubscribe();
+  }
+
+  refresh() {
+    if (this.onRefresh) {
+      this.onRefresh();
+    }
+  }
+
+  handleSuccessfulResponse() {
+    this.setState({ respondedToPoll: true });
   }
 }
 

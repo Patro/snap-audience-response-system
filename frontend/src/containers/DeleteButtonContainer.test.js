@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { destroyEntity } from '../actions';
 import DeleteButton from '../components/DeleteButton';
 import DeleteButtonContainer from './DeleteButtonContainer';
@@ -30,7 +32,7 @@ describe('DeleteButtonContainer', () => {
   let component, entity;
 
   beforeEach(() => {
-    entity = { type: 'SPACESHIP', id: '12' };
+    entity = Immutable.fromJS({ type: 'SPACESHIP', id: '12' });
     component = new TestWrapper({
       props: { entity },
     });
@@ -41,11 +43,7 @@ describe('DeleteButtonContainer', () => {
 
     beforeEach(() => {
       job = factories.job.started({ id: 'destroyJob:SPACESHIP:12' });
-      component.store = {
-        jobs: {
-          'destroyJob:SPACESHIP:12': job,
-        },
-      };
+      component.store = buildTestState({ jobs: [ job ] });
     });
 
     it('passes job to component', () => {
@@ -55,7 +53,7 @@ describe('DeleteButtonContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as job to component', () => {

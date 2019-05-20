@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { Card } from 'antd';
 import { shallow } from 'enzyme';
@@ -61,10 +62,10 @@ describe('PollResultsChart', () => {
       });
       component.props.question = question;
 
-      const questionOptionCounts = [
+      const questionOptionCounts = Immutable.List([
         factories.questionOptionCount.entity({ relationships: { poll }}),
         factories.questionOptionCount.entity({ relationships: { poll }}),
-      ]
+      ]);
       component.props.questionOptionCounts = questionOptionCounts;
     });
 

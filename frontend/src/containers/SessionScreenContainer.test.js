@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchEntity } from '../actions';
 import { INTERACTIVE_SESSION } from '../constants/entityTypes';
 import SessionScreen from '../components/SessionScreen';
@@ -42,12 +44,8 @@ describe('SessionScreenContainer', () => {
     let session;
 
     beforeEach(() => {
-      factories.interactiveSession.entity({ id: '100' });
-      component.store = {
-        entities: {
-          [INTERACTIVE_SESSION]: { '100': session },
-        }
-      };
+      session = factories.interactiveSession.entity({ id: '100' });
+      component.store = buildTestState({ entities: [session] });
     });
 
     it('passes interactive session to component', () => {
@@ -57,7 +55,7 @@ describe('SessionScreenContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as interactive session to component', () => {

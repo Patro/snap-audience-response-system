@@ -8,7 +8,7 @@ const withJob = selectJob => (
     }
 
     get processing() {
-      return this.job !== undefined && this.job.status === STARTED;
+      return this.job !== undefined && this.job.get('status') === STARTED;
     }
 
     get onSuccess() {
@@ -31,7 +31,8 @@ const withJob = selectJob => (
       const prevJob = selectJob(prevProps);
       if (!prevJob) { return false; }
 
-      return job.status !== prevJob.status && job.status === SUCCEEDED;
+      return job.get('status') !== prevJob.get('status') &&
+        job.get('status') === SUCCEEDED;
     }
   }
 )

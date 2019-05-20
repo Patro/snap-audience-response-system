@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchCollection } from '../actions';
 import {
   POLL, QUESTION, SINGLE_CHOICE_QUESTION, MULTIPLE_CHOICE_QUESTION
@@ -48,30 +50,29 @@ describe('QuestionListContainer', () => {
       beforeEach(() => {
         questionA = factories.singleChoiceQuestion.entity({ id: '913' });
         questionB = factories.multipleChoiceQuestion.entity({ id: '914' });
-        const questionCollection = factories.collection.withEntities([
-          questionA, questionB
-        ]);
-
-        const filter = '{"interactiveSessionId":"100"}';
-        component.store = {
-          entities: {
-            [SINGLE_CHOICE_QUESTION]: { '913': questionA },
-            [MULTIPLE_CHOICE_QUESTION]: { '914': questionB },
-          },
-          collections: {
-            [QUESTION]: { [filter]: questionCollection },
-          },
-        };
+        component.store = buildTestState({
+          entities: [questionA, questionB],
+          collections: [
+            factories.collection.withEntities([
+              questionA, questionB
+            ]).merge({
+              type: QUESTION,
+              filterParams: Immutable.fromJS({ interactiveSessionId: '100' }),
+            })
+          ],
+        });
       });
 
       it('passes questions from store to component', () => {
-        expect(component.givenQuestions).toEqual([questionA, questionB]);
+        expect(component.givenQuestions).toEqual(
+          Immutable.List([questionA, questionB])
+        );
       });
     });
 
     describe('given empty store', () => {
       beforeEach(() => {
-        component.store = {};
+        component.store = Immutable.Map();
       });
 
       it('passes undefined to component', () => {
@@ -99,33 +100,33 @@ describe('QuestionListContainer', () => {
           id: '1002',
           relationships: { question: questionB },
         });
-        const pollCollection = factories.collection.withEntities([
-          pollA, pollB,
-        ]);
-
-        component.store = {
-          entities: {
-            [POLL]: { '1001': pollA, '1002': pollB },
-          },
-          collections: {
-            [POLL]: {
-              '{"interactiveSessionId":"100","status":"open"}': pollCollection,
-            },
-          },
-        };
+        component.store = buildTestState({
+          entities: [questionA, pollA, questionB, pollB],
+          collections: [
+            factories.collection.withEntities([
+              pollA, pollB,
+            ]).merge({
+              type: POLL,
+              filterParams: Immutable.fromJS({
+                interactiveSessionId: '100',
+                status: 'open',
+              }),
+            })
+          ],
+        });
       });
 
       it('passes open polls to component', () => {
-        expect(component.givenOpenPollsByQuestionId).toEqual({
+        expect(component.givenOpenPollsByQuestionId).toEqual(Immutable.Map({
           '913': pollA,
           '914': pollB,
-        });
+        }));
       });
     });
 
     describe('given empty store', () => {
       beforeEach(() => {
-        component.store = {};
+        component.store = Immutable.Map();
       });
 
       it('passes undefined to component', () => {

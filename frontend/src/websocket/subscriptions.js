@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import {
   POLL_CREATED, POLL_DESTROYED, POLL_UPDATED, RESPONSE_CREATED,
 } from '../constants/eventTypes';
@@ -7,9 +8,9 @@ const subscriptions = {
   subscribeForEvents(interactiveSessionId, types, onEvent) {
     return consumer.createSubscription(interactiveSessionId, {
       received: (data) => {
-        const event = data.event;
+        const event = data.get('event');
         if (event === undefined) { return; }
-        if (types.indexOf(event.type) === -1) { return; }
+        if (types.indexOf(event.get('type')) === -1) { return; }
         onEvent(event);
       },
     });
@@ -18,7 +19,10 @@ const subscriptions = {
     return this.subscribeForEvents(
       interactiveSessionId,
       pollEventTypes,
-      event => onEvent({ type: event.type, pollId: event.poll_id })
+      event => onEvent(Immutable.Map({
+        type: event.get('type'),
+        pollId: event.get('poll_id'),
+      }))
     )
   },
   subscribeForResponseEvents(interactiveSessionId, pollId, onEvent) {
@@ -26,12 +30,12 @@ const subscriptions = {
       interactiveSessionId,
       responseEventTypes,
       event => {
-        if (event.poll_id === pollId) {
-          onEvent({
-            type: event.type,
-            pollId: event.poll_id,
-            responseId: event.response_id,
-          });
+        if (event.get('poll_id') === pollId) {
+          onEvent(Immutable.Map({
+            type: event.get('type'),
+            pollId: event.get('poll_id'),
+            responseId: event.get('response_id'),
+          }));
         }
       }
     )

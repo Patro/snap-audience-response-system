@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchCollection, fetchEntity, respondToPoll } from '../actions';
 import {
   POLL, QUESTION_OPTION, SINGLE_CHOICE_QUESTION,
@@ -61,24 +63,19 @@ describe('RespondFormContainer', () => {
     beforeEach(() => {
       optionA = factories.questionOption.entity({ id: '426' });
       optionB = factories.questionOption.entity({ id: '429' });
-      const optionCollection = factories.questionOption.collectionWithIds([
-        '426', '429'
-      ]);
       job = factories.job.started({ id: 'respondJob' });
 
-      component.store = {
-        entities: {
-          [POLL]: { '923': poll },
-          [SINGLE_CHOICE_QUESTION]: { '123': question },
-          [QUESTION_OPTION]: { '426': optionA, '429': optionB },
-        },
-        collections: {
-          [QUESTION_OPTION]: { '{"questionId":"123"}': optionCollection },
-        },
-        jobs: {
-          'respondJob': job,
-        },
-      };
+      component.store = buildTestState({
+        entities: [question, optionA, optionB],
+        collections: [
+          factories.questionOption.collectionWithIds([
+            '426', '429'
+          ]).merge({
+            filterParams: Immutable.fromJS({ questionId: '123' }),
+          })
+        ],
+        jobs: [job],
+      });
     });
 
     it('passes question to component', () => {
@@ -86,7 +83,9 @@ describe('RespondFormContainer', () => {
     });
 
     it('passes options to component', () => {
-      expect(component.givenOptions).toEqual([optionA, optionB]);
+      expect(component.givenOptions).toEqual(
+        Immutable.List([optionA, optionB])
+      );
     });
 
     it('passes job to component', () => {
@@ -96,7 +95,7 @@ describe('RespondFormContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as question to component', () => {

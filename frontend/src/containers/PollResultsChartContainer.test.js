@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchCollection, fetchEntity } from '../actions';
 import {
   POLL, QUESTION_OPTION_COUNT, SINGLE_CHOICE_QUESTION,
@@ -53,29 +55,21 @@ describe('PollResultsChartContainer', () => {
     beforeEach(() => {
       question = factories.singleChoiceQuestion.entity({ id: '600' });
       countA = factories.questionOptionCount.entity({ id: '30', relationships: {
-        poll: { id: poll.id, type: poll.type },
+        poll: { id: poll.get('id'), type: poll.get('type') },
       }});
       countB = factories.questionOptionCount.entity({ id: '31', relationships: {
-        poll: { id: poll.id, type: poll.type },
+        poll: { id: poll.get('id'), type: poll.get('type') },
       }});
-      const collection = factories.collection.withEntities([countA, countB]);
+      const collection = factories.collection.withEntities([countA, countB])
+        .merge(Immutable.fromJS({
+          type: QUESTION_OPTION_COUNT,
+          filterParams: { pollId: '400' }
+        }));
 
-      component.store = {
-        entities: {
-          [SINGLE_CHOICE_QUESTION]: {
-            '600': question,
-          },
-          [QUESTION_OPTION_COUNT]: {
-            '30': countA,
-            '31': countB,
-          },
-        },
-        collections: {
-          [QUESTION_OPTION_COUNT]: {
-            '{"pollId":"400"}': collection ,
-          }
-        },
-      };
+      component.store = buildTestState({
+        entities: [ question, countA, countB ],
+        collections: [ collection ],
+      });
     });
 
     it('passes question to component', () => {
@@ -83,13 +77,15 @@ describe('PollResultsChartContainer', () => {
     });
 
     it('passes question option counts to component', () => {
-      expect(component.givenQuestionOptionCounts).toEqual([countA, countB]);
+      expect(component.givenQuestionOptionCounts).toEqual(
+        Immutable.List([countA, countB])
+      );
     });
   });
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as question to component', () => {
@@ -107,11 +103,9 @@ describe('PollResultsChartContainer', () => {
         question: factories.singleChoiceQuestion.identifier({ id: '600' }),
       }});
 
-      component.store = {
-        entities: {
-          [POLL]: { '400': poll },
-        },
-      };
+      component.store = buildTestState({
+        entities: [ poll ],
+      });
     });
 
     it('dispatches fetch entity action for question', () => {

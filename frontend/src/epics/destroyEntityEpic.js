@@ -16,20 +16,20 @@ export default destroyEntityEpic;
 const processAction$ = (action, state$, dependencies) => (
   withJob(
     action,
-    destroyEntity$(action, dependencies),
-    onSuccess(action, state$, dependencies)
+    destroyEntity$(action.entity, dependencies),
+    onSuccess(state$, dependencies)
   )
 );
 
-const destroyEntity$ = ({ entity }, { api }) => (
+const destroyEntity$ = (entity, { api }) => (
   api.entities.destroy(entity)
 );
 
-const onSuccess = (action, state$, dependencies) => (
-  mergeMap(_ =>
+const onSuccess = (state$, dependencies) => (
+  mergeMap(entity =>
     concat(
-      of(receiveEntity({ ...action.entity, deleted: true })),
-      reloadCollections(state$, action.entity.type, dependencies),
+      of(receiveEntity(entity)),
+      reloadCollections(state$, entity.get('type'), dependencies),
     )
   )
 );

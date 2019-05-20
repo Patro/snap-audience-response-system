@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import factories from '../../__factories__';
@@ -8,13 +9,15 @@ import saveQuestionEpic from './saveQuestionEpic';
 class TestWrapper {
   constructor({ action$, entity } = {}) {
     this.action$ = action$;
-    this.state$ = of({});
+    this.state$ = of(Immutable.Map());
     this.entity = entity;
     this.api = {
       _id: 1,
       entities: {
-        create: jest.fn(entity => of({ ...entity, id: '_' + this.api._id++ })),
-        destroy: jest.fn(entity => of({ ...entity, deleted: true })),
+        create: jest.fn(entity =>
+          of(entity.set('id', '_' + this.api._id++))
+        ),
+        destroy: jest.fn(entity => of(entity.set('deleted', true))),
         update: jest.fn(entity => of(entity)),
       },
     };
@@ -36,7 +39,7 @@ class TestWrapper {
   }
 }
 
-describe('joinSessionEpic', () => {
+describe('saveQuestionEpic', () => {
   let epic;
 
   beforeEach(() => {
@@ -50,17 +53,22 @@ describe('joinSessionEpic', () => {
       const session = factories.interactiveSession.entity({ id: '100' });
       question = factories.singleChoiceQuestion.entity({
         relationships: {
-          interactiveSession: { id: session.id, type: session.type }
+          interactiveSession: {
+            id: session.get('id'),
+            type: session.get('type'),
+          },
         },
       });
-      question.id = undefined;
+      question = question.delete('id');
       optionA = factories.questionOption.entity({ attributes: { text: 'A' } });
-      delete optionA.id;
-      delete optionA.relationships;
+      optionA = optionA.delete('id');
+      optionA = optionA.delete('relationships');
       optionB = factories.questionOption.entity({ attributes: { text: 'B' } });
-      delete optionB.id;
-      delete optionB.relationships;
-      relationshipToQuestion = { type: SINGLE_CHOICE_QUESTION, id: '_1', };
+      optionB = optionB.delete('id');
+      optionB = optionB.delete('relationships');
+      relationshipToQuestion = Immutable.fromJS(
+        { type: SINGLE_CHOICE_QUESTION, id: '_1', }
+      );
 
       epic.action$ = of(
         saveQuestion(question, [optionA, optionB], 'jobId')
@@ -78,10 +86,11 @@ describe('joinSessionEpic', () => {
     it('triggers create request for option a', (done) => {
       const result$ = epic.call();
       result$.subscribe(_actions => {
-        expect(epic.api.entities.create).toBeCalledWith({
-          ...optionA,
-          relationships: { question: relationshipToQuestion },
-        });
+        expect(epic.api.entities.create).toBeCalledWith(
+          optionA.set('relationships', Immutable.Map({
+            question: relationshipToQuestion,
+          }))
+        );
         done();
       });
     });
@@ -89,10 +98,11 @@ describe('joinSessionEpic', () => {
     it('triggers create request for option b', (done) => {
       const result$ = epic.call();
       result$.subscribe(_actions => {
-        expect(epic.api.entities.create).toBeCalledWith({
-          ...optionB,
-          relationships: { question: relationshipToQuestion },
-        });
+        expect(epic.api.entities.create).toBeCalledWith(
+          optionB.set('relationships', Immutable.Map({
+            question: relationshipToQuestion,
+          }))
+        );
         done();
       });
     });
@@ -107,7 +117,7 @@ describe('joinSessionEpic', () => {
       });
 
       it('emits receive entity action for question', (done) => {
-        const expectedAction = receiveEntity({ ...question, id: '_1' });
+        const expectedAction = receiveEntity(question.set('id', '_1'));
 
         const result$ = epic.call();
         result$.subscribe(actions => {
@@ -117,11 +127,12 @@ describe('joinSessionEpic', () => {
       });
 
       it('emits receive entity action for option a', (done) => {
-        const expectedAction = receiveEntity({
-          ...optionA,
-          id: '_2',
-          relationships: { question: relationshipToQuestion },
-        });
+        const expectedAction = receiveEntity(
+          optionA.merge(Immutable.fromJS({
+            id: '_2',
+            relationships: { question: relationshipToQuestion },
+          }))
+        );
 
         const result$ = epic.call();
         result$.subscribe(actions => {
@@ -131,11 +142,12 @@ describe('joinSessionEpic', () => {
       });
 
       it('emits receive entity action for option b', (done) => {
-        const expectedAction = receiveEntity({
-          ...optionB,
-          id: '_3',
-          relationships: { question: relationshipToQuestion },
-        });
+        const expectedAction = receiveEntity(
+          optionB.merge(Immutable.fromJS({
+            id: '_3',
+            relationships: { question: relationshipToQuestion },
+          }))
+        );
 
         const result$ = epic.call();
         result$.subscribe(actions => {
@@ -152,10 +164,12 @@ describe('joinSessionEpic', () => {
     beforeEach(() => {
       question = factories.singleChoiceQuestion.entity();
       optionA = factories.questionOption.entity({ attributes: { text: 'A' } });
-      delete optionA.id;
-      delete optionA.relationships;
+      optionA = optionA.delete('id');
+      optionA = optionA.delete('relationships');
       optionB = factories.questionOption.entity({ attributes: { text: 'B' } });
-      relationshipToQuestion = { type: question.type, id: question.id, };
+      relationshipToQuestion = Immutable.fromJS({
+        type: question.get('type'), id: question.get('id'),
+      });
 
       epic.action$ = of(
         saveQuestion(question, [optionA, optionB], 'jobId')
@@ -173,10 +187,11 @@ describe('joinSessionEpic', () => {
     it('triggers create request for option a', (done) => {
       const result$ = epic.call();
       result$.subscribe(_actions => {
-        expect(epic.api.entities.create).toBeCalledWith({
-          ...optionA,
-          relationships: { question: relationshipToQuestion },
-        });
+        expect(epic.api.entities.create).toBeCalledWith(
+          optionA.set('relationships', Immutable.Map({
+            question: relationshipToQuestion,
+          }))
+        );
         done();
       });
     });
@@ -201,11 +216,12 @@ describe('joinSessionEpic', () => {
       });
 
       it('emits receive entity action for option a', (done) => {
-        const expectedAction = receiveEntity({
-          ...optionA,
-          id: '_1',
-          relationships: { question: relationshipToQuestion },
-        });
+        const expectedAction = receiveEntity(
+          optionA.merge(Immutable.fromJS({
+            id: '_1',
+            relationships: { question: relationshipToQuestion },
+          }))
+        );
 
         const result$ = epic.call();
         result$.subscribe(actions => {
@@ -258,10 +274,7 @@ describe('joinSessionEpic', () => {
       });
 
       it('emits receive entity action for option a', (done) => {
-        const expectedAction = receiveEntity({
-          ...optionA,
-          deleted: true
-        });
+        const expectedAction = receiveEntity(optionA.set('deleted', true));
 
         const result$ = epic.call();
         result$.subscribe(actions => {
@@ -281,7 +294,9 @@ describe('joinSessionEpic', () => {
         attributes: { text: 'A' },
         deleted: true,
       });
-      optionB = factories.questionOption.entity({ attributes: { text: 'B' } });
+      optionB = factories.questionOption.entity({
+        attributes: { text: 'B' },
+      });
 
       epic.action$ = of(
         saveQuestion(question, [optionA, optionB], 'jobId')
@@ -324,10 +339,7 @@ describe('joinSessionEpic', () => {
       });
 
       it('emits receive entity action for option a', (done) => {
-        const expectedAction = receiveEntity({
-          ...optionA,
-          deleted: true
-        });
+        const expectedAction = receiveEntity(optionA.set('deleted', true));
 
         const result$ = epic.call();
         result$.subscribe(actions => {

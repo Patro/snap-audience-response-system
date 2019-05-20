@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { shallow } from 'enzyme';
 import factories from '../../__factories__';
@@ -50,10 +51,10 @@ describe('QuestionPollsScreen', () => {
     let closedPolls;
 
     beforeEach(() => {
-      closedPolls = [
+      closedPolls = Immutable.fromJS([
         factories.poll.entity({ attributes: { status: 'closed' } }),
         factories.poll.entity({ attributes: { status: 'closed' } }),
-      ]
+      ]);
       component.props.polls = closedPolls;
     });
 
@@ -62,24 +63,24 @@ describe('QuestionPollsScreen', () => {
     });
 
     it('selects last poll in menu', () => {
-      expect(component.givenActivePollOfMenu).toEqual(closedPolls[1]);
+      expect(component.givenActivePollOfMenu).toEqual(closedPolls.get(1));
     });
 
     it('shows results of last poll', () => {
-      expect(component.givenPollToShowResultsFor).toEqual(closedPolls[1]);
+      expect(component.givenPollToShowResultsFor).toEqual(closedPolls.get(1));
     });
 
     describe('on select of first closed poll', () => {
       beforeEach(() => {
-        component.selectPoll(closedPolls[0]);
+        component.selectPoll(closedPolls.get(0));
       });
 
       it('selects first poll in menu', () => {
-        expect(component.givenActivePollOfMenu).toEqual(closedPolls[0]);
+        expect(component.givenActivePollOfMenu).toEqual(closedPolls.get(0));
       });
 
       it('shows results of first poll', () => {
-        expect(component.givenPollToShowResultsFor).toEqual(closedPolls[0]);
+        expect(component.givenPollToShowResultsFor).toEqual(closedPolls.get(0));
       });
     });
   });
@@ -90,11 +91,13 @@ describe('QuestionPollsScreen', () => {
     beforeEach(() => {
       openPoll = factories.poll.entity({ attributes: { status: 'open' } });
       closedPoll = factories.poll.entity({ attributes: { status: 'closed' } });
-      component.props.polls = [openPoll, closedPoll];
+      component.props.polls = Immutable.fromJS([openPoll, closedPoll]);
     });
 
     it('passes open and closed poll to menu', () => {
-      expect(component.givenPollsOfMenu).toEqual([openPoll, closedPoll]);
+      expect(component.givenPollsOfMenu).toEqual(
+        Immutable.fromJS([openPoll, closedPoll])
+      );
     });
 
     it('selects open poll in menu', () => {
@@ -120,9 +123,9 @@ describe('QuestionPollsScreen', () => {
     });
   });
 
-  describe('given empty polls array', () => {
+  describe('given empty polls list', () => {
     beforeEach(() => {
-      component.props.polls = [];
+      component.props.polls = Immutable.List();
     });
 
     it('does not render polls menu', () => {

@@ -5,7 +5,7 @@ const getEntitiesOfCollection = (state, type, filterParams = {}) => {
   const collection = getCollection(state, type, filterParams);
   if (collection === undefined) { return; }
 
-  return collection.entities.map(identifier =>
+  return collection.get('entities').map(identifier =>
     getEntity(state, identifier)
   ).filter(entitiy => entitiy !== undefined)
 };

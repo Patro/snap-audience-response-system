@@ -1,7 +1,12 @@
-import get from 'lodash/get';
+import Immutable from 'immutable';
 
-const getEntity = (state, { type, id }) => {
-  return get(state, `entities.${type}.${id}`);
+const getEntity = (state, identifier) => {
+  const immutableIdentifier = Immutable.fromJS(identifier);
+  return state.getIn([
+    'entities',
+    immutableIdentifier.get('type'),
+    immutableIdentifier.get('id'),
+  ]);
 };
 
 export default getEntity;

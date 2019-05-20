@@ -26,9 +26,8 @@ const mapDispatchToProps = (dispatch, { poll }) => {
 };
 
 const shouldRefresh = (prev, next) => (
-  !isEqualIdentifier(
-    getIdentifierOfQuestion(prev.poll),
-    getIdentifierOfQuestion(next.poll),
+  !getIdentifierOfQuestion(prev.poll).equals(
+    getIdentifierOfQuestion(next.poll)
   )
 );
 
@@ -43,7 +42,7 @@ export default compose(
 const respondJobId = 'respondJob';
 
 const getIdentifierOfQuestion = (poll) => (
-  poll.relationships.question
+  poll.getIn(['relationships', 'question'])
 );
 
 const getOptionsOfQuestion = (state, questionIdentifier) => (
@@ -53,14 +52,10 @@ const getOptionsOfQuestion = (state, questionIdentifier) => (
 );
 
 const fetchQuestionAndOptions = (dispatch, identifier) => {
-  dispatch(fetchEntity(identifier.type, identifier.id));
+  dispatch(fetchEntity(identifier.get('type'), identifier.get('id')));
   dispatch(fetchCollection(QUESTION_OPTION, buildFilterParams(identifier)));
 };
 
 const buildFilterParams = (questionIdentifier) => ({
-  questionId: questionIdentifier.id,
+  questionId: questionIdentifier.get('id'),
 });
-
-const isEqualIdentifier = (a, b) => (
-  a.id === b.id && a.type === b.type
-);

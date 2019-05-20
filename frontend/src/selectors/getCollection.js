@@ -1,11 +1,7 @@
-import get from 'lodash/get';
+import Immutable from 'immutable';
 
-const getCollection = (state, type, filterParams = {}) => {
-  const collectionsOfType = get(state, `collections.${type}`);
-  if (collectionsOfType === undefined) { return; }
-
-  const filterKey = JSON.stringify(filterParams);
-  return collectionsOfType[filterKey];
-};
+const getCollection = (state, type, filterParams = {}) => (
+  state.getIn(['collections', type, Immutable.fromJS(filterParams)])
+);
 
 export default getCollection;

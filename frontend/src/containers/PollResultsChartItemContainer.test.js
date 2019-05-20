@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchEntity } from '../actions';
 import { QUESTION_OPTION } from '../constants/entityTypes';
 import PollResultsChartItem from '../components/PollResultsChartItem';
@@ -44,13 +46,8 @@ describe('PollResultsChartItemContainer', () => {
     let questionOption;
 
     beforeEach(() => {
-      questionOption = factories.singleChoiceQuestion.entity({ id: '300' });
-
-      component.store = {
-        entities: {
-          [QUESTION_OPTION]: { '300': questionOption },
-        },
-      };
+      questionOption = factories.questionOption.entity({ id: '300' });
+      component.store = buildTestState({ entities: [questionOption] });
     });
 
     it('passes question option to component', () => {
@@ -60,7 +57,7 @@ describe('PollResultsChartItemContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as question option to component', () => {

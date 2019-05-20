@@ -24,7 +24,7 @@ class PollsMenu extends Component {
 
   get selectedKeys() {
     if (this.activePoll === undefined) { return []; }
-    return [this.activePoll.id];
+    return [this.activePoll.get('id')];
   }
 
   render() {
@@ -42,14 +42,14 @@ class PollsMenu extends Component {
 
   renderItem(poll, index) {
     return (
-      <Menu.Item key={poll.id} className="polls_menu_item">
+      <Menu.Item key={poll.get('id')} className="polls_menu_item">
         { ordinal(index + 1) }
       </Menu.Item>
     )
   }
 
   onSelect({ key }) {
-    const poll = this.polls.find(poll => poll.id === key);
+    const poll = this.polls.find(poll => poll.get('id') === key);
     this.onSelectHandler(poll);
   }
 }

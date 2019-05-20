@@ -1,23 +1,25 @@
-import { concat } from 'rxjs';
-import { zip, of } from 'rxjs';
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
+import Immutable from 'immutable';
+import { concat, zip, of } from 'rxjs';
+import {
+  filter, map, mergeMap, toArray, tap, ignoreElements
+} from 'rxjs/operators';
 import { SAVE_QUESTION, receiveEntity } from '../actions';
 import { QUESTION, QUESTION_OPTION } from '../constants/entityTypes';
 import reloadCollections from './reloadCollections';
 import withJob from './withJob';
 
 class SaveQuestionService {
-  constructor({ question, options }, { api }) {
+  constructor(question, options, api) {
     this.question = question;
     this.options = options;
     this.api = api;
   }
 
   call$() {
-    if (this.question.id === undefined) {
+    if (this.question.get('id') === undefined) {
       return this.createQuestionWithOptions$();
     }
-    else if(this.question.deleted === true) {
+    else if(this.question.get('deleted') === true) {
       return this.destroyQuestionWithOptions$();
     }
     else {
@@ -75,16 +77,16 @@ class SaveQuestionService {
   }
 
   saveOptions$() {
-    return zip(
+    return concat(
       ...this.options.map(option => this.saveOption$(option))
-    );
+    ).pipe(toArray());
   }
 
   saveOption$(option) {
-    if (option.id === undefined) {
+    if (option.get('id') === undefined) {
       return this.createOption$(option, this.question);
     }
-    else if(option.deleted === true) {
+    else if(option.get('deleted') === true) {
       return this.destroyOption$(option);
     }
     else {
@@ -99,15 +101,16 @@ class SaveQuestionService {
   }
 
   createOption$(option, question) {
-    return this.api.entities.create({
-      ...option,
-      relationships: {
-        question: {
-          type: question.type,
-          id: question.id,
+    return this.api.entities.create(
+      option.merge(Immutable.fromJS({
+        relationships: {
+          question: {
+            type: question.get('type'),
+            id: question.get('id'),
+          },
         },
-      },
-    })
+      }))
+    )
   }
 
   updateOption$(option) {
@@ -139,7 +142,9 @@ const processAction$ = (action, state$, dependencies) => (
 );
 
 const saveQuestion$ = (action, dependencies) => (
-  new SaveQuestionService(action, dependencies).call$()
+  new SaveQuestionService(
+    action.question, action.options, dependencies.api
+  ).call$()
 );
 
 const onSuccess = (state$, dependencies) => (
@@ -151,15 +156,18 @@ const onSuccess = (state$, dependencies) => (
       reloadCollections(state$, QUESTION_OPTION, dependencies),
       of(question).pipe(
         tap(question => redirectToQuestionList(question, dependencies.history)),
+        ignoreElements(),
       )
     )
   )
 );
 
 const redirectToQuestionList = (question, history) => (
-  history.push(buildQuestionListUrl(question.relationships.interactiveSession))
+  history.push(buildQuestionListUrl(
+    question.getIn(['relationships', 'interactiveSession'])
+  ))
 );
 
 const buildQuestionListUrl = (session) => (
-  `/interactive_sessions/${session.id}/owner`
+  `/interactive_sessions/${session.get('id')}/owner`
 );

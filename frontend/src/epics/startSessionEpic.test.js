@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { startSession, receiveEntity } from '../actions';
@@ -7,11 +8,13 @@ import startSessionEpic from './startSessionEpic';
 class TestWrapper {
   constructor({ action$ } = {}) {
     this.action$ = action$;
-    this.state$ = of({});
+    this.state$ = of(Immutable.Map());
     this.api = {
       _id: 1,
       entities: {
-        create: jest.fn(entity => of({ ...entity, id: '_' + this.api._id++ })),
+        create: jest.fn(entity =>
+          of(entity.set('id', '_' + this.api._id++))
+        ),
       },
     };
     this.history = { push: jest.fn() };
@@ -41,10 +44,11 @@ describe('startSessionEpic', () => {
   it('triggers create request', (done) => {
     const result$ = epic.call$();
     result$.subscribe(_actions => {
-      expect(epic.api.entities.create).toBeCalledWith({
+      const entity = Immutable.fromJS({
         type: INTERACTIVE_SESSION,
         attributes: { label: 'My new session' },
       });
+      expect(epic.api.entities.create).toBeCalledWith(entity);
       done();
     });
   });

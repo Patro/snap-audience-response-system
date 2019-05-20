@@ -7,7 +7,7 @@ import withDependencies from './withDependencies';
 
 const mapStateToProps = (state, { questionOptionCount }) => ({
   questionOption: getEntity(
-    state, getQuestionOption(questionOptionCount)
+    state, getQuestionOptionIdentifier(questionOptionCount)
   ),
 });
 
@@ -16,9 +16,8 @@ const mapDispatchToProps = (dispatch, { questionOptionCount }) => ({
 });
 
 const shouldRefresh = (prev, next) => (
-  !isEqualIdentifier(
-    getQuestionOption(prev.questionOptionCount),
-    getQuestionOption(next.questionOptionCount)
+  !getQuestionOptionIdentifier(prev.questionOptionCount).equals(
+    getQuestionOptionIdentifier(next.questionOptionCount)
   )
 );
 
@@ -30,14 +29,12 @@ export default compose(
 ///////////////////////////////////////////////////////////////////////////////
 
 const fetchQuestionOption = (dispatch, questionOptionCount) => {
-  const questionOption = getQuestionOption(questionOptionCount);
-  return dispatch(fetchEntity(questionOption.type, questionOption.id));
+  const questionOption = getQuestionOptionIdentifier(questionOptionCount);
+  return dispatch(
+    fetchEntity(questionOption.get('type'), questionOption.get('id'))
+  );
 };
 
-const getQuestionOption = (questionOptionCount) => (
-  questionOptionCount.relationships.questionOption
-);
-
-const isEqualIdentifier = (a, b) => (
-  a.id === b.id && a.type === b.type
+const getQuestionOptionIdentifier = (questionOptionCount) => (
+  questionOptionCount.getIn(['relationships', 'questionOption'])
 );

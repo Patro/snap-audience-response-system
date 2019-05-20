@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { Menu } from 'antd';
 import { shallow } from 'enzyme';
@@ -33,10 +34,10 @@ describe('PollsMenu', () => {
   let polls, component;
 
   beforeEach(() => {
-    polls = [
+    polls = Immutable.List([
       factories.poll.entity({ id: '100' }),
       factories.poll.entity({ id: '101' })
-    ]
+    ]);
     component = new TestWrapper({ props: { polls } });
   });
 
@@ -46,7 +47,7 @@ describe('PollsMenu', () => {
 
   describe('given second poll as active poll', () => {
     beforeEach(() => {
-      component.props.activePoll = polls[1];
+      component.props.activePoll = polls.get(1);
     });
 
     it('selects second poll', () => {
@@ -61,7 +62,7 @@ describe('PollsMenu', () => {
 
       component.selectPoll('100');
 
-      expect(onSelect).toBeCalledWith(polls[0]);
+      expect(onSelect).toBeCalledWith(polls.get(0));
     });
   });
 });

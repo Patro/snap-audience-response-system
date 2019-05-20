@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { fetchEntity, receiveEntity } from '../actions';
@@ -6,10 +7,10 @@ import fetchEntityEpic from './fetchEntityEpic';
 class TestWrapper {
   constructor({ action$ } = {}) {
     this.action$ = action$;
-    this.state$ = of({});
+    this.state$ = of(Immutable.Map());
     this.api = {
       entities: {
-        fetch: jest.fn(entity => of({ ...entity, attributes: {} })),
+        fetch: jest.fn(entity => of(entity.set('attributes', Immutable.Map()))),
       },
     };
   }
@@ -38,9 +39,8 @@ describe('fetchEntityEpic', () => {
   it('triggers fetch request', (done) => {
     const result$ = epic.call$();
     result$.subscribe((_actions) => {
-      expect(epic.api.entities.fetch).toBeCalledWith({
-        type: 'SPACESHIP', id: '100',
-      });
+      const entity = Immutable.fromJS({ type: 'SPACESHIP', id: '100' });
+      expect(epic.api.entities.fetch).toBeCalledWith(entity);
       done();
     });
   });

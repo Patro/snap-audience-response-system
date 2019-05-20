@@ -1,11 +1,12 @@
+import Immutable from 'immutable';
 import snakeCase from 'lodash/snakeCase';
 import { API_ROOT_PATH, ROOT_TYPE_MAP } from './../config';
 
-const buildURL = ({ id, type, filterParams }) => {
+const buildURL = (resource) => {
   const parts = [API_ROOT_PATH];
-  addCollectionPath(parts, type);
-  addId(parts, id);
-  addQueryParams(parts, filterParams);
+  addCollectionPath(parts, resource.get('type'));
+  addId(parts, resource.get('id'));
+  addQueryParams(parts, resource.get('filterParams'));
   return parts.join('');
 };
 export default buildURL;
@@ -29,11 +30,15 @@ const addQueryParams = (parts, filterParams) => {
   parts.push('?', serializeQueryParams(filterParams))
 };
 
-const serializeQueryParams = (params) => {
-  const keys = Object.keys(params);
-  const pairs = keys.map(key => serializeQueryPair(key, params[key]));
-  return pairs.join('&');
-};
+const serializeQueryParams = (params) => (
+  serializedQueryPairs(params).join('&')
+);
+
+const serializedQueryPairs = (params) => (
+  params.reduce((pairs, value, key) => (
+    pairs.push(serializeQueryPair(key, value))
+  ), Immutable.List())
+);
 
 const encode = encodeURIComponent;
 const serializeQueryPair = (key, value) => (

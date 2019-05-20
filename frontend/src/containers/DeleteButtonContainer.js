@@ -23,5 +23,5 @@ export default compose(
 ///////////////////////////////////////////////////////////////////////////////
 
 const jobId = (entity) => (
-  `destroyJob:${entity.type}:${entity.id}`
+  `destroyJob:${entity.get('type')}:${entity.get('id')}`
 );

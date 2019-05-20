@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import {
   MARK_JOB_AS_STARTED,
   MARK_JOB_AS_SUCCEEDED,
@@ -10,7 +11,8 @@ import {
   FAILED
 } from '../constants/jobStatus';
 
-const jobs = (state = {}, action) => {
+
+const jobs = (state = Immutable.fromJS({}), action) => {
   switch(action.type) {
     case MARK_JOB_AS_STARTED:
       return markJobAsStarted(state, action.id, action.trigger);
@@ -29,37 +31,32 @@ export default jobs;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const markJobAsStarted = (state, jobId, trigger) => ({
-  ...state,
-  [jobId]: {
+const markJobAsStarted = (state, jobId, trigger) => (
+  state.set(jobId, Immutable.Map({
     id: jobId,
     status: STARTED,
     trigger
-  },
-});
+  }))
+);
 
-const markJobAsSucceeded = (state, jobId, result) => ({
-  ...state,
-  [jobId]: {
+const markJobAsSucceeded = (state, jobId, result) => (
+  state.set(jobId, Immutable.Map({
     id: jobId,
     status: SUCCEEDED,
-    trigger: state[jobId].trigger,
+    trigger: state.getIn([jobId, 'trigger']),
     result,
-  },
-});
+  }))
+);
 
-const markJobAsFailed = (state, jobId, errors) => ({
-  ...state,
-  [jobId]: {
+const markJobAsFailed = (state, jobId, errors) => (
+  state.set(jobId, Immutable.Map({
     id: jobId,
     status: FAILED,
-    trigger: state[jobId].trigger,
+    trigger: state.getIn([jobId, 'trigger']),
     errors,
-  },
-});
+  }))
+);
 
-const removeJob = (state, jobId) => {
-  const clone = { ...state };
-  delete clone[jobId];
-  return clone;
-};
+const removeJob = (state, jobId) => (
+  state.remove(jobId)
+);

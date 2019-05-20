@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchCollection } from '../actions';
 import { POLL, INTERACTIVE_SESSION } from '../constants/entityTypes';
 import AttendeeScreen from '../components/AttendeeScreen';
@@ -42,20 +44,22 @@ describe('AttendeeScreenContainer', () => {
     let poll;
     beforeEach(() => {
       poll = factories.poll.entity({ id: '100' });
-      const collection = factories.poll.collectionWithIds(['100']);
 
-      const filter =
-        '{"interactiveSessionId":"100","status":"open","responded":false}'
-      const filledStore = {
-        entities: {
-          [INTERACTIVE_SESSION]: { '100': session },
-          [POLL]: { '100': poll },
-        },
-        collections: {
-          [POLL]: { [filter]: collection },
-        },
-      };
-      component.store = filledStore;
+      component.store = buildTestState({
+        entities: [
+          factories.interactiveSession.entity({ id: '100' }),
+          poll,
+        ],
+        collections: [
+          factories.poll.collectionWithIds(['100']).merge(Immutable.fromJS({
+            filterParams: {
+              interactiveSessionId: '100',
+              status: 'open',
+              responded: false,
+            },
+          })),
+        ],
+      });
     });
 
     it('passes first poll to component', () => {
@@ -65,7 +69,7 @@ describe('AttendeeScreenContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as poll to component', () => {

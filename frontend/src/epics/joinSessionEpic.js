@@ -1,5 +1,6 @@
+import Immutable from 'immutable';
 import { of, concat } from 'rxjs';
-import { filter, mergeMap, tap } from 'rxjs/operators';
+import { filter, mergeMap, tap, ignoreElements } from 'rxjs/operators';
 import { JOIN_SESSION, receiveEntity } from '../actions';
 import { ATTENDANCE, INTERACTIVE_SESSION } from '../constants/entityTypes'
 import reloadCollections from './reloadCollections';
@@ -22,11 +23,11 @@ const processAction$ = (action, state$, dependencies) => (
   )
 );
 
-const createAttendance$ = ({ attendanceCode }, { api }) => (
-  api.entities.create({
+const createAttendance$ = (action, { api }) => (
+  api.entities.create(Immutable.fromJS({
     type: ATTENDANCE,
-    attributes: { attendanceCode },
-  })
+    attributes: { attendanceCode: action.attendanceCode },
+  }))
 );
 
 const onSuccess = (state$, dependencies) => (
@@ -35,7 +36,8 @@ const onSuccess = (state$, dependencies) => (
       of(receiveEntity(entity)),
       reloadCollections(state$, INTERACTIVE_SESSION, dependencies),
       of(entity).pipe(
-        tap(attendance => redirectToSession(attendance, dependencies.history))
+        tap(attendance => redirectToSession(attendance, dependencies.history)),
+        ignoreElements(),
       )
     )
   )
@@ -45,6 +47,7 @@ const redirectToSession = (attendance, history) => (
   history.push(buildSessionUrl(attendance))
 );
 
-const buildSessionUrl = (attendance) => (
-  `/interactive_sessions/${attendance.relationships.interactiveSession.id}`
-);
+const buildSessionUrl = (attendance) => {
+  const id = attendance.getIn(['relationships', 'interactiveSession', 'id']);
+  return `/interactive_sessions/${id}`;
+};

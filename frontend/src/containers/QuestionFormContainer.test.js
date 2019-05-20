@@ -1,10 +1,13 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchCollection, fetchEntity, saveQuestion } from '../actions';
 import {
-  QUESTION_OPTION, SINGLE_CHOICE_QUESTION
+  QUESTION_OPTION,
+  SINGLE_CHOICE_QUESTION,
 } from './../constants/entityTypes';
 import QuestionForm from '../components/QuestionForm';
 import QuestionFormContainer from './QuestionFormContainer';
@@ -37,7 +40,7 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   submit(question, options) {
-    this.form.props().onSubmit({ question, options });
+    this.form.props().onSubmit(Immutable.fromJS({ question, options }));
   }
 }
 
@@ -68,17 +71,14 @@ describe('QuestionFormContainer', () => {
         optionB = factories.questionOption.entity({ id: '429' });
         const optionCollection = factories.questionOption.collectionWithIds([
           '426', '429',
-        ]);
+        ]).merge({
+          filterParams: Immutable.fromJS({ questionId: '123' }),
+        });
 
-        component.store = {
-          entities: {
-            [SINGLE_CHOICE_QUESTION]: { '123': question },
-            [QUESTION_OPTION]: { '426': optionA, '429': optionB },
-          },
-          collections: {
-            [QUESTION_OPTION]: { '{"questionId":"123"}': optionCollection },
-          },
-        };
+        component.store = buildTestState({
+          entities: [question, optionA, optionB],
+          collections: [optionCollection],
+        });
       });
 
       it('passes question to component', () => {
@@ -86,7 +86,9 @@ describe('QuestionFormContainer', () => {
       });
 
       it('passes options to component', () => {
-        expect(component.givenOptions).toEqual([optionA, optionB]);
+        expect(component.givenOptions).toEqual(
+          Immutable.List([optionA, optionB])
+        );
       });
     });
 
@@ -105,11 +107,7 @@ describe('QuestionFormContainer', () => {
           },
         });
 
-        component.store = {
-          jobs: {
-            'saveQuestionJob': job,
-          },
-        };
+        component.store = buildTestState({ jobs: [job] });
       });
 
       it('passes question to component', () => {
@@ -117,7 +115,9 @@ describe('QuestionFormContainer', () => {
       });
 
       it('passes options to component', () => {
-        expect(component.givenOptions).toEqual([optionA, optionB]);
+        expect(component.givenOptions).toEqual(
+          Immutable.List([optionA, optionB])
+        );
       });
 
       it('passes job to component', () => {
@@ -127,7 +127,7 @@ describe('QuestionFormContainer', () => {
 
     describe('given empty store', () => {
       beforeEach(() => {
-        component.store = {};
+        component.store = Immutable.Map();
       });
 
       it('passes undefined as question to component', () => {

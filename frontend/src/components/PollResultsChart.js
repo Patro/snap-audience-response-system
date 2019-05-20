@@ -13,8 +13,20 @@ class PollResultsChart extends Component {
     return this.props.question;
   }
 
+  get questionText() {
+    return this.question.getIn(['attributes', 'text']);
+  }
+
   get questionOptionCounts() {
     return this.props.questionOptionCounts;
+  }
+
+  get onRefresh() {
+    return this.props.onRefresh;
+  }
+
+  get extra() {
+    return this.props.extra;
   }
 
   render() {
@@ -23,7 +35,7 @@ class PollResultsChart extends Component {
 
     return (
       <div className="poll_results_chart">
-        <Card title={this.question.attributes.text} extra={this.props.extra}>
+        <Card title={this.questionText} extra={this.extra}>
           {this.questionOptionCounts.map(count => this.renderItem(count))}
         </Card>
       </div>
@@ -33,7 +45,7 @@ class PollResultsChart extends Component {
   renderItem(questionOptionCount) {
     return (
       <PollResultsChartItemContainer
-        key={questionOptionCount.id}
+        key={questionOptionCount.get('id')}
         poll={this.poll}
         questionOptionCount={questionOptionCount} />
     )
@@ -58,8 +70,8 @@ class PollResultsChart extends Component {
     if (this.question === undefined) { return; }
 
     this.subscription = subscriptions.subscribeForResponseEvents(
-      this.question.relationships.interactiveSession.id,
-      this.poll.id,
+      this.question.getIn(['relationships', 'interactiveSession', 'id']),
+      this.poll.get('id'),
       () => this.refresh(),
     );
   }
@@ -71,8 +83,8 @@ class PollResultsChart extends Component {
   }
 
   refresh() {
-    if (this.props.onRefresh) {
-      this.props.onRefresh();
+    if (this.onRefresh) {
+      this.onRefresh();
     }
   }
 }

@@ -7,7 +7,7 @@ import PollResultsChart from '../components/PollResultsChart';
 import withDependencies from './withDependencies';
 
 const mapStateToProps = (state, { poll }) => ({
-  question: getEntity(state, poll.relationships.question),
+  question: getEntity(state, poll.getIn(['relationships', 'question'])),
   questionOptionCounts: getCounts(state, poll),
 });
 
@@ -15,7 +15,8 @@ const mapDispatchToProps = (dispatch, { poll }) => ({
   onRefresh: () => fetchDependencies(dispatch, poll),
 });
 
-const shouldRefresh = (prev, next) => prev.poll.id !== next.poll.id;
+const shouldRefresh = (prev, next) =>
+  prev.poll.get('id') !== next.poll.get('id');
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
@@ -31,14 +32,14 @@ const getCounts = (state, poll) => (
 );
 
 const fetchDependencies = (dispatch, poll) => {
-  dispatch(fetchEntity(poll.type, poll.id));
-  const question = poll.relationships.question;
-  dispatch(fetchEntity(question.type, question.id));
+  dispatch(fetchEntity(poll.get('type'), poll.get('id')));
+  const question = poll.getIn(['relationships', 'question']);
+  dispatch(fetchEntity(question.get('type'), question.get('id')));
   dispatch(
     fetchCollection(QUESTION_OPTION_COUNT, buildCountsFilterParams(poll))
   );
 };
 
 const buildCountsFilterParams = (poll) => ({
-  pollId: poll.id
+  pollId: poll.get('id')
 });

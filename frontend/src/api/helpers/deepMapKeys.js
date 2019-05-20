@@ -1,15 +1,12 @@
-import isObject from 'lodash/isObject';
+import Immutable from 'immutable';
 
-const deepMapKeys = (object, iteratee) => {
-  const mapped = {}
-  Object.keys(object).forEach((key) => {
-    let value = object[key];
-    if(isObject(value)) {
+const deepMapKeys = (map, iteratee) => (
+  map.mapEntries(([ key, value ]) => {
+    if(Immutable.isMap(value)) {
       value = deepMapKeys(value, iteratee);
     }
-    mapped[iteratee(key)] = value;
-  });
-  return mapped;
-};
+    return [ iteratee(key), value ]
+  })
+);
 
 export default deepMapKeys;

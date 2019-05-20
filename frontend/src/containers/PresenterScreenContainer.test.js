@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { fetchEntity } from '../actions';
 import { POLL } from '../constants/entityTypes';
 import PresenterScreen from '../components/PresenterScreen';
@@ -41,13 +43,7 @@ describe('PresenterScreenContainer', () => {
 
     beforeEach(() => {
       poll = factories.poll.entity({ id: '300' });
-
-      const filledStore = {
-        entities: {
-          [POLL]: { '300': poll },
-        },
-      };
-      component.store = filledStore;
+      component.store = buildTestState({ entities: [poll] });
     });
 
     it('passes poll to component', () => {
@@ -57,7 +53,7 @@ describe('PresenterScreenContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as poll to component', () => {

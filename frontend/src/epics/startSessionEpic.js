@@ -1,5 +1,6 @@
+import Immutable from 'immutable';
 import { of, concat } from 'rxjs';
-import { filter, mergeMap, tap } from 'rxjs/operators';
+import { filter, mergeMap, tap, ignoreElements } from 'rxjs/operators';
 import { START_SESSION, receiveEntity } from '../actions';
 import { INTERACTIVE_SESSION } from '../constants/entityTypes'
 import reloadCollections from './reloadCollections';
@@ -22,20 +23,21 @@ const processAction$ = (action, state$, dependencies) => (
   )
 );
 
-const createSession$ = ({ label }, { api, history }) => (
-  api.entities.create({
+const createSession$ = (action, { api, history }) => (
+  api.entities.create(Immutable.fromJS({
     type: INTERACTIVE_SESSION,
-    attributes: { label },
-  })
+    attributes: { label: action.label },
+  }))
 );
 
 const onSuccess = (state$, dependencies) => (
   mergeMap((session) =>
     concat(
       of(receiveEntity(session)),
-      reloadCollections(state$, session.type, dependencies),
+      reloadCollections(state$, session.get('type'), dependencies),
       of(session).pipe(
         tap(session => redirectToSessionOwner(session, dependencies.history)),
+        ignoreElements(),
       )
     )
   )
@@ -46,5 +48,5 @@ const redirectToSessionOwner = (session, history) => (
 );
 
 const buildSessionOwnerUrl = (session) => (
-  `/interactive_sessions/${session.id}/owner`
+  `/interactive_sessions/${session.get('id')}/owner`
 );

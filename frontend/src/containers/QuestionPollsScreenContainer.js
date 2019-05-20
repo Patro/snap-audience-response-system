@@ -14,7 +14,9 @@ const mapDispatchToProps = (dispatch, { question }) => ({
   onRefresh: () => fetchPolls(dispatch, question),
 });
 
-const shouldRefresh = (prev, next) => prev.question.id !== next.question.id;
+const shouldRefresh = (prev, next) => (
+  prev.question.get('id') !== next.question.get('id')
+)
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
@@ -32,5 +34,5 @@ const fetchPolls = (dispatch, question) => (
 );
 
 const buildFilterParams = (question) => ({
-  questionId: question.id
+  questionId: question.get('id'),
 });

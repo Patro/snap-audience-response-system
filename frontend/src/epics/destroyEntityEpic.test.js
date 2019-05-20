@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { destroyEntity, receiveEntity } from '../actions';
@@ -6,10 +7,10 @@ import destroyEntityEpic from './destroyEntityEpic';
 class TestWrapper {
   constructor({ action$ } = {}) {
     this.action$ = action$;
-    this.state$ = of({});
+    this.state$ = of(Immutable.Map());
     this.api = {
       entities: {
-        destroy: jest.fn(entity => of({ ...entity, deleted: true })),
+        destroy: jest.fn(entity => of(entity.set('deleted', true))),
       },
     };
   }
@@ -25,13 +26,12 @@ class TestWrapper {
 }
 
 describe('destroyEntityEpic', () => {
-  let entity, epic;
+  let epic;
 
   beforeEach(() => {
-    entity = { id: '100', type: 'SPACESHIP' };
     epic = new TestWrapper({
       action$: of(
-        destroyEntity(entity)
+        destroyEntity({ id: '100', type: 'SPACESHIP' })
       )
     });
   });
@@ -39,6 +39,7 @@ describe('destroyEntityEpic', () => {
   it('triggers destroy request', (done) => {
     const result$ = epic.call$();
     result$.subscribe((_actions) => {
+      const entity = Immutable.fromJS({ id: '100', type: 'SPACESHIP' });
       expect(epic.api.entities.destroy).toBeCalledWith(entity);
       done();
     });
@@ -47,7 +48,8 @@ describe('destroyEntityEpic', () => {
   describe('when request succeeds', () => {
     it('emits receive entity action', (done) => {
       const expectedAction = receiveEntity({
-        ...entity,
+        id: '100',
+        type: 'SPACESHIP',
         deleted: true,
       });
 

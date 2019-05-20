@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createEntity } from '../actions';
@@ -22,19 +23,19 @@ export default compose(
 ///////////////////////////////////////////////////////////////////////////////
 
 const jobId = (question) => (
-  `startPollJob:${question.type}:${question.id}`
+  `startPollJob:${question.get('type')}:${question.get('id')}`
 );
 
 const createPoll = (dispatch, question) => {
-  const poll = {
+  const poll = Immutable.fromJS({
     type: POLL,
     attributes: { status: 'open' },
     relationships: {
       question: {
-        id: question.id,
-        type: question.type,
+        id: question.get('id'),
+        type: question.get('type'),
       },
     },
-  };
+  });
   dispatch(createEntity(poll, jobId(question)))
 };

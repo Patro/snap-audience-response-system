@@ -1,60 +1,55 @@
+import Immutable from 'immutable';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import get from 'lodash/get';
 import { fetchCollection, fetchEntity, saveQuestion } from '../actions';
 import {
   QUESTION_OPTION,
   SINGLE_CHOICE_QUESTION,
-  MULTIPLE_CHOICE_QUESTION
+  MULTIPLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
 import { getEntitiesOfCollection, getEntity, getJob } from '../selectors';
 import QuestionForm from '../components/QuestionForm';
 import withDependencies from './withDependencies';
 import withJob from './withJob';
 
-const mapStateToProps = (state, { match }) => {
+const mapStateToProps = (state, { match: { params } }) => {
   const saveJob = getJob(state, saveQuestionJobId);
   if (saveJob !== undefined) {
-    return {
-      saveJob,
-      question: saveJob.trigger.question,
-      options: saveJob.trigger.options,
-    }
+    return mapJobToProps(saveJob);
   }
 
-  const questionIdentifier = getIdentifierOfQuestion(match);
-  if (questionIdentifier !== undefined) {
-    return {
-      question: getEntity(state, questionIdentifier),
-      options: getOptionsOfQuestion(state, questionIdentifier)
-    };
+  if (isInEditMode(params)) {
+    const questionIdentifier = getIdentifierOfQuestion(params);
+    return mapStateToPropsWithQuestionIdentifier(state, questionIdentifier);
   }
 
   return {};
 };
 
-const mapDispatchToProps = (dispatch, { match }) => {
-  const props = {
-    onSubmit: ({ question, options }) => (
-      dispatch(saveQuestion(question, options, saveQuestionJobId))
-    ),
-  };
+const mapJobToProps = (saveJob) => ({
+  saveJob,
+  question: saveJob.getIn(['trigger', 'question']),
+  options: saveJob.getIn(['trigger', 'options']),
+});
 
-  const questionIdentifier = getIdentifierOfQuestion(match);
-  if (questionIdentifier !== undefined) {
-    props.onRefresh = () => fetchQuestionAndOptions(dispatch, questionIdentifier);
-  }
-  else {
-    props.onRefresh = () => {};
-  }
+const mapStateToPropsWithQuestionIdentifier = (state, questionIdentifier) => ({
+  question: getEntity(state, questionIdentifier),
+  options: getOptionsOfQuestion(state, questionIdentifier)
+});
 
-  return props;
-};
+const mapDispatchToProps = (dispatch, { match: { params } }) => ({
+  onRefresh: onRefreshHandler(dispatch, params),
+  onSubmit: (data) => (
+    dispatch(
+      saveQuestion(data.get('question'), data.get('options'), saveQuestionJobId)
+    )
+  ),
+});
 
 const shouldRefresh = (prev, next) => (
-  !isEqualIdentifier(
-    getIdentifierOfQuestion(prev.match),
-    getIdentifierOfQuestion(next.match),
+  isInEditMode(prev.match.params) &&
+  !getIdentifierOfQuestion(prev.match.params).equals(
+    getIdentifierOfQuestion(next.match.params)
   )
 );
 
@@ -68,18 +63,19 @@ export default compose(
 
 const saveQuestionJobId = 'saveQuestionJob';
 
-const getIdentifierOfQuestion = (match) => {
-  if (!get(match, 'params.questionId')) { return; }
-  if (!get(match, 'params.questionType')) { return; }
+const isInEditMode = (params) => (
+  params.questionId !== undefined && params.questionType !== undefined
+);
 
-  return {
-    id: match.params.questionId,
-    type: getTypeOfQuestion(match),
-  }
+const getIdentifierOfQuestion = (params) => {
+  return Immutable.fromJS({
+    id: params.questionId,
+    type: getTypeOfQuestion(params),
+  });
 };
 
-const getTypeOfQuestion = (match) => {
-  switch(match.params.questionType) {
+const getTypeOfQuestion = (params) => {
+  switch(params.questionType) {
     case 'single_choice':
       return SINGLE_CHOICE_QUESTION;
     case 'multiple_choice':
@@ -95,17 +91,19 @@ const getOptionsOfQuestion = (state, questionIdentifier) => (
   )
 );
 
+const onRefreshHandler = (dispatch, params) => {
+  if (isInEditMode(params)) {
+    const questionIdentifier = getIdentifierOfQuestion(params);
+    return () => fetchQuestionAndOptions(dispatch, questionIdentifier);
+  }
+  return () => {};
+};
+
 const fetchQuestionAndOptions = (dispatch, identifier) => {
-  dispatch(fetchEntity(identifier.type, identifier.id));
+  dispatch(fetchEntity(identifier.get('type'), identifier.get('id')));
   dispatch(fetchCollection(QUESTION_OPTION, buildFilterParams(identifier)));
 };
 
 const buildFilterParams = (questionIdentifier) => ({
-  questionId: questionIdentifier.id,
+  questionId: questionIdentifier.get('id'),
 });
-
-const isEqualIdentifier = (a, b) => {
-  if (a === undefined && b === undefined) { return true; }
-  if (a === undefined || b === undefined) { return false; }
-  return a.id === b.id && a.type === b.type
-};

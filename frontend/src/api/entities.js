@@ -1,11 +1,12 @@
+import Immutable from 'immutable';
 import { map } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
 import { JSON_API_MIME_TYPE } from './config';
 import { buildURL, buildBody, mapResponse } from './helpers'
 
-export const create = (entity = {}) => (
+export const create = (entity) => (
   ajax({
-    url: buildURL({ type: entity.type }),
+    url: buildURL(entity),
     method: 'POST',
     headers: {
       'Accept': JSON_API_MIME_TYPE,
@@ -13,25 +14,27 @@ export const create = (entity = {}) => (
     },
     body: JSON.stringify(buildBody(entity))
   }).pipe(
-    map(xhr => mapResponse(xhr.response))
+    map(xhr => Immutable.fromJS(xhr.response)),
+    map(mapResponse)
   )
 );
 
-export const fetch = ({ type, id } = {}) => (
+export const fetch = (entity) => (
   ajax({
-    url: buildURL({ type, id }),
+    url: buildURL(entity),
     method: 'GET',
     headers: {
       'Accept': JSON_API_MIME_TYPE,
     }
   }).pipe(
-    map(xhr => mapResponse(xhr.response))
+    map(xhr => Immutable.fromJS(xhr.response)),
+    map(mapResponse)
   )
 );
 
-export const update = (entity = {}) => (
+export const update = (entity) => (
   ajax({
-    url: buildURL({ type: entity.type, id: entity.id }),
+    url: buildURL(entity),
     method: 'PATCH',
     headers: {
       'Accept': JSON_API_MIME_TYPE,
@@ -39,18 +42,21 @@ export const update = (entity = {}) => (
     },
     body: JSON.stringify(buildBody(entity))
   }).pipe(
-    map(xhr => mapResponse(xhr.response))
+    map(xhr => Immutable.fromJS(xhr.response)),
+    map(mapResponse)
   )
 );
 
-export const destroy = ({ type, id } = {}) => (
+export const destroy = (entity) => (
   ajax({
-    url: buildURL({ type, id }),
+    url: buildURL(entity),
     method: 'DELETE',
     headers: {
       'Accept': JSON_API_MIME_TYPE,
     },
-  })
+  }).pipe(
+    map(_ => entity.set('deleted', true))
+  )
 );
 
 export default { create, fetch, update, destroy }

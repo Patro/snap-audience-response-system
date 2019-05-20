@@ -1,6 +1,8 @@
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
+import Immutable from 'immutable';
 import { receiveCollection } from '../actions';
+import buildTestState from '../utils/buildTestState';
 import reloadCollections from './reloadCollections';
 
 class TestWrapper {
@@ -9,7 +11,9 @@ class TestWrapper {
     this.type = type;
     this.api = {
       collections: {
-        fetch: jest.fn(collection => of({ ...collection, entities: [] })),
+        fetch: jest.fn(collection =>
+          of(collection.set('entities', Immutable.List()))
+        ),
       },
     };
   }
@@ -33,43 +37,41 @@ describe('reloadCollections', () => {
 
   describe('given state with collections', () => {
     beforeEach(() => {
-      const collectionA = {
+      const collectionA = Immutable.fromJS({
         type: 'SPACESHIP',
         filterParams: { fuel: 'hydrogen' },
         entities: [101],
-      };
-      const collectionB = {
+      });
+      const collectionB = Immutable.fromJS({
         type: 'SPACESHIP',
         filterParams: { fuel: 'antimatter' },
         entities: [102],
-      };
-      const collectionC = {
+      });
+      const collectionC = Immutable.fromJS({
         type: 'CAR',
         filterParams: { fuel: 'gas' },
         entities: [301],
-      };
-      reloadCollections.state$ = of({
-        collections: {
-          SPACESHIP: {
-            '{"fuel":"hydrogen"}': collectionA,
-            '{"fuel":"antimatter"}': collectionB,
-          },
-          CAR: {
-            '{"fuel":"gas"}': collectionC,
-          },
-        },
       });
+      reloadCollections.state$ = of(buildTestState({
+        collections: [collectionA, collectionB, collectionC]
+      }));
     });
 
     it('triggers fetch requests', (done) => {
       const result$ = reloadCollections.call$();
       result$.subscribe((_actions) => {
-        expect(reloadCollections.api.collections.fetch).toBeCalledWith({
-          type: 'SPACESHIP', filterParams: { fuel: 'hydrogen' },
-        });
-        expect(reloadCollections.api.collections.fetch).toBeCalledWith({
-          type: 'SPACESHIP', filterParams: { fuel: 'antimatter' },
-        });
+        expect(reloadCollections.api.collections.fetch).toBeCalledWith(
+          Immutable.fromJS({
+            type: 'SPACESHIP',
+            filterParams: { fuel: 'hydrogen' },
+          })
+        );
+        expect(reloadCollections.api.collections.fetch).toBeCalledWith(
+          Immutable.fromJS({
+            type: 'SPACESHIP',
+            filterParams: { fuel: 'antimatter' },
+          })
+        );
         done();
       });
     });
@@ -99,24 +101,25 @@ describe('reloadCollections', () => {
         },
       };
 
-      const collection = {
+      const collection = Immutable.fromJS({
         type: 'SHIP',
         filterParams: {},
         entities: [101],
-      };
-      reloadCollections.state$ = of({
-        collections: {
-          SHIP: { '{}': collection },
-        },
       });
+      reloadCollections.state$ = of(buildTestState({
+        collections: [collection]
+      }));
     });
 
     it('triggers fetch requests', (done) => {
       const result$ = reloadCollections.call$();
       result$.subscribe((_actions) => {
-        expect(reloadCollections.api.collections.fetch).toBeCalledWith({
-          type: 'SHIP', filterParams: {},
-        });
+        expect(reloadCollections.api.collections.fetch).toBeCalledWith(
+          Immutable.fromJS({
+            type: 'SHIP',
+            filterParams: {},
+          })
+        );
         done();
       });
     });
@@ -136,7 +139,7 @@ describe('reloadCollections', () => {
 
   describe('given empty state', () => {
     beforeEach(() => {
-      reloadCollections.state$ = of({});
+      reloadCollections.state$ = of(Immutable.Map());
     });
 
     it('emits nothing', (done) => {

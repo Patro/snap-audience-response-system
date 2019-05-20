@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Collapse } from 'antd';
@@ -20,18 +21,18 @@ class QuestionList extends Component {
 
   get openPollsByQuestionId() {
     const openPollsByQuestionId = this.props.openPollsByQuestionId;
-    if (openPollsByQuestionId === undefined) { return {}; }
+    if (openPollsByQuestionId === undefined) { return Immutable.Map(); }
 
     return openPollsByQuestionId;
   }
 
   get newQuestionPath() {
-    const id = this.interactiveSession.id;
+    const id = this.interactiveSession.get('id');
     return `/interactive_sessions/${id}/owner/questions/new`;
   }
 
   openPollOfQuestion(question) {
-    return this.openPollsByQuestionId[question.id];
+    return this.openPollsByQuestionId.get(question.get('id'));
   }
 
   render() {
@@ -60,7 +61,7 @@ class QuestionList extends Component {
   }
 
   renderItem(question) {
-    return <QuestionListItem key={question.id}
+    return <QuestionListItem key={question.get('id')}
                              question={question}
                              openPoll={this.openPollOfQuestion(question)} />
   }

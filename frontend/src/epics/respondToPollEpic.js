@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { concat } from 'rxjs';
 import { of, zip } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
@@ -18,12 +19,12 @@ export default respondToPollEpic;
 const processAction$ = (action, state$, dependencies) => (
   withJob(
     action,
-    createResponses$(action, dependencies),
-    onSuccess(action, state$, dependencies),
+    createResponses$(action.poll, action.pickedOptionIds, dependencies),
+    onSuccess(action.poll, state$, dependencies),
   )
 );
 
-const createResponses$ = ({ poll, pickedOptionIds }, { api }) => (
+const createResponses$ = (poll, pickedOptionIds, { api }) => (
   zip(
     ...pickedOptionIds.map(optionId => (
       createResponse$(poll, optionId, api)
@@ -32,20 +33,20 @@ const createResponses$ = ({ poll, pickedOptionIds }, { api }) => (
 );
 
 const createResponse$ = (poll, pickedOptionId, api) => (
-  api.entities.create({
+  api.entities.create(Immutable.fromJS({
     type: RESPONSE,
     relationships: {
-      poll: { id: poll.id, type: poll.type },
+      poll: { id: poll.get('id'), type: poll.get('type') },
       pickedQuestionOption: { id: pickedOptionId, type: QUESTION_OPTION },
     }
-  })
+  }))
 );
 
-const onSuccess = (action, state$, dependencies) => (
+const onSuccess = (poll, state$, dependencies) => (
   mergeMap(options =>
     concat(
       ...options.map(option => of(receiveEntity(option))),
-      reloadCollections(state$, action.poll.type, dependencies),
+      reloadCollections(state$, poll.get('type'), dependencies),
     )
   )
 );

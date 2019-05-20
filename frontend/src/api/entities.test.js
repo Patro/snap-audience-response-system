@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import entities from './entities';
@@ -18,13 +19,13 @@ const itMapsResponse = (trigger) => {
     }
     ajax.mockReturnValue(of({ response: originalResponse }));
 
-    const mappedResponse = {
+    const mappedResponse = Immutable.fromJS({
       id: '100',
       type: 'SPACESHIP_ENGINE',
       attributes: {
         maxSpeed: 100000,
       },
-    }
+    });
     trigger().subscribe(response => {
       expect(response).toEqual(mappedResponse);
       done();
@@ -34,15 +35,17 @@ const itMapsResponse = (trigger) => {
 
 describe('entities', () => {
   describe('create', () => {
+    const entity = Immutable.fromJS({
+      type: 'SPACESHIP',
+      attributes: {
+        name: 'Enterprise',
+      },
+    });
+
     it('configures post request', () => {
       ajax.mockReturnValue(of({}));
 
-      entities.create({
-        type: 'SPACESHIP',
-        attributes: {
-          name: 'Enterprise',
-        },
-      });
+      entities.create(entity);
 
       expect(ajax).toBeCalledWith({
         method: 'POST',
@@ -62,17 +65,19 @@ describe('entities', () => {
       });
     });
 
-    itMapsResponse(entities.create);
+    itMapsResponse(() => entities.create(entity));
   });
 
   describe('fetch', () => {
+    const entity = Immutable.fromJS({
+      id: '100',
+      type: 'SPACESHIP',
+    });
+
     it('configures get request', () => {
       ajax.mockReturnValue(of({}));
 
-      entities.fetch({
-        id: '100',
-        type: 'SPACESHIP',
-      });
+      entities.fetch(entity);
 
       expect(ajax).toBeCalledWith({
         method: 'GET',
@@ -83,20 +88,22 @@ describe('entities', () => {
       });
     });
 
-    itMapsResponse(entities.fetch);
+    itMapsResponse(() => entities.fetch(entity));
   });
 
   describe('update', () => {
+    const entity = Immutable.fromJS({
+      id: '100',
+      type: 'SPACESHIP',
+      attributes: {
+        name: 'Enterprise',
+      },
+    });
+
     it('configures patch request', () => {
       ajax.mockReturnValue(of({}));
 
-      entities.update({
-        id: '100',
-        type: 'SPACESHIP',
-        attributes: {
-          name: 'Enterprise',
-        },
-      });
+      entities.update(entity);
 
       expect(ajax).toBeCalledWith({
         method: 'PATCH',
@@ -117,20 +124,22 @@ describe('entities', () => {
       });
     });
 
-    itMapsResponse(entities.update);
+    itMapsResponse(() => entities.update(entity));
   });
 
   describe('destroy', () => {
+    const entity = Immutable.fromJS({
+      id: '100',
+      type: 'SPACESHIP',
+      attributes: {
+        name: 'Enterprise',
+      },
+    });
+
     it('configures delete request', () => {
       ajax.mockReturnValue(of({}));
 
-      entities.destroy({
-        id: '100',
-        type: 'SPACESHIP',
-        attributes: {
-          name: 'Enterprise',
-        },
-      });
+      entities.destroy(entity);
 
       expect(ajax).toBeCalledWith({
         method: 'DELETE',
@@ -138,6 +147,23 @@ describe('entities', () => {
         headers: {
           'Accept': 'application/vnd.api+json',
         },
+      });
+    });
+
+    it('returns entity with deleted flag set', (done) => {
+      ajax.mockReturnValue(of({ response: {} }));
+
+      const mappedResponse = Immutable.fromJS({
+        id: '100',
+        type: 'SPACESHIP',
+        attributes: {
+          name: 'Enterprise',
+        },
+        deleted: true,
+      });
+      entities.destroy(entity).subscribe(response => {
+        expect(response).toEqual(mappedResponse);
+        done();
       });
     });
   });

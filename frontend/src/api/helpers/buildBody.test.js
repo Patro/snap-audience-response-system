@@ -1,24 +1,25 @@
+import Immutable from 'immutable';
 import buildBody from './buildBody';
 
 describe('buildBody', () => {
   it('builds hash with id', () => {
-    const body = buildBody({ id: '3' });
+    const body = buildBody(Immutable.fromJS({ id: '3' }));
 
-    expect(body).toEqual({ data: { id: '3' }});
+    expect(body).toEqual(Immutable.fromJS({ data: { id: '3' }}));
   });
 
   it('builds hash with type', () => {
-    const body = buildBody({ type: 'SPACESHIP' });
+    const body = buildBody(Immutable.fromJS({ type: 'SPACESHIP' }));
 
-    expect(body).toEqual({ data: { type: 'spaceship' }});
+    expect(body).toEqual(Immutable.fromJS({ data: { type: 'spaceship' }}));
   });
 
   it('builds hash with attributes', () => {
-    const body = buildBody({
+    const body = buildBody(Immutable.fromJS({
       attributes: { initialAuthor: { firstName: 'John' } }
-    });
+    }));
 
-    const expectedBody = {
+    const expectedBody = Immutable.fromJS({
       data: {
         attributes: {
           initial_author: {
@@ -26,16 +27,16 @@ describe('buildBody', () => {
           }
         }
       }
-    };
+    });
     expect(body).toEqual(expectedBody);
   });
 
   it('builds hash with relationships', () => {
-    const body = buildBody({
+    const body = buildBody(Immutable.fromJS({
       relationships: { initialAuthor: { id: '1', type: 'AUTHOR' } }
-    });
+    }));
 
-    const expectedBody = {
+    const expectedBody = Immutable.fromJS({
       data: {
         relationships: {
           initial_author: {
@@ -46,7 +47,7 @@ describe('buildBody', () => {
           },
         },
       },
-    };
+    });
     expect(body).toEqual(expectedBody);
   });
 });

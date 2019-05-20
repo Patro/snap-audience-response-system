@@ -21,15 +21,15 @@ const processAction = (action, state$, dependencies) => (
   )
 );
 
-const updateEntity$ = ({ entity }, { api }) => (
-  api.entities.update(entity)
+const updateEntity$ = (action, { api }) => (
+  api.entities.update(action.entity)
 );
 
 const onSuccess = (state$, dependencies) => (
   mergeMap((entity) =>
     concat(
       of(receiveEntity(entity)),
-      reloadCollections(state$, entity.type, dependencies),
+      reloadCollections(state$, entity.get('type'), dependencies),
     )
   )
 );

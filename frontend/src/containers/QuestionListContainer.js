@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
@@ -16,7 +17,7 @@ const mapDispatchToProps = (dispatch, { interactiveSession }) => ({
 });
 
 const shouldRefresh = (prev, next) => (
-  prev.interactiveSession.id !== next.interactiveSession.id
+  prev.interactiveSession.get('id') !== next.interactiveSession.get('id')
 );
 
 export default compose(
@@ -38,10 +39,9 @@ const getOpenPolls = (state, interactiveSession) => {
   );
   if (openPolls === undefined) { return; }
 
-  return openPolls.reduce((byQuestionId, poll) => {
-    byQuestionId[poll.relationships.question.id] = poll;
-    return byQuestionId;
-  }, {});
+  return openPolls.reduce((byQuestionId, poll) => (
+    byQuestionId.set(poll.getIn(['relationships', 'question', 'id']), poll)
+  ), Immutable.Map());
 };
 
 const fetchDependencies = (dispatch, interactiveSession) => {
@@ -62,10 +62,10 @@ const fetchOpenPolls= (dispatch, interactiveSession) => {
 };
 
 const buildQuestionsFilterParams = (interactiveSession) => ({
-  interactiveSessionId: interactiveSession.id,
+  interactiveSessionId: interactiveSession.get('id'),
 });
 
 const buildOpenPollsFilterParams = (interactiveSession) => ({
-  interactiveSessionId: interactiveSession.id,
+  interactiveSessionId: interactiveSession.get('id'),
   status: 'open',
 });

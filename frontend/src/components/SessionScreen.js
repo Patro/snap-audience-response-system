@@ -13,15 +13,15 @@ class SessionScreen extends Component {
   }
 
   get attributes() {
-    return this.session.attributes;
+    return this.session.get('attributes');
   }
 
   get label() {
-    return this.attributes.label;
+    return this.attributes.get('label');
   }
 
   get attendanceCode() {
-    return this.attributes.attendanceCode;
+    return this.attributes.get('attendanceCode');
   }
 
   render() {

@@ -1,8 +1,9 @@
+import Immutable from 'immutable';
 import mapResponse from './mapResponse';
 
 describe('mapResponse', () => {
   describe('given response with single resource', () => {
-    const response = {
+    const response = Immutable.fromJS({
       data: {
         id: '3',
         type: 'spaceship',
@@ -19,11 +20,11 @@ describe('mapResponse', () => {
           },
         },
       },
-    };
+    });
 
     it('maps response to entity', () => {
       const entity = mapResponse(response);
-      expect(entity).toEqual({
+      expect(entity).toEqual(Immutable.fromJS({
         id: '3',
         type: 'SPACESHIP',
         attributes: { maxSpeed: 100000 },
@@ -37,31 +38,31 @@ describe('mapResponse', () => {
             { type: 'SPACESHIP_ENGINE', id: '431' },
           ],
         },
-      });
+      }));
     });
   });
 
   describe('given response with collection of resources', () => {
-    const response = {
+    const response = Immutable.fromJS({
       data: [
         { id: '3', type: 'spaceship', attributes: { max_speed: 100000 } },
         { id: '4', type: 'spaceship', attributes: { max_speed: 400000 } },
       ],
-    };
+    });
 
     it('maps response to collection', () => {
       const entity = mapResponse(response);
-      expect(entity).toEqual({
+      expect(entity).toEqual(Immutable.fromJS({
         entities: [
           { id: '3', type: 'SPACESHIP', attributes: { maxSpeed: 100000 } },
           { id: '4', type: 'SPACESHIP', attributes: { maxSpeed: 400000 } },
         ]
-      });
+      }));
     });
   });
 
   describe('given empty response', () => {
-    const response = {};
+    const response = Immutable.Map();
 
     it('maps to undefined', () => {
       expect(mapResponse(response)).toBeUndefined();

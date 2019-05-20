@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { createEntity } from '../actions';
 import StartPollButton from '../components/StartPollButton';
 import StartPollButtonContainer from './StartPollButtonContainer';
@@ -43,11 +45,7 @@ describe('StartPollButtonContainer', () => {
       beforeEach(() => {
         const jobId = 'startPollJob:SINGLE_CHOICE_QUESTION:964';
         job = factories.job.started({ id: jobId });
-        component.store = {
-          jobs: {
-            [jobId]: job,
-          },
-        };
+        component.store = buildTestState({ jobs: [job] });
       });
 
       it('passes job to component', () => {
@@ -57,7 +55,7 @@ describe('StartPollButtonContainer', () => {
 
     describe('given empty store', () => {
       beforeEach(() => {
-        component.store = {};
+        component.store = Immutable.Map();
       });
 
       it('passes undefined as job to component', () => {
@@ -71,11 +69,13 @@ describe('StartPollButtonContainer', () => {
       component.startPoll();
 
       const actions = component.store.getActions();
-      const expectedPoll = factories.poll.entity({
+      let expectedPoll = factories.poll.entity({
         attributes: { status: 'open' },
-        relationships: { question: { id: question.id, type: question.type } }
+        relationships: {
+          question: { id: question.get('id'), type: question.get('type') },
+        }
       });
-      delete expectedPoll.id;
+      expectedPoll = expectedPoll.delete('id');
       const expectedAction = createEntity(expectedPoll, expect.anything());
       expect(actions).toContainEqual(expectedAction);
     });

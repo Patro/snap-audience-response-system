@@ -10,16 +10,20 @@ class PollResultsChartItem extends Component {
     return this.props.questionOption;
   }
 
+  get questionOptionText() {
+    return this.questionOption.getIn(['attributes', 'text']);
+  }
+
   get questionOptionCount() {
     return this.props.questionOptionCount;
   }
 
   get numberOfRespondents() {
-    return this.poll.attributes.numberOfRespondents;
+    return this.poll.getIn(['attributes', 'numberOfRespondents']);
   }
 
   get numberOfResponses() {
-    return this.questionOptionCount.attributes.numberOfResponses;
+    return this.questionOptionCount.getIn(['attributes', 'numberOfResponses']);
   }
 
   get percent() {
@@ -32,7 +36,7 @@ class PollResultsChartItem extends Component {
     return (
       <div className="poll_results_chart_item">
         <span className="poll_results_chart_item__option_text">
-          {this.questionOption.attributes.text}
+          {this.questionOptionText}
         </span>
         <Progress
           percent={this.percent}

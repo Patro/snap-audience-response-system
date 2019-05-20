@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { updateEntity } from '../actions';
 import ClosePollButton from '../components/ClosePollButton';
 import ClosePollButtonContainer from './ClosePollButtonContainer';
@@ -43,11 +45,7 @@ describe('ClosePollButtonContainer', () => {
       beforeEach(() => {
         const jobId = 'closePollJob:POLL:791';
         job = factories.job.started({ id: jobId });
-        component.store = {
-          jobs: {
-            [jobId]: job,
-          },
-        };
+        component.store = buildTestState({ jobs: [ job ] });
       });
 
       it('passes job to component', () => {
@@ -57,7 +55,7 @@ describe('ClosePollButtonContainer', () => {
 
     describe('given empty store', () => {
       beforeEach(() => {
-        component.store = {};
+        component.store = Immutable.Map();
       });
 
       it('passes undefined as job to component', () => {
@@ -71,10 +69,7 @@ describe('ClosePollButtonContainer', () => {
       component.closePoll();
 
       const actions = component.store.getActions();
-      const expectedPoll = {
-        ...poll,
-        attributes: { status: 'closed' },
-      };
+      const expectedPoll = poll.setIn(['attributes', 'status'], 'closed');
       const expectedAction = updateEntity(expectedPoll, expect.anything());
       expect(actions).toContainEqual(expectedAction);
     });

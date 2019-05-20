@@ -33,7 +33,7 @@ describe('PollResultsChartItem', () => {
     questionOptionCount = factories.questionOptionCount.entity({
       attributes: { numberOfResponses: 10 },
       relationships: {
-        poll: { id: poll.id, type: poll.type },
+        poll: { id: poll.get('id'), type: poll.get('type') },
         questionOption: factories.questionOption.identifier({ id: 400 }),
       },
     });
@@ -45,7 +45,7 @@ describe('PollResultsChartItem', () => {
       const questionOption = factories.questionOption.entity({
         id: 400,
         attributes: { text: '42' },
-        relationships: { question: poll.relationships.question },
+        relationships: { question: poll.getIn(['relationships', 'question']) },
       });
       component.props.questionOption = questionOption;
     });

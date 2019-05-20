@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React, { Component } from 'react';
 import { Card, Form, Button, Input, Radio, Switch, Icon, Divider } from 'antd';
 import {
@@ -27,22 +28,22 @@ class QuestionForm extends Component {
   }
 
   get question() {
-    return this.props.question || {
+    return this.props.question || Immutable.fromJS({
       relationships: {
         interactiveSession: {
-          id: this.interactiveSession.id,
-          type: this.interactiveSession.type
+          id: this.interactiveSession.get('id'),
+          type: this.interactiveSession.get('type')
         },
       }
-    };
+    });
   }
 
   get options() {
-    return this.props.options || [];
+    return this.props.options || Immutable.List();
   }
 
   get isNewQuestion() {
-    return this.question.id === undefined;
+    return this.question.get('id') === undefined;
   }
 
   get processing() {
@@ -243,21 +244,20 @@ class QuestionForm extends Component {
     this.props.form.validateFields((err, fieldsValue) => {
       if (err) { return; }
 
-      this.props.onSubmit({
+      this.props.onSubmit(Immutable.Map({
         question: this.mapFieldsValueToQuestion(fieldsValue),
         options: this.mapFieldsValueToOptions(fieldsValue),
-      });
+      }));
     });
   }
 
   mapFieldsValueToQuestion(fieldsValue) {
-    return {
-      ...this.question,
+    return this.question.merge(Immutable.fromJS({
       type: fieldsValue.question.type,
       attributes: {
         text: fieldsValue.question.text,
       }
-    };
+    }));
   }
 
   mapFieldsValueToOptions(fieldsValue) {
@@ -274,7 +274,7 @@ class QuestionForm extends Component {
   }
 
   mapFieldsValueToExistingOption(option, fieldsValue) {
-    const optionFormId = getOptionFormId(option);
+    const optionFormId = option.get('id');
     if (fieldsValue.optionKeys.indexOf(optionFormId) === -1) {
       return this.buildDeletedOption(option);
     }
@@ -284,41 +284,37 @@ class QuestionForm extends Component {
   }
 
   buildDeletedOption(option) {
-    return {
-      ...option,
-      deleted: true,
-    };
+    return option.set('deleted', true);
   }
 
   buildUpatedOption(option, fieldsValue) {
-    const optionFormId = getOptionFormId(option);
+    const optionFormId = option.get('id');
     const values = fieldsValue.options[optionFormId];
-    return {
-      ...option,
+    return option.merge(Immutable.fromJS({
       attributes: {
         text: values.text,
         correct: values.correct || false,
       },
-    };
+    }));
   }
 
   buildNewOptions(fieldsValue) {
     const newKeys = fieldsValue.optionKeys.filter(key =>
       key.startsWith(prefixes.default) || key.startsWith(prefixes.new)
     );
-    return newKeys.map(key => ({
+    return Immutable.List(newKeys.map(key => Immutable.fromJS({
       type: QUESTION_OPTION,
       attributes: {
         text: fieldsValue.options[key].text,
         correct: fieldsValue.options[key].correct || false,
       },
-    }));
+    })));
   }
 
   setPositionOfOptions(options) {
     let position = 0;
     return options.map(option => {
-      if (option.deleted === true) {
+      if (option.get('deleted') === true) {
         return this.setPositionOfOption(option, -1);
       }
       else {
@@ -328,13 +324,7 @@ class QuestionForm extends Component {
   }
 
   setPositionOfOption(option, position) {
-    return {
-      ...option,
-      attributes: {
-        ...option.attributes,
-        position
-      }
-    };
+    return option.setIn(['attributes', 'position'], position);
   }
 }
 
@@ -342,7 +332,7 @@ export default Form.create({
   name: 'question_form',
   mapPropsToFields: (props) => mapQuestionAndOptionsToFields({
     question: props.question || defaultQuestion(),
-    options: rejectDeletedOptions(props.options) || defaultOptions(),
+    options: assignIds(rejectDeletedOptions(props.options)) || defaultOptions(),
   })
 })(QuestionForm);
 
@@ -351,19 +341,18 @@ export default Form.create({
 const prefixes = {
   default: 'default',
   new: 'new',
-  existing: 'option',
 };
 
-const defaultQuestion = () => ({
+const defaultQuestion = () => Immutable.fromJS({
   attributes: { text: '' },
 });
 
 const defaultOptions = () => (
-  [1, 2, 3].map(defaultOption)
+  Immutable.List([1, 2, 3]).map(defaultOption)
 );
 
-const defaultOption = (idSuffix) => ({
-  id: [prefixes.default, idSuffix].join('_'),
+const defaultOption = (idSuffix) => Immutable.fromJS({
+  id: `${prefixes.default}_${idSuffix}`,
   type: QUESTION_OPTION,
   attributes: { text: '', correct: false },
 });
@@ -371,7 +360,15 @@ const defaultOption = (idSuffix) => ({
 const rejectDeletedOptions = (options) => {
   if (options === undefined) { return; }
 
-  return options.filter(option => option.deleted !== true);
+  return options.filter(option => option.get('deleted') !== true);
+};
+
+const assignIds = (options) => {
+  if (options === undefined) { return; }
+
+  return options.map((option, index) =>
+    Immutable.Map({ id: `_${index}` }).merge(option)
+  );
 };
 
 const mapQuestionAndOptionsToFields = ({ question, options }) => ({
@@ -382,41 +379,32 @@ const mapQuestionAndOptionsToFields = ({ question, options }) => ({
 
 const mapQuestionToFields = question => ({
   text: Form.createFormField({
-    value: question.attributes.text,
+    value: question.getIn(['attributes', 'text']),
   }),
   type: Form.createFormField({
-    value: question.type,
+    value: question.get('type'),
   }),
 })
 
 const mapOptionsToFields = options => {
   const optionsById = {};
-  options.forEach(option =>
-    optionsById[getOptionFormId(option)] = mapOptionToFields(option)
+  options.forEach((option, index) =>
+    optionsById[option.get('id')] = mapOptionToFields(option)
   )
   return optionsById;
 };
 
 const mapOptionToFields = option => ({
   text: Form.createFormField({
-    value: option.attributes.text,
+    value: option.getIn(['attributes', 'text']),
   }),
   correct: Form.createFormField({
-    value: option.attributes.correct,
+    value: option.getIn(['attributes', 'correct']),
   }),
 });
 
 const mapOptionsToKeys = options => (
   Form.createFormField({
-    value: options.map(getOptionFormId)
+    value: options.map(option => option.get('id'))
   })
 );
-
-const getOptionFormId = option => {
-  if (typeof(option.id) === 'string') {
-    return option.id;
-  }
-  else {
-    return [prefixes.existing, option.id].join('_');
-  }
-};

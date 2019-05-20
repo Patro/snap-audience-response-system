@@ -1,9 +1,11 @@
-import defaultsDeep from 'lodash/defaultsDeep';
+import Immutable from 'immutable';
 
-export const unprocessableEntity = (obj) => (defaultsDeep({}, obj, {
-  status: 412,
-  title: 'Unprocessable Entity',
-  detail: 'Attribute is missing',
-}));
+export const unprocessableEntity = (obj) => (
+  Immutable.fromJS({
+    status: 412,
+    title: 'Unprocessable Entity',
+    detail: 'Attribute is missing',
+  }).mergeDeep(Immutable.fromJS(obj))
+);
 
 export default { unprocessableEntity };

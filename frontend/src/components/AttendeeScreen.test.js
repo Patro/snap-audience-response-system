@@ -69,7 +69,7 @@ describe('AttendeeScreen', () => {
 
   describe('on mount', () => {
     it('subscribes for poll events', () => {
-      component._render();
+      component.render();
 
       expect(subscriptions.subscribeForPollEvents).toBeCalled();
     });
@@ -81,7 +81,7 @@ describe('AttendeeScreen', () => {
         const refreshHandler = jest.fn();
         component.props.onRefresh = refreshHandler;
 
-        component._render();
+        component.render();
         refreshHandler.mockClear();
         subscriptions._publishPollEvent(factories.event.pollCreated())
 
@@ -98,7 +98,7 @@ describe('AttendeeScreen', () => {
         const refreshHandler = jest.fn();
         component.props.onRefresh = refreshHandler;
 
-        component._render();
+        component.render();
         refreshHandler.mockClear();
         subscriptions._publishPollEvent(
           factories.event.pollCreated({ pollId: '300' })
@@ -117,7 +117,7 @@ describe('AttendeeScreen', () => {
         const refreshHandler = jest.fn();
         component.props.onRefresh = refreshHandler;
 
-        component._render();
+        component.render();
         refreshHandler.mockClear();
         subscriptions._publishPollEvent(
           factories.event.pollCreated({ pollId: '300' })

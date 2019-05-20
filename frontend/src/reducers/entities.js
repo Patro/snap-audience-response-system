@@ -1,6 +1,7 @@
+import Immutable from 'immutable';
 import { RECEIVE_COLLECTION, RECEIVE_ENTITY } from '../actions';
 
-const entities = (state = {}, action) => {
+const entities = (state = Immutable.fromJS({}), action) => {
   switch(action.type) {
     case RECEIVE_COLLECTION:
       return receiveCollection(state, action.collection)
@@ -16,14 +17,9 @@ export default entities;
 ///////////////////////////////////////////////////////////////////////////////
 
 const receiveCollection = (state, collection) => (
-  collection.entities.reduce(receiveEntity, state)
+  collection.get('entities').reduce(receiveEntity, state)
 );
 
-const receiveEntity = (state, entity) => {
-  const entitiesOfType = state[entity.type] || {};
-  entitiesOfType[entity.id] = entity;
-  return {
-    [entity.type]: entitiesOfType,
-    ...state,
-  };
-};
+const receiveEntity = (state, entity) => (
+  state.setIn([entity.get('type'), entity.get('id')], entity)
+);

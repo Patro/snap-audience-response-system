@@ -1,7 +1,5 @@
-import get from 'lodash/get';
-
-const getJob = (state, id) => {
-  return get(state, `jobs.${id}`);
-};
+const getJob = (state, id) => (
+  state.getIn(['jobs', id])
+);
 
 export default getJob;

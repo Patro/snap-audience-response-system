@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { Form, Button } from 'antd';
 import { shallow } from 'enzyme';
@@ -109,7 +110,7 @@ describe('QuestionForm', () => {
       question = factories.multipleChoiceQuestion.entity({
         attributes: { text: 'What is the meaning of life?' },
       });
-      options = [
+      options = Immutable.fromJS([
         factories.questionOption.entity({
           id: '234',
           attributes: {
@@ -134,7 +135,7 @@ describe('QuestionForm', () => {
             position: 2,
           },
         }),
-      ];
+      ]);
       component.props.question = question;
       component.props.options = options;
     });
@@ -198,7 +199,9 @@ describe('QuestionForm', () => {
         it('calls handler with unchanged question and options', () => {
           component.submit();
 
-          expect(onSubmit).toBeCalledWith({ question, options });
+          expect(onSubmit).toBeCalledWith(
+            Immutable.fromJS({ question, options })
+          );
         });
       });
 
@@ -207,13 +210,13 @@ describe('QuestionForm', () => {
           component.setQuestionText('Updated question text');
           component.submit();
 
-          const updatedQuestion = {
-            ...question,
-            attributes: { text: 'Updated question text' },
-          };
-          expect(onSubmit).toBeCalledWith({
+          const updatedQuestion = question.setIn(
+            ['attributes', 'text'],
+            'Updated question text'
+          );
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question: updatedQuestion, options
-          });
+          }));
         });
       });
 
@@ -222,13 +225,10 @@ describe('QuestionForm', () => {
           component.setQuestionType(SINGLE_CHOICE_QUESTION);
           component.submit();
 
-          const updatedQuestion = {
-            ...question,
-            type: SINGLE_CHOICE_QUESTION
-          };
-          expect(onSubmit).toBeCalledWith({
+          const updatedQuestion = question.set('type', SINGLE_CHOICE_QUESTION);
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question: updatedQuestion, options
-          });
+          }));
         });
       });
 
@@ -237,17 +237,16 @@ describe('QuestionForm', () => {
           component.setOptionText(0, 'Updated option text');
           component.submit();
 
-          const updatedOptions = options.slice();
-          updatedOptions[0] = {
-            ...options[0],
-            attributes: {
-              ...options[0].attributes,
-              text: 'Updated option text',
-            },
-          };
-          expect(onSubmit).toBeCalledWith({
+          const updatedOptions = options.set(0, options.get(0).mergeDeep(
+            Immutable.fromJS({
+              attributes: {
+                text: 'Updated option text',
+              },
+            })
+          ));
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question, options: updatedOptions
-          });
+          }));
         });
       });
 
@@ -256,17 +255,16 @@ describe('QuestionForm', () => {
           component.setOptionCorrectFlag(0, true);
           component.submit();
 
-          const updatedOptions = options.slice();
-          updatedOptions[0] = {
-            ...options[0],
-            attributes: {
-              ...options[0].attributes,
-              correct: true,
-            },
-          };
-          expect(onSubmit).toBeCalledWith({
+          const updatedOptions = options.set(0, options.get(0).mergeDeep(
+            Immutable.fromJS({
+              attributes: {
+                correct: true,
+              },
+            })
+          ));
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question, options: updatedOptions
-          });
+          }));
         });
       });
 
@@ -275,17 +273,16 @@ describe('QuestionForm', () => {
           component.setOptionCorrectFlag(1, false);
           component.submit();
 
-          const updatedOptions = options.slice();
-          updatedOptions[1] = {
-            ...options[1],
-            attributes: {
-              ...options[1].attributes,
-              correct: false,
-            },
-          };
-          expect(onSubmit).toBeCalledWith({
+          const updatedOptions = options.set(1, options.get(1).mergeDeep(
+            Immutable.fromJS({
+              attributes: {
+                correct: false,
+              },
+            })
+          ));
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question, options: updatedOptions
-          });
+          }));
         });
       });
 
@@ -294,25 +291,24 @@ describe('QuestionForm', () => {
           component.removeOption(1);
           component.submit();
 
-          const updatedOptions = options.slice();
-          updatedOptions[1] = {
-            ...options[1],
-            attributes: {
-              ...options[1].attributes,
-              position: -1,
-            },
-            deleted: true,
-          };
-          updatedOptions[2] = {
-            ...options[2],
-            attributes: {
-              ...options[2].attributes,
-              position: 1,
-            }
-          }
-          expect(onSubmit).toBeCalledWith({
+          let updatedOptions = options.set(1, options.get(1).mergeDeep(
+            Immutable.fromJS({
+              attributes: {
+                position: -1,
+              },
+              deleted: true,
+            })
+          ));
+          updatedOptions = updatedOptions.set(2, options.get(2).mergeDeep(
+            Immutable.fromJS({
+              attributes: {
+                position: 1,
+              },
+            })
+          ));
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question, options: updatedOptions
-          });
+          }));
         });
       });
 
@@ -322,18 +318,19 @@ describe('QuestionForm', () => {
           component.setOptionText(3, 'New option text');
           component.submit();
 
-          const updatedOptions = options.slice();
-          updatedOptions.push({
-            type: QUESTION_OPTION,
-            attributes: {
-              text: 'New option text',
-              correct: false,
-              position: 3,
-            }
-          })
-          expect(onSubmit).toBeCalledWith({
+          let updatedOptions = options.push(
+            Immutable.fromJS({
+              type: QUESTION_OPTION,
+              attributes: {
+                text: 'New option text',
+                correct: false,
+                position: 3,
+              }
+            })
+          );
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question, options: updatedOptions
-          });
+          }));
         });
       });
 
@@ -420,14 +417,14 @@ describe('QuestionForm', () => {
           component.setOptionText(2, 'Third option');
           component.submit();
 
-          expect(onSubmit).toBeCalledWith({
+          expect(onSubmit).toBeCalledWith(Immutable.fromJS({
             question: {
               type: SINGLE_CHOICE_QUESTION,
               attributes: { text: 'My new question' },
               relationships: {
                 interactiveSession: {
-                  id: interactiveSession.id,
-                  type: interactiveSession.type,
+                  id: interactiveSession.get('id'),
+                  type: interactiveSession.get('type'),
                 },
               },
             },
@@ -457,7 +454,7 @@ describe('QuestionForm', () => {
                 },
               },
             ],
-          });
+          }));
         });
       });
     });

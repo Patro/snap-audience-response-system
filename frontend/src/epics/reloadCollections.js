@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { pipe, merge } from 'rxjs';
 import { first, filter, mergeMap, map } from 'rxjs/operators';
 import get from 'lodash/get';
@@ -15,9 +16,9 @@ export default reloadCollections;
 
 const getCollections = (type) => (
   pipe(
-    map(state => get(state, `collections.${type}`)),
-    filter(collectionsHash => collectionsHash !== undefined),
-    map(collectionsHash => Object.values(collectionsHash)),
+    map(state => state.getIn(['collections', type])),
+    filter(collectionsMap => collectionsMap !== undefined),
+    map(collectionsMap => collectionsMap.valueSeq()),
   )
 );
 
@@ -28,10 +29,10 @@ const fetchCollections$ = (collections, api) => (
 );
 
 const fetchCollection$ = (collection, api) => (
-  api.collections.fetch({
-    type: collection.type,
-    filterParams: collection.filterParams,
-  }).pipe(
+  api.collections.fetch(Immutable.Map({
+    type: collection.get('type'),
+    filterParams: collection.get('filterParams'),
+  })).pipe(
     map(receiveCollection)
   )
 );

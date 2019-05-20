@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { fetchCollection, receiveCollection } from '../actions';
@@ -6,10 +7,12 @@ import fetchCollectionEpic from './fetchCollectionEpic';
 class TestWrapper {
   constructor({ action$ } = {}) {
     this.action$ = action$;
-    this.state$ = of({});
+    this.state$ = of(Immutable.Map());
     this.api = {
       collections: {
-        fetch: jest.fn(collection => of({ ...collection, entities: [] })),
+        fetch: jest.fn(collection =>
+          of(collection.set('entities', Immutable.List()))
+        ),
       },
     };
   }
@@ -38,9 +41,11 @@ describe('fetchCollectionEpic', () => {
   it('triggers fetch request', (done) => {
     const result$ = epic.call$();
     result$.subscribe((_actions) => {
-      expect(epic.api.collections.fetch).toBeCalledWith({
-        type: 'SPACESHIP_ENGINE', filterParams: { fuel: 'hydrogen' },
+      const collection = Immutable.fromJS({
+        type: 'SPACESHIP_ENGINE',
+        filterParams: { fuel: 'hydrogen' },
       });
+      expect(epic.api.collections.fetch).toBeCalledWith(collection);
       done();
     });
   });

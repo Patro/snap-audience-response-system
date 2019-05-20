@@ -1,24 +1,30 @@
-import defaultsDeep from 'lodash/defaultsDeep';
+import Immutable from 'immutable';
 import interactiveSession from './interactiveSession';
 import { STARTED, SUCCEEDED, FAILED } from './../src/constants/jobStatus';
 
-export const started = (obj) => (defaultsDeep({}, obj, {
-  id: 'jobId',
-  status: STARTED,
-  trigger: {},
-}));
+export const started = (obj) => (
+  Immutable.fromJS({
+    id: 'jobId',
+    status: STARTED,
+    trigger: {},
+  }).mergeDeep(Immutable.fromJS(obj))
+);
 
-export const succeeded = (obj) => (defaultsDeep({}, obj, {
-  id: 'jobId',
-  status: SUCCEEDED,
-  trigger: {},
-  result: interactiveSession.entity(),
-}));
+export const succeeded = (obj) => (
+  Immutable.fromJS({
+    id: 'jobId',
+    status: SUCCEEDED,
+    trigger: {},
+    result: interactiveSession.entity(),
+  }).mergeDeep(Immutable.fromJS(obj))
+);
 
-export const failed = (obj) => (defaultsDeep({}, obj, {
-  id: 'jobId',
-  status: FAILED,
-  trigger: {},
-}));
+export const failed = (obj) => (
+  Immutable.fromJS({
+    id: 'jobId',
+    status: FAILED,
+    trigger: {},
+  }).mergeDeep(Immutable.fromJS(obj))
+);
 
 export default { started, succeeded, failed };

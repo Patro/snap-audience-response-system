@@ -11,8 +11,20 @@ class RespondForm extends Component {
     this.renderOption = this.renderOption.bind(this);
   }
 
-  isMultipleChoice() {
-    return this.props.question.type === MULTIPLE_CHOICE_QUESTION;
+  get question() {
+    return this.props.question;
+  }
+
+  get questionType() {
+    return this.question.get('type');
+  }
+
+  get isMultipleChoice() {
+    return this.questionType === MULTIPLE_CHOICE_QUESTION;
+  }
+
+  get options() {
+    return this.props.options;
   }
 
   get processing() {
@@ -20,7 +32,7 @@ class RespondForm extends Component {
   }
 
   get itemComponent() {
-    return this.isMultipleChoice() ? Checkbox : Radio;
+    return this.isMultipleChoice ? Checkbox : Radio;
   }
 
   handleSubmit(event) {
@@ -44,7 +56,7 @@ class RespondForm extends Component {
   }
 
   render() {
-    if (this.props.question === undefined || this.props.options === undefined) {
+    if (this.question === undefined || this.options === undefined) {
       return false;
     }
 
@@ -77,7 +89,7 @@ class RespondForm extends Component {
       <Item.Group>
         <List
           bordered
-          dataSource={this.props.options}
+          dataSource={this.options.toJS()}
           renderItem={this.renderOption}
         />
       </Item.Group>
@@ -87,7 +99,7 @@ class RespondForm extends Component {
   renderTitle() {
     return (
       <div className="respond_form__title">
-        {this.props.question.attributes.text}
+        {this.question.getIn(['attributes', 'text'])}
       </div>
     );
   }

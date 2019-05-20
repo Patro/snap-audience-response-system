@@ -1,16 +1,15 @@
+import Immutable from 'immutable';
+import buildTestState from '../utils/buildTestState';
 import getJob from './getJob';
 
 describe('getJob', () => {
   describe('given state with jobs', () => {
-    const state = {
-      jobs: {
-        'testJob': { id: 'testJob'}
-      },
-    };
+    const job = Immutable.Map({ id: 'testJob' });
+    const state = buildTestState({ jobs: [job] });
 
     describe('when job with id exists', () => {
       it('returns job', () => {
-        expect(getJob(state, 'testJob')).toEqual({ id: 'testJob' });
+        expect(getJob(state, 'testJob')).toEqual(job);
       });
     });
 
@@ -22,7 +21,7 @@ describe('getJob', () => {
   });
 
   describe('given empty state', () => {
-    const state = {};
+    const state = Immutable.Map();
 
     it('returns undefined', () => {
       expect(getJob(state, 'testJob')).toBeUndefined();

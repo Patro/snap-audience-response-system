@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { POLL_CREATED, RESPONSE_CREATED } from '../constants/eventTypes';
 import consumer from './consumer';
 import subscriptions from './subscriptions';
@@ -10,7 +11,9 @@ describe('subscriptions', () => {
       let data;
 
       beforeEach(() => {
-        data = { event: { type: POLL_CREATED, poll_id: '200' } };
+        data = Immutable.fromJS({
+          event: { type: POLL_CREATED, poll_id: '200' }
+        });
       });
 
       it('calls on event handler', () => {
@@ -19,7 +22,10 @@ describe('subscriptions', () => {
 
         consumer._receiveData(data);
 
-        const expectedEvent = { type: POLL_CREATED, pollId: '200' };
+        const expectedEvent = Immutable.fromJS({
+          type: POLL_CREATED,
+          pollId: '200',
+        });
         expect(onEvent).toBeCalledWith(expectedEvent);
       });
     });
@@ -28,7 +34,7 @@ describe('subscriptions', () => {
       let data;
 
       beforeEach(() => {
-        data = { event: { type: 'OTHER_EVENT' } };
+        data = Immutable.fromJS({ event: { type: 'OTHER_EVENT' } });
       });
 
       it('does not call on event handler', () => {
@@ -41,11 +47,11 @@ describe('subscriptions', () => {
       });
     });
 
-    describe('given empty data object', () => {
+    describe('given empty data map', () => {
       let data;
 
       beforeEach(() => {
-        data = {};
+        data = Immutable.Map();
       });
 
       it('does not call on event handler', () => {
@@ -64,9 +70,9 @@ describe('subscriptions', () => {
       let data;
 
       beforeEach(() => {
-        data = {
+        data = Immutable.fromJS({
           event: { type: RESPONSE_CREATED, poll_id: '200', response_id: '300' },
-        };
+        });
       });
 
       it('calls on event handler', () => {
@@ -75,9 +81,9 @@ describe('subscriptions', () => {
 
         consumer._receiveData(data);
 
-        const expectedEvent = {
+        const expectedEvent = Immutable.fromJS({
           type: RESPONSE_CREATED, pollId: '200', responseId: '300',
-        };
+        });
         expect(onEvent).toBeCalledWith(expectedEvent);
       });
     });
@@ -86,9 +92,9 @@ describe('subscriptions', () => {
       let data;
 
       beforeEach(() => {
-        data = {
+        data = Immutable.fromJS({
           event: { type: RESPONSE_CREATED, poll_id: '201', response_id: '300' },
-        };
+        });
       });
 
       it('does not call on event handler', () => {
@@ -105,7 +111,7 @@ describe('subscriptions', () => {
       let data;
 
       beforeEach(() => {
-        data = { event: { type: 'OTHER_EVENT' } };
+        data = Immutable.fromJS({ event: { type: 'OTHER_EVENT' } });
       });
 
       it('does not call on event handler', () => {
@@ -118,11 +124,11 @@ describe('subscriptions', () => {
       });
     });
 
-    describe('given empty data object', () => {
+    describe('given empty data map', () => {
       let data;
 
       beforeEach(() => {
-        data = {};
+        data = Immutable.Map();
       });
 
       it('does not call on event handler', () => {

@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import ActionCable from 'actioncable';
 
 const consumer = {
@@ -5,7 +6,9 @@ const consumer = {
     const internal = internalConsumer.subscriptions.create({
       channel,
       id: interactiveSessionId,
-    }, { received });
+    }, {
+      received: (data) => received(Immutable.fromJS(data)),
+    });
     return { unsubscribe: internal.unsubscribe.bind(internal) };
   },
 };

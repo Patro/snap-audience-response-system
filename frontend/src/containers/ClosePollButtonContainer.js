@@ -21,13 +21,10 @@ export default compose(
 ///////////////////////////////////////////////////////////////////////////////
 
 const jobId = (poll) => (
-  `closePollJob:${poll.type}:${poll.id}`
+  `closePollJob:${poll.get('type')}:${poll.get('id')}`
 );
 
 const setStatusToClosed = (dispatch, poll) => {
-  const updatedPoll = {
-    ...poll,
-    attributes: { status: 'closed' },
-  };
+  const updatedPoll = poll.setIn(['attributes', 'status'], 'closed');
   dispatch(updateEntity(updatedPoll, jobId(poll)))
 };

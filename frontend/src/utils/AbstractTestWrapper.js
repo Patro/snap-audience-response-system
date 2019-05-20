@@ -1,10 +1,11 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 
 class AbstractTestWrapper {
-  constructor({ props = {}, store = {}, location = {} } = {}) {
+  constructor({ props = {}, store = Immutable.Map(), location = {} } = {}) {
     this.props = props;
     this.store = store;
     this.location = location;

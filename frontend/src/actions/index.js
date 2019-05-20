@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 export const JOIN_SESSION = 'JOIN_SESSION';
 export const START_SESSION = 'START_SESSION';
 export const SAVE_QUESTION = 'SAVE_QUESTION';
@@ -31,33 +33,33 @@ export const startSession = (label, jobId = nextJobId()) => ({
 
 export const saveQuestion = (question, options, jobId = nextJobId()) => ({
   type: SAVE_QUESTION,
-  question,
-  options,
+  question: Immutable.fromJS(question),
+  options: Immutable.fromJS(options),
   jobId
 });
 
 export const respondToPoll = (poll, pickedOptionIds, jobId = nextJobId()) => ({
   type: RESPOND_TO_POLL,
-  poll,
-  pickedOptionIds,
+  poll: Immutable.fromJS(poll),
+  pickedOptionIds: Immutable.fromJS(pickedOptionIds),
   jobId
 });
 
 export const createEntity = (entity, jobId = nextJobId()) => ({
   type: CREATE_ENTITY,
-  entity,
+  entity: Immutable.fromJS(entity),
   jobId
 });
 
 export const updateEntity = (entity, jobId = nextJobId()) => ({
   type: UPDATE_ENTITY,
-  entity,
+  entity: Immutable.fromJS(entity),
   jobId
 });
 
 export const destroyEntity = (entity, jobId = nextJobId()) => ({
   type: DESTROY_ENTITY,
-  entity,
+  entity: Immutable.fromJS(entity),
   jobId
 });
 
@@ -70,20 +72,20 @@ export const fetchEntity = (entityType, entityId, jobId = nextJobId()) => ({
 
 export const receiveEntity = (entity) => ({
   type: RECEIVE_ENTITY,
-  entity
+  entity: Immutable.fromJS(entity),
 });
 
 export const fetchCollection =
 (entityType, filterParams, jobId = nextJobId()) => ({
   type: FETCH_COLLECTION,
   entityType,
-  filterParams,
+  filterParams: Immutable.fromJS(filterParams),
   jobId
 });
 
 export const receiveCollection = (collection) => ({
   type: RECEIVE_COLLECTION,
-  collection
+  collection: Immutable.fromJS(collection),
 });
 
 export const markJobAsStarted = (id, trigger) => ({
@@ -95,13 +97,13 @@ export const markJobAsStarted = (id, trigger) => ({
 export const markJobAsSucceeded = (id, result) => ({
   type: MARK_JOB_AS_SUCCEEDED,
   id,
-  result
+  result: Immutable.fromJS(result),
 });
 
 export const markJobAsFailed = (id, errors) => ({
   type: MARK_JOB_AS_FAILED,
   id,
-  errors,
+  errors: Immutable.fromJS(errors),
 });
 
 export const removeJob = (id) => ({

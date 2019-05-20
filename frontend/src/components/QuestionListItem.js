@@ -23,12 +23,20 @@ class QuestionListItem extends Component {
     return this.props.question;
   }
 
+  get questionText() {
+    return this.question.getIn(['attributes', 'text']);
+  }
+
+  get sessionId() {
+    return this.question.getIn(['relationships', 'interactiveSession', 'id']);
+  }
+
   get openPoll() {
     return this.props.openPoll;
   }
 
   get questionUrlType() {
-    switch(this.question.type) {
+    switch(this.question.get('type')) {
       case MULTIPLE_CHOICE_QUESTION:
         return 'multiple_choice';
       case SINGLE_CHOICE_QUESTION:
@@ -39,10 +47,9 @@ class QuestionListItem extends Component {
   }
 
   get editQuestionPath() {
-    const sessionId = this.question.relationships.interactiveSession.id;
-    const ownerPath = `/interactive_sessions/${sessionId}/owner`;
+    const ownerPath = `/interactive_sessions/${this.sessionId}/owner`;
     const type = this.questionUrlType;
-    const questionIdentifier = `${type}/${this.question.id}`;
+    const questionIdentifier = `${type}/${this.question.get('id')}`;
     return `${ownerPath}/questions/${questionIdentifier}/edit`;
   }
 
@@ -61,7 +68,7 @@ class QuestionListItem extends Component {
   renderText() {
     return (
       <span className="question_list_item__text">
-        {this.question.attributes.text}
+        {this.questionText}
       </span>
     );
   }

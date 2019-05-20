@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import collections from './collections';
@@ -10,10 +11,10 @@ describe('collections', () => {
     it('configures get request', () => {
       ajax.mockReturnValue(of({}));
 
-      collections.fetch({
+      collections.fetch(Immutable.fromJS({
         type: 'SPACESHIP',
         filterParams: { q: 'space & atmosphere' },
-      });
+      }));
 
       expect(ajax).toBeCalledWith({
         method: 'GET',
@@ -38,7 +39,7 @@ describe('collections', () => {
       }
       ajax.mockReturnValue(of({ response: originalResponse }));
 
-      const mappedResponse = {
+      const mappedResponse = Immutable.fromJS({
         type: 'SPACESHIP_ENGINE',
         filterParams: { fuel: 'hydrogen' },
         entities: [
@@ -50,11 +51,11 @@ describe('collections', () => {
             },
           }
         ]
-      }
-      collections.fetch({
+      });
+      collections.fetch(Immutable.fromJS({
         type: 'SPACESHIP_ENGINE',
         filterParams: { fuel: 'hydrogen' },
-      }).subscribe(response => {
+      })).subscribe(response => {
         expect(response).toEqual(mappedResponse);
         done();
       });

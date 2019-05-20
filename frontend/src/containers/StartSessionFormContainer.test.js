@@ -1,7 +1,9 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import buildTestState from '../utils/buildTestState';
 import { startSession } from '../actions';
 import StartSessionForm from '../components/StartSessionForm';
 import StartSessionFormContainer from './StartSessionFormContainer';
@@ -38,11 +40,7 @@ describe('StartSessionFormContainer', () => {
 
     beforeEach(() => {
       job = factories.job.started({ id: 'startSessionJob' });
-      component.store = {
-        jobs: {
-          'startSessionJob': job,
-        },
-      };
+      component.store = buildTestState({ jobs: [job] });
     });
 
     it('passes job to component', () => {
@@ -52,7 +50,7 @@ describe('StartSessionFormContainer', () => {
 
   describe('given empty store', () => {
     beforeEach(() => {
-      component.store = {};
+      component.store = Immutable.Map();
     });
 
     it('passes undefined as job to component', () => {

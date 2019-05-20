@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { Button } from 'antd';
 import { mount } from 'enzyme';
@@ -64,9 +65,9 @@ describe('QuestionList', () => {
 
       beforeEach(() => {
         poll = factories.poll.entity();
-        const openPollsByQuestionId = {
+        const openPollsByQuestionId = Immutable.fromJS({
           1: poll,
-        }
+        });
         component.props.openPollsByQuestionId = openPollsByQuestionId;
       });
 

@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import React from 'react';
 import { Form, Button, Radio, Checkbox } from 'antd';
 import { mount } from 'enzyme';
@@ -64,7 +65,7 @@ describe('RespondForm', () => {
     const question = factories.multipleChoiceQuestion.entity({
       attributes: { text: 'What is the meaning of life?' },
     });
-    const options = [
+    const options = Immutable.fromJS([
       factories.questionOption.entity({
         id: '234',
         attributes: { text: 'Eat, Sleep, Rave, Repeat' },
@@ -77,7 +78,7 @@ describe('RespondForm', () => {
         id: '923',
         attributes: { text: 'I don\'t know' },
       }),
-    ];
+    ]);
     component = new TestWrapper({ props: {
       question: question,
       options: options,

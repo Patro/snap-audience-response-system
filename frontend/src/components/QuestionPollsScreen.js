@@ -19,23 +19,25 @@ class QuestionPollsScreen extends Component {
   }
 
   get openPolls() {
-    return this.polls.filter(poll => poll.attributes.status === 'open');
+    return this.polls.filter(poll =>
+      poll.getIn(['attributes', 'status']) === 'open'
+    );
   }
 
   get activePoll() {
     if (this.state.activePoll !== undefined) {
       return this.state.activePoll;
     }
-    else if (this.openPolls.length > 0) {
-      return this.openPolls[this.openPolls.length - 1];
+    else if (this.openPolls.size > 0) {
+      return this.openPolls.last();
     }
     else {
-      return this.polls[this.polls.length - 1]
+      return this.polls.last();
     }
   }
 
   render() {
-    if (this.polls === undefined || this.polls.length === 0) { return false; }
+    if (this.polls === undefined || this.polls.isEmpty()) { return false; }
 
     return (
       <div className="question_polls_screen">
@@ -58,7 +60,7 @@ class QuestionPollsScreen extends Component {
   }
 
   presentActivePoll() {
-    const path = `presenter/polls/${this.activePoll.id}`;
+    const path = `presenter/polls/${this.activePoll.get('id')}`;
     window.open(path, 'presenter', 'status=0');
   }
 }

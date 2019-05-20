@@ -1,39 +1,45 @@
+import Immutable from 'immutable';
 import camelCase from 'lodash/camelCase';
-import isArray from 'lodash/isArray';
-import isObject from 'lodash/isObject';
 import toUpper from 'lodash/toUpper';
 import deepMapKeys from './deepMapKeys';
 
 const mapResponse = (response) => {
-  const data = response.data;
+  const data = response.get('data');
   if (data === undefined) { return; }
 
-  return isArray(data) ? mapToCollection(data) : mapToEntity(data);
+  return Immutable.isList(data) ? mapToCollection(data) : mapToEntity(data);
 };
 export default mapResponse;
 
-const mapToCollection = (resourceObjects) => ({
-  entities: resourceObjects.map(mapToEntity)
-});
+const mapToCollection = (resourceObjects) => (
+  Immutable.Map({
+    entities: resourceObjects.map(mapToEntity)
+  })
+);
 
 const mapToEntity = (resourceObject) => {
-  const entity = {};
-  const id = resourceObject.id;
+  let entity = Immutable.Map();
+
+  const id = resourceObject.get('id');
   if (id !== undefined) {
-    entity.id = id;
+    entity = entity.set('id', id);
   }
-  const type = resourceObject.type;
+
+  const type = resourceObject.get('type');
   if (type !== undefined) {
-    entity.type = toUpper(type);
+    entity = entity.set('type', toUpper(type));
   }
-  const attributes = resourceObject.attributes;
+
+  const attributes = resourceObject.get('attributes');
   if (attributes !== undefined) {
-    entity.attributes = mapAttributes(attributes);
+    entity = entity.set('attributes', mapAttributes(attributes));
   }
-  const relationships = resourceObject.relationships;
+
+  const relationships = resourceObject.get('relationships');
   if (relationships !== undefined) {
-    entity.relationships = mapRelationships(relationships);
+    entity = entity.set('relationships', mapRelationships(relationships));
   }
+
   return entity;
 };
 
@@ -41,26 +47,25 @@ const mapAttributes = (attributes) => (
   deepMapKeys(attributes, camelCase)
 );
 
-const mapRelationships = (relationships) => {
-  const keys = Object.keys(relationships);
-  const mapped = {};
-  keys.forEach(key => {
-    const relationship = relationships[key];
-    mapped[camelCase(key)] = mapRelationship(relationship);
-  });
-  return mapped;
-};
+const mapRelationships = (relationships) => (
+  relationships.mapEntries(([ key, relationship ]) => (
+    [ camelCase(key), mapRelationship(relationship) ]
+  ))
+);
 
 const mapRelationship = (relationship) => {
-  if (isArray(relationship.data)) {
-    return relationship.data.map(mapResourceIdentifier);
+  const data = relationship.get('data');
+  if (Immutable.isList(data)) {
+    return data.map(mapResourceIdentifier);
   }
-  else if (isObject(relationship.data)) {
-    return mapResourceIdentifier(relationship.data);
+  else if (Immutable.isMap(data)) {
+    return mapResourceIdentifier(data);
   }
 };
 
-const mapResourceIdentifier = (resourceIdentifer) => ({
-  id: resourceIdentifer.id,
-  type: toUpper(resourceIdentifer.type),
-});
+const mapResourceIdentifier = (resourceIdentifer) => (
+  Immutable.Map({
+    id: resourceIdentifer.get('id'),
+    type: toUpper(resourceIdentifer.get('type')),
+  })
+);

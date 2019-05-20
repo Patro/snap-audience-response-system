@@ -1,6 +1,6 @@
+import Immutable from 'immutable';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import get from 'lodash/get';
 import { fetchCollection } from '../actions';
 import { POLL } from '../constants/entityTypes';
 import { getCollection, getEntity } from '../selectors';
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, { interactiveSession }) => ({
 });
 
 const shouldRefresh = (prev, next) => (
-  prev.interactiveSession.id !== next.interactiveSession.id
+  prev.interactiveSession.get('id') !== next.interactiveSession.get('id')
 );
 
 export default compose(
@@ -29,10 +29,9 @@ export default compose(
 const findUnrespondedPoll = (state, interactiveSession) => {
   const filterParams = buildFilterParams(interactiveSession);
   const collection = getCollection(state, POLL, filterParams);
-  const pollId = get(collection, 'entities[0].id')
-  if (pollId === undefined) {
-    return undefined;
-  }
+  if (collection === undefined) { return; }
+  const pollId = collection.getIn(['entities', 0, 'id']);
+  if (pollId === undefined) { return; }
   return getEntity(state, { type: POLL, id: pollId })
 };
 
@@ -40,8 +39,8 @@ const fetchPolls = (dispatch, interactiveSession) => {
   dispatch(fetchCollection(POLL, buildFilterParams(interactiveSession)))
 };
 
-const buildFilterParams = (interactiveSession) => ({
-  interactiveSessionId: interactiveSession.id,
+const buildFilterParams = (interactiveSession) => Immutable.fromJS({
+  interactiveSessionId: interactiveSession.get('id'),
   status: 'open',
   responded: false,
 });

@@ -1,7 +1,9 @@
-export const withEntities = (given) => ({
+import Immutable from 'immutable';
+
+export const withEntities = (given) => Immutable.fromJS({
   entities: given.map((entity) => ({
-    type: entity.type,
-    id: entity.id,
+    type: entity.get('type'),
+    id: entity.get('id'),
   })),
 });
 
