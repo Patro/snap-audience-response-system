@@ -6,7 +6,7 @@ RSpec.feature 'Attendee responds to poll', type: :feature do
   set_current_user
 
   context 'when one option was selected' do
-    scenario 'they see a thank you message' do
+    scenario 'they see a waiting message' do
       interactive_session = create(:interactive_session)
       create(:attendance, interactive_session: interactive_session,
                           attendee: current_user)
@@ -24,7 +24,7 @@ RSpec.feature 'Attendee responds to poll', type: :feature do
         click_button('Send')
       end
 
-      expect(page).to have_text('Thank you')
+      expect(page).to have_text('Waiting')
     end
   end
 end

@@ -57,14 +57,6 @@ describe('AttendeeScreen', () => {
     it('renders respond form container', () => {
       expect(component.respondFormContainer).toHaveLength(1);
     });
-
-    describe('when user responded to poll', () => {
-      it('shows thank you message', () => {
-        component.respond();
-
-        expect(component.alertText).toContain('Thank you');
-      });
-    });
   });
 
   describe('on mount', () => {
