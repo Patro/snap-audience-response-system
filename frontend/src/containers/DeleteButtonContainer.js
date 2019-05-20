@@ -1,9 +1,9 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { destroyEntity } from '../actions';
-import DeleteButton from '../components/DeleteButton';
 import { getJob } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withJob from './withJob';
+import DeleteButton from '../components/DeleteButton';
 
 const mapStateToProps = (state, { entity }) => ({
   deleteJob: getJob(state, jobId(entity)),
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, { entity }) => ({
 });
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withJob(props => props.deleteJob),
 )(DeleteButton);
 

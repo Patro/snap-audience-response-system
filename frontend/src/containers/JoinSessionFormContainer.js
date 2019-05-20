@@ -1,9 +1,9 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { joinSession } from '../actions';
-import JoinSessionForm from '../components/JoinSessionForm';
 import { getJob } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withJob from './withJob';
+import JoinSessionForm from '../components/JoinSessionForm';
 
 const mapStateToProps = (state) => ({
   joinJob: getJob(state, jobId),
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withJob(props => props.joinJob),
 )(JoinSessionForm);
 

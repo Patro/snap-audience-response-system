@@ -1,10 +1,10 @@
 import Immutable from 'immutable';
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
 import QuestionList from '../components/QuestionList';
 import { POLL, QUESTION } from '../constants/entityTypes';
 import { getEntitiesOfCollection } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
 
 const mapStateToProps = (state, { interactiveSession }) => ({
@@ -21,7 +21,7 @@ const shouldRefresh = (prev, next) => (
 );
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
 )(QuestionList);
 

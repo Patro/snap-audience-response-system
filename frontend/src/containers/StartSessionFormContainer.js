@@ -1,8 +1,8 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { startSession } from '../actions';
 import StartSessionForm from '../components/StartSessionForm';
 import { getJob } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withJob from './withJob';
 
 const mapStateToProps = (state) => ({
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withJob(props => props.startJob),
 )(StartSessionForm);
 

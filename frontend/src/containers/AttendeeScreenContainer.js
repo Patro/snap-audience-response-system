@@ -1,11 +1,11 @@
 import Immutable from 'immutable';
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
 import { POLL } from '../constants/entityTypes';
 import { getCollection, getEntity } from '../selectors';
-import AttendeeScreen from '../components/AttendeeScreen';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
+import AttendeeScreen from '../components/AttendeeScreen';
 
 const mapStateToProps = (state, { interactiveSession }) => ({
   unrespondedPoll: findUnrespondedPoll(state, interactiveSession),
@@ -20,7 +20,7 @@ const shouldRefresh = (prev, next) => (
 );
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
 )(AttendeeScreen);
 

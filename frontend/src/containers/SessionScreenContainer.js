@@ -1,10 +1,10 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { fetchEntity } from '../actions';
 import { INTERACTIVE_SESSION } from '../constants/entityTypes';
 import { getEntity } from '../selectors';
-import SessionScreen from '../components/SessionScreen';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
+import SessionScreen from '../components/SessionScreen';
 
 const mapStateToProps = (state, ownProps) => ({
   interactiveSession: getInteractiveSession(state, getId(ownProps)),
@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 const shouldRefresh = (prev, next) => getId(prev) !== getId(next);
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
 )(SessionScreen);
 

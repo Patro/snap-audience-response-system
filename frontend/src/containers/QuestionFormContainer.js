@@ -1,6 +1,5 @@
 import Immutable from 'immutable';
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { fetchCollection, fetchEntity, saveQuestion } from '../actions';
 import {
   QUESTION_OPTION,
@@ -8,9 +7,10 @@ import {
   MULTIPLE_CHOICE_QUESTION,
 } from '../constants/entityTypes';
 import { getEntitiesOfCollection, getEntity, getJob } from '../selectors';
-import QuestionForm from '../components/QuestionForm';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
 import withJob from './withJob';
+import QuestionForm from '../components/QuestionForm';
 
 const mapStateToProps = (state, { match: { params } }) => {
   const saveJob = getJob(state, saveQuestionJobId);
@@ -54,7 +54,7 @@ const shouldRefresh = (prev, next) => (
 );
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
   withJob(props => props.saveJob),
 )(QuestionForm);

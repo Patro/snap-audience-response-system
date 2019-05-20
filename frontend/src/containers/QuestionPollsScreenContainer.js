@@ -1,10 +1,10 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { fetchCollection } from '../actions';
 import { POLL } from '../constants/entityTypes';
 import { getEntitiesOfCollection } from '../selectors';
-import QuestionPollsScreen from '../components/QuestionPollsScreen';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
+import QuestionPollsScreen from '../components/QuestionPollsScreen';
 
 const mapStateToProps = (state, { question }) => ({
   polls: getPolls(state, question),
@@ -19,7 +19,7 @@ const shouldRefresh = (prev, next) => (
 )
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
 )(QuestionPollsScreen);
 

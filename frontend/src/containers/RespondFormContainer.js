@@ -1,9 +1,9 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { respondToPoll, fetchCollection, fetchEntity } from '../actions';
 import RespondForm from '../components/RespondForm';
 import { QUESTION_OPTION } from '../constants/entityTypes';
 import { getEntity, getEntitiesOfCollection, getJob } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
 import withJob from './withJob';
 
@@ -32,7 +32,7 @@ const shouldRefresh = (prev, next) => (
 );
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
   withJob(props => props.respondJob),
 )(RespondForm);

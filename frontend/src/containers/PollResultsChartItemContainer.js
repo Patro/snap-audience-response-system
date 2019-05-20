@@ -1,9 +1,9 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { fetchEntity } from '../actions';
 import { getEntity } from '../selectors';
-import PollResultsChartItem from '../components/PollResultsChartItem';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withDependencies from './withDependencies';
+import PollResultsChartItem from '../components/PollResultsChartItem';
 
 const mapStateToProps = (state, { questionOptionCount }) => ({
   questionOption: getEntity(
@@ -22,7 +22,7 @@ const shouldRefresh = (prev, next) => (
 );
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withDependencies(shouldRefresh),
 )(PollResultsChartItem);
 

@@ -1,7 +1,7 @@
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { updateEntity } from '../actions';
 import { getJob } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withJob from './withJob';
 import ClosePollButton from '../components/ClosePollButton';
 
@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch, { poll }) => ({
 });
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withJob(props => props.closePollJob),
 )(ClosePollButton);
 

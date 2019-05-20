@@ -1,9 +1,9 @@
 import Immutable from 'immutable';
 import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { createEntity } from '../actions';
 import StartPollButton from '../components/StartPollButton';
 import { getJob } from '../selectors';
+import connectWithImmutables from '../utils/connectWithImmutables';
 import withJob from './withJob';
 import { POLL } from '../constants/entityTypes';
 
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, { question }) => ({
 });
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connectWithImmutables(mapStateToProps, mapDispatchToProps),
   withJob(props => props.startPollJob),
 )(StartPollButton);
 
