@@ -31,7 +31,15 @@ class StartSessionForm extends Component {
         <JobErrorAlert job={this.props.startJob} />
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Session Name">
-            { getFieldDecorator('label')(
+            { getFieldDecorator('label', {
+              validateTrigger: 'onSubmit',
+              rules: [
+                {
+                  required: true,
+                  message: 'Please choose a name for your session.',
+                },
+              ],
+            })(
               <Input placeholder="My new session" />
             ) }
           </Form.Item>
