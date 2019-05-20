@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Input } from 'antd';
+import { Card, Form, Button, Input } from 'antd';
 import JobErrorAlert from './JobErrorAlert';
 
 class StartSessionForm extends Component {
@@ -27,7 +27,7 @@ class StartSessionForm extends Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div className="start_session_form">
+      <Card title="Start your own session" className="start_session_form">
         <JobErrorAlert job={this.props.startJob} />
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Session Name">
@@ -49,7 +49,7 @@ class StartSessionForm extends Component {
             </Button>
           </Form.Item>
         </Form>
-      </div>
+      </Card>
     );
   }
 }

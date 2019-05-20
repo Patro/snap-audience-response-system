@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Card } from 'antd';
+import { Row, Col } from 'antd';
 import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 import StartSessionFormContainer
   from '../containers/StartSessionFormContainer';
@@ -25,18 +25,9 @@ class WelcomeScreen extends Component {
           <JoinSessionFormContainer />
         </Col>
         <Col {...colConfig} className="welcome_screen__column">
-          {this.renderStartCard()}
+          <StartSessionFormContainer />
         </Col>
       </Row>
-    )
-  }
-
-  renderStartCard() {
-    const title = "Start your own session";
-    return (
-      <Card title={title} className="welcome_screen__card">
-        <StartSessionFormContainer />
-      </Card>
     )
   }
 }
