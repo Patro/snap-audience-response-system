@@ -3,11 +3,9 @@
 }
 
 .welcome_screen__row {
-  padding-top: -8px;
+  margin: -8px;
 }
 
 .welcome_screen__column {
   padding: 8px;
 }
-
-
