@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Card, Collapse } from 'antd';
+import { Button, Card, Collapse, Empty } from 'antd';
 import QuestionListItem from './QuestionListItem';
 
 class QuestionList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.renderItem = this.renderItem.bind(this);
-  }
-
   get interactiveSession() {
     return this.props.interactiveSession;
   }
@@ -43,9 +37,7 @@ class QuestionList extends Component {
     return (
       <div className="question_list">
         <Card title="Questions" extra={this.renderMenu()}>
-          <Collapse defaultActiveKey={this.questionIdsWithOpenPoll.toJS()}>
-            {this.questions.map(question => this.renderItem(question))}
-          </Collapse>
+          {this.renderContent()}
         </Card>
       </div>
     );
@@ -62,10 +54,31 @@ class QuestionList extends Component {
     )
   }
 
-  renderItem(question) {
+  renderContent() {
+    if (this.questions.count() > 0) {
+      return this.renderCollapse();
+    }
+    else {
+      return this.renderEmptyStateMessage();
+    }
+  }
+
+  renderCollapse() {
+    return (
+      <Collapse defaultActiveKey={this.questionIdsWithOpenPoll.toJS()}>
+        {this.questions.map(question => this.renderCollapseItem(question))}
+      </Collapse>
+    )
+  }
+
+  renderCollapseItem(question) {
     return <QuestionListItem key={question.get('id')}
                              question={question}
                              openPoll={this.openPollOfQuestion(question)} />
+  }
+
+  renderEmptyStateMessage() {
+    return <Empty description="There are no questions for this session yet." />;
   }
 }
 

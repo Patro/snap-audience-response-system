@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import React from 'react';
-import { Button, Collapse } from 'antd';
+import { Button, Collapse, Empty } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
@@ -24,6 +24,10 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(Button).filter('.question_list__add_button');
   }
 
+  get emptyStateMessage() {
+    return this.wrapper.find(Empty);
+  }
+
   _render() {
     return mount(this._addStaticRouter(this._addStoreProvider(
       <QuestionList {...this.props} />
@@ -45,7 +49,7 @@ describe('QuestionList', () => {
     }});
   });
 
-  describe('given questions', () => {
+  describe('given two questions', () => {
     beforeEach(() => {
       const questions = Immutable.List([
         factories.singleChoiceQuestion.entity({
@@ -73,6 +77,10 @@ describe('QuestionList', () => {
       expect(component.addButton.length).toBe(1);
     });
 
+    it('does not render empty state message', () => {
+      expect(component.emptyStateMessage).toHaveLength(0);
+    });
+
     describe('given open poll', () => {
       let poll;
 
@@ -91,6 +99,17 @@ describe('QuestionList', () => {
       it('passes poll to list item', () => {
         expect(component.givenOpenPoll(0)).toBe(poll);
       });
+    });
+  });
+
+  describe('given empty questions list', () => {
+    beforeEach(() => {
+      component.props.questions = Immutable.List();
+      component.props.openPollsByQuestionId = Immutable.Map();
+    });
+
+    it('renders empty state message', () => {
+      expect(component.emptyStateMessage).toHaveLength(1);
     });
   });
 
