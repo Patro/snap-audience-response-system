@@ -22,21 +22,12 @@ class WelcomeScreen extends Component {
     return (
       <Row className="welcome_screen__row">
         <Col {...colConfig} className="welcome_screen__column">
-          {this.renderJoinCard()}
+          <JoinSessionFormContainer />
         </Col>
         <Col {...colConfig} className="welcome_screen__column">
           {this.renderStartCard()}
         </Col>
       </Row>
-    )
-  }
-
-  renderJoinCard() {
-    const title = "Join running session";
-    return (
-      <Card title={title} className="welcome_screen__card">
-        <JoinSessionFormContainer />
-      </Card>
     )
   }
 
