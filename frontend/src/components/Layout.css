@@ -35,3 +35,9 @@
   margin: 0 auto;
   padding: 16px;
 }
+
+.layout__footer, .layout__footer a {
+  color: LightGray;
+  text-align: center;
+  padding: 0;
+}

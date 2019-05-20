@@ -3,11 +3,16 @@ import { mount } from 'enzyme';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import App from './App';
 import SessionScreenContainer from './../containers/SessionScreenContainer';
+import CreditsScreen from './CreditsScreen';
 import WelcomeScreen from './WelcomeScreen';
 
 class TestWrapper extends AbstractTestWrapper {
   get welcomeScreen() {
     return this.wrapper.find(WelcomeScreen).first();
+  }
+
+  get creditsScreen() {
+    return this.wrapper.find(CreditsScreen).first();
   }
 
   get sessionScreenContainer() {
@@ -22,6 +27,10 @@ class TestWrapper extends AbstractTestWrapper {
 
   setRootPath() {
     this.location = { pathname: '/' };
+  }
+
+  setCreditsPath() {
+    this.location = { pathname: '/credits' };
   }
 
   setInteractiveSessionPath() {
@@ -50,6 +59,16 @@ describe('App', () => {
     });
   });
 
+  describe('given credits path', () => {
+    beforeEach(() => {
+      component.setCreditsPath();
+    });
+
+    it('renders credits screen component', () => {
+      expect(component.creditsScreen).toHaveLength(1);
+    });
+  });
+
   describe('given interactive session path', () => {
     beforeEach(() => {
       component.setInteractiveSessionPath();
@@ -67,6 +86,10 @@ describe('App', () => {
 
     it('does not render welcome screen component', () => {
       expect(component.welcomeScreen).toHaveLength(0);
+    });
+
+    it('does not render credits screen component', () => {
+      expect(component.creditsScreen).toHaveLength(0);
     });
 
     it('does not render session screen container', () => {

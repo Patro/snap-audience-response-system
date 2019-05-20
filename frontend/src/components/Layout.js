@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Layout as AntDLayout, Row, Col } from 'antd';
 import logo from '../images/logo.png';
 import logoIcon from '../images/logoIcon.png';
@@ -32,6 +33,9 @@ class Layout extends Component {
             {this.props.children}
           </div>
         </AntDLayout.Content>
+        <AntDLayout.Footer className="layout__footer">
+          <Link to="/credits">Credits</Link>
+        </AntDLayout.Footer>
       </AntDLayout>
     );
   }
