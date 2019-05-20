@@ -1,4 +1,3 @@
-import Immutable from 'immutable';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Collapse } from 'antd';
@@ -20,10 +19,11 @@ class QuestionList extends Component {
   }
 
   get openPollsByQuestionId() {
-    const openPollsByQuestionId = this.props.openPollsByQuestionId;
-    if (openPollsByQuestionId === undefined) { return Immutable.Map(); }
+    return this.props.openPollsByQuestionId;
+  }
 
-    return openPollsByQuestionId;
+  get questionIdsWithOpenPoll() {
+    return this.openPollsByQuestionId.keySeq();
   }
 
   get newQuestionPath() {
@@ -36,12 +36,14 @@ class QuestionList extends Component {
   }
 
   render() {
-    if (this.questions === undefined) { return false; }
+    if (
+      this.questions === undefined || this.openPollsByQuestionId === undefined
+    ) { return false; }
 
     return (
       <div className="question_list">
         <Card title="Questions" extra={this.renderMenu()}>
-          <Collapse>
+          <Collapse defaultActiveKey={this.questionIdsWithOpenPoll.toJS()}>
             {this.questions.map(question => this.renderItem(question))}
           </Collapse>
         </Card>

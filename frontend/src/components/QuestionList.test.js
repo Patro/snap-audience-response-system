@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Collapse } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
@@ -8,6 +8,14 @@ import QuestionListItem from './QuestionListItem';
 import QuestionList from './QuestionList';
 
 class TestWrapper extends AbstractTestWrapper {
+  get collapseElement() {
+    return this.wrapper.find(Collapse).first();
+  }
+
+  get activeQuestionIds() {
+    return this.collapseElement.prop('defaultActiveKey');
+  }
+
   get listItems() {
     return this.wrapper.find(QuestionListItem);
   }
@@ -39,7 +47,7 @@ describe('QuestionList', () => {
 
   describe('given questions', () => {
     beforeEach(() => {
-      const questions = [
+      const questions = Immutable.List([
         factories.singleChoiceQuestion.entity({
           id: '1',
           attributes: { text: 'Question A' },
@@ -48,8 +56,13 @@ describe('QuestionList', () => {
           id: '2',
           attributes: { text: 'Question B' },
         }),
-      ];
+      ]);
       component.props.questions = questions;
+      component.props.openPollsByQuestionId = Immutable.Map();
+    });
+
+    it('marks no item as active', () => {
+      expect(component.activeQuestionIds).toHaveLength(0);
     });
 
     it('renders one list item per question', () => {
@@ -71,6 +84,10 @@ describe('QuestionList', () => {
         component.props.openPollsByQuestionId = openPollsByQuestionId;
       });
 
+      it('marks item with question id of poll active', () => {
+        expect(component.activeQuestionIds).toEqual(['1']);
+      });
+
       it('passes poll to list item', () => {
         expect(component.givenOpenPoll(0)).toBe(poll);
       });
@@ -78,6 +95,20 @@ describe('QuestionList', () => {
   });
 
   describe('without questions', () => {
+    beforeEach(() => {
+      component.props.openPollsByQuestionId = Immutable.Map();
+    });
+
+    it('renders nothing', () => {
+      expect(component.wrapper.isEmptyRender()).toBe(true);
+    });
+  });
+
+  describe('without open polls', () => {
+    beforeEach(() => {
+      component.props.questions = Immutable.List();
+    });
+
     it('renders nothing', () => {
       expect(component.wrapper.isEmptyRender()).toBe(true);
     });
