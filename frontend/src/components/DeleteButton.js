@@ -48,7 +48,9 @@ class DeleteButton extends Component {
     );
   }
 
-  showConfirmationModal() {
+  showConfirmationModal(event) {
+    event.stopPropagation();
+
     this.modal = Modal.confirm({
       title: this.props.confirmMessage,
       okText: 'Yes',
