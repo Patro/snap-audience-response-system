@@ -34,7 +34,12 @@ class Layout extends Component {
           </div>
         </AntDLayout.Content>
         <AntDLayout.Footer className="layout__footer">
-          <Link to="/credits">Credits</Link>
+          <a href="https://patrickrompf.de/imprint.html"
+             target="_blank"
+             rel="noopener noreferrer"
+             className="layout__footer_item">Imprint</a>
+          |
+          <Link to="/credits" className="layout__footer_item">Credits</Link>
         </AntDLayout.Footer>
       </AntDLayout>
     );

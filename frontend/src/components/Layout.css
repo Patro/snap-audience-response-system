@@ -38,6 +38,11 @@
 
 .layout__footer, .layout__footer a {
   color: LightGray;
-  text-align: center;
   padding: 0;
+  text-align: center;
+}
+
+.layout__footer_item {
+  color: LightGray;
+  margin: 0 4px;
 }
