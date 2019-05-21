@@ -30,8 +30,9 @@ class PollResultsChart extends Component {
   }
 
   render() {
-    if (this.question === undefined) { return false; }
-    if (this.questionOptionCounts === undefined) { return false; }
+    if (
+      this.question === undefined || this.questionOptionCounts === undefined
+    ) { return false; }
 
     return (
       <div className="poll_results_chart">

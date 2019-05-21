@@ -46,8 +46,16 @@ class QuestionForm extends Component {
     return this.question.get('id') === undefined;
   }
 
+  get job() {
+    return this.props.saveJob;
+  }
+
   get processing() {
     return this.props.processing;
+  }
+
+  get onSubmit() {
+    return this.props.onSubmit;
   }
 
   get formLayout() {
@@ -69,7 +77,7 @@ class QuestionForm extends Component {
     return (
       <div className="question_form">
         <Card title={this.renderTitle()}>
-          <JobErrorAlert job={this.props.saveJob} />
+          <JobErrorAlert job={this.job} />
           <Form {...this.formLayout} onSubmit={this.submit}>
             {this.renderQuestionFields()}
             {this.renderOptionsFields()}
@@ -241,10 +249,10 @@ class QuestionForm extends Component {
     event.preventDefault();
     if (this.processing) { return; }
 
-    this.props.form.validateFields((err, fieldsValue) => {
+    this.form.validateFields((err, fieldsValue) => {
       if (err) { return; }
 
-      this.props.onSubmit(Immutable.Map({
+      this.onSubmit(Immutable.Map({
         question: this.mapFieldsValueToQuestion(fieldsValue),
         options: this.mapFieldsValueToOptions(fieldsValue),
       }));

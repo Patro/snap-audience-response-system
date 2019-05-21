@@ -8,30 +8,29 @@ class JoinSessionForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  get form() {
+    return this.props.form;
+  }
+
+  get job() {
+    return this.props.joinJob;
+  }
+
   get processing() {
     return this.props.processing;
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    if (this.processing) { return; }
-
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (err) { return; }
-
-      const attendanceCode = fieldsValue['attendance_code'];
-      this.props.onSubmit(attendanceCode);
-    })
+  get onSubmit() {
+    return this.props.onSubmit;
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
       <Card title="Join running session" className="join_session_form">
-        <JobErrorAlert job={this.props.joinJob} />
+        <JobErrorAlert job={this.job} />
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Attendance Code">
-            { getFieldDecorator('attendance_code', {
+            { this.form.getFieldDecorator('attendance_code', {
               validateTrigger: 'onSubmit',
               rules: [
                 {
@@ -58,6 +57,18 @@ class JoinSessionForm extends Component {
         </Form>
       </Card>
     );
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    if (this.processing) { return; }
+
+    this.form.validateFields((err, fieldsValue) => {
+      if (err) { return; }
+
+      const attendanceCode = fieldsValue['attendance_code'];
+      this.onSubmit(attendanceCode);
+    })
   }
 }
 

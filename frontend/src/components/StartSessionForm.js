@@ -8,30 +8,29 @@ class StartSessionForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  get form() {
+    return this.props.form;
+  }
+
+  get job() {
+    return this.props.startJob;
+  }
+
   get processing() {
     return this.props.processing;
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    if (this.processing) { return; }
-
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (err) { return; }
-
-      const label = fieldsValue['label'];
-      this.props.onSubmit(label);
-    })
+  get onSubmit() {
+    return this.props.onSubmit;
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
     return (
       <Card title="Start your own session" className="start_session_form">
-        <JobErrorAlert job={this.props.startJob} />
+        <JobErrorAlert job={this.job} />
         <Form onSubmit={this.handleSubmit}>
           <Form.Item label="Session Name">
-            { getFieldDecorator('label', {
+            { this.form.getFieldDecorator('label', {
               validateTrigger: 'onSubmit',
               rules: [
                 {
@@ -51,6 +50,18 @@ class StartSessionForm extends Component {
         </Form>
       </Card>
     );
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    if (this.processing) { return; }
+
+    this.form.validateFields((err, fieldsValue) => {
+      if (err) { return; }
+
+      const label = fieldsValue['label'];
+      this.onSubmit(label);
+    })
   }
 }
 

@@ -30,7 +30,7 @@ class SessionScreen extends Component {
     return (
       <div className="session_screen">
         <Layout title={this.label} extra={this.renderAttendanceCode()}>
-          {this.renderRoutes()}
+          {this.renderContent()}
         </Layout>
       </div>
     );
@@ -44,7 +44,7 @@ class SessionScreen extends Component {
     )
   }
 
-  renderRoutes() {
+  renderContent() {
     return (
       <Switch>
         <Route

@@ -11,12 +11,12 @@ class OwnerScreen extends Component {
   render() {
     return (
       <div className="owner_screen">
-        {this.renderRoutes()}
+        {this.renderContent()}
       </div>
     );
   }
 
-  renderRoutes() {
+  renderContent() {
     return (
       <Switch>
         <Route

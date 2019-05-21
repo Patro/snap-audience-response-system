@@ -14,6 +14,10 @@ class Layout extends Component {
     return this.props.extra;
   }
 
+  get children() {
+    return this.props.children;
+  }
+
   render() {
     return (
       <AntDLayout className="layout">
@@ -30,7 +34,7 @@ class Layout extends Component {
         </AntDLayout.Header>
         <AntDLayout.Content className="layout__content">
           <div className="layout__content_wrapper">
-            {this.props.children}
+            {this.children}
           </div>
         </AntDLayout.Content>
         <AntDLayout.Footer className="layout__footer">

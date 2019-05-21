@@ -22,6 +22,10 @@ class PollsMenu extends Component {
     return this.props.onSelect;
   }
 
+  get className() {
+    return this.props.className;
+  }
+
   get selectedKeys() {
     if (this.activePoll === undefined) { return []; }
     return [this.activePoll.get('id')];
@@ -29,7 +33,7 @@ class PollsMenu extends Component {
 
   render() {
     return (
-      <div className={`polls_menu ${this.props.className}`}>
+      <div className={`polls_menu ${this.className}`}>
         <span className="polls_menu__prefix">Polls:</span>
         <Menu
           mode="horizontal"

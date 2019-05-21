@@ -45,7 +45,8 @@ class AttendeeScreen extends Component {
     return (
       <Alert
         message="Waiting for next poll..."
-        description="There is no active poll at the moment. The next poll will be shown to you here automatically."
+        description="There is no active poll at the moment.
+          The next poll will be shown to you here automatically."
         type="info"
         icon={<Icon type="loading-3-quarters" spin />}
         showIcon

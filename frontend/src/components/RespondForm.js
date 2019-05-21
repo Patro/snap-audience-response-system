@@ -11,6 +11,10 @@ class RespondForm extends Component {
     this.renderOption = this.renderOption.bind(this);
   }
 
+  get form() {
+    return this.props.form;
+  }
+
   get question() {
     return this.props.question;
   }
@@ -31,28 +35,12 @@ class RespondForm extends Component {
     return this.props.processing;
   }
 
+  get onSubmit() {
+    return this.props.onSubmit;
+  }
+
   get itemComponent() {
     return this.isMultipleChoice ? Checkbox : Radio;
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    if (this.processing) { return; }
-
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (err) { return; }
-
-      const optionIds = this.selectedOptionIds(fieldsValue);
-      this.props.onSubmit(optionIds);
-    })
-  }
-
-  selectedOptionIds(fieldsValue) {
-    const selection = fieldsValue['selection'];
-    if (isArray(selection)) {
-      return selection;
-    }
-    return [selection];
   }
 
   render() {
@@ -60,13 +48,12 @@ class RespondForm extends Component {
       return false;
     }
 
-    const { getFieldDecorator } = this.props.form;
     return (
       <div className="respond_form">
         <Card title={this.renderTitle()}>
           <Form onSubmit={this.handleSubmit}>
             <Form.Item>
-              { getFieldDecorator(`selection`, {
+              { this.form.getFieldDecorator(`selection`, {
                 rules: [
                   { required: true, message: 'Please select an option.' },
                 ],
@@ -113,6 +100,26 @@ class RespondForm extends Component {
         </Item>
       </List.Item>
     )
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    if (this.processing) { return; }
+
+    this.form.validateFields((err, fieldsValue) => {
+      if (err) { return; }
+
+      const optionIds = this.selectedOptionIds(fieldsValue);
+      this.onSubmit(optionIds);
+    })
+  }
+
+  selectedOptionIds(fieldsValue) {
+    const selection = fieldsValue['selection'];
+    if (isArray(selection)) {
+      return selection;
+    }
+    return [selection];
   }
 }
 
