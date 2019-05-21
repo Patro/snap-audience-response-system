@@ -38,6 +38,38 @@ RSpec.describe InteractiveSession, type: :model do
     end
   end
 
+  describe '#attendee?' do
+    let(:interactive_session) { create(:interactive_session) }
+    subject { interactive_session.attendee?(user) }
+
+    context 'given owner' do
+      let(:user) { interactive_session.owner }
+
+      it 'should return false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'given attendee' do
+      let(:user) do
+        create(:attendee, :with_attendance,
+               interactive_session: interactive_session)
+      end
+
+      it 'should return true' do
+        is_expected.to be true
+      end
+    end
+
+    context 'given unrelated user' do
+      let(:user) { create(:user) }
+
+      it 'should return false' do
+        is_expected.to be false
+      end
+    end
+  end
+
   describe '#create' do
     subject { create(:interactive_session, attendance_code: 'abcd') }
 
@@ -93,6 +125,38 @@ RSpec.describe InteractiveSession, type: :model do
     end
   end
 
+  describe '#owner?' do
+    let(:interactive_session) { create(:interactive_session) }
+    subject { interactive_session.owner?(user) }
+
+    context 'given owner' do
+      let(:user) { interactive_session.owner }
+
+      it 'should return true' do
+        is_expected.to be true
+      end
+    end
+
+    context 'given attendee' do
+      let(:user) do
+        create(:attendee, :with_attendance,
+               interactive_session: interactive_session)
+      end
+
+      it 'should return false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'given unrelated user' do
+      let(:user) { create(:user) }
+
+      it 'should return false' do
+        is_expected.to be false
+      end
+    end
+  end
+
   describe '#polls' do
     subject { interactive_session.polls }
 
@@ -125,6 +189,38 @@ RSpec.describe InteractiveSession, type: :model do
 
       it 'should return questions' do
         is_expected.to match_array(@questions)
+      end
+    end
+  end
+
+  describe '#role_of' do
+    let(:interactive_session) { create(:interactive_session) }
+    subject { interactive_session.role_of(user) }
+
+    context 'given owner' do
+      let(:user) { interactive_session.owner }
+
+      it 'should return owner' do
+        is_expected.to eq(:owner)
+      end
+    end
+
+    context 'given attendee' do
+      let(:user) do
+        create(:attendee, :with_attendance,
+               interactive_session: interactive_session)
+      end
+
+      it 'should return attendee' do
+        is_expected.to eq(:attendee)
+      end
+    end
+
+    context 'given unrelated user' do
+      let(:user) { create(:user) }
+
+      it 'should return none' do
+        is_expected.to eq(:none)
       end
     end
   end

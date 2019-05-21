@@ -8,4 +8,19 @@ class InteractiveSession < ApplicationRecord
   has_many :polls, through: :questions
 
   validates :attendance_code, length: { is: 4, allow_nil: true }
+
+  def attendee?(user)
+    attendees.where(id: user).count.positive?
+  end
+
+  def owner?(user)
+    user.eql?(owner)
+  end
+
+  def role_of(user)
+    return :owner if owner?(user)
+    return :attendee if attendee?(user)
+
+    :none
+  end
 end
