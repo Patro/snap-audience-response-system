@@ -11,7 +11,9 @@ class TestWrapper extends AbstractTestWrapper {
   }
 
   _render() {
-    return mount(<SessionList {...this.props} />);
+    return mount(this._addStaticRouter(
+      <SessionList {...this.props} />
+    ));
   }
 }
 
