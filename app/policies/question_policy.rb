@@ -46,10 +46,10 @@ class QuestionPolicy < ApplicationPolicy
   private
 
     def owner_of_session?
-      user.eql?(record.interactive_session.owner)
+      record.interactive_session.owner?(user)
     end
 
     def attendee_of_session?
-      user.attended_interactive_sessions.include?(record.interactive_session)
+      record.interactive_session.attendee?(user)
     end
 end

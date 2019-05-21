@@ -8,11 +8,11 @@ class ResponsePolicy < ApplicationPolicy
   private
 
     def attendee_of_session?
-      user.attended_interactive_sessions.include?(interactive_session)
+      interactive_session.attendee?(user)
     end
 
     def owner_of_session?
-      user.eql?(interactive_session.owner)
+      interactive_session.owner?(user)
     end
 
     def interactive_session

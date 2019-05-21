@@ -38,6 +38,6 @@ class InteractiveSessionPolicy < ApplicationPolicy
     end
 
     def owner?
-      user.eql?(record.owner)
+      record.owner?(user)
     end
 end

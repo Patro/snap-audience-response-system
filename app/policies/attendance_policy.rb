@@ -40,6 +40,6 @@ class AttendancePolicy < ApplicationPolicy
     end
 
     def owner_of_session?
-      user.eql?(record.interactive_session.owner)
+      record.interactive_session.owner?(user)
     end
 end

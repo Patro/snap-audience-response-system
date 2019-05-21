@@ -40,7 +40,7 @@ class QuestionOptionPolicy < ApplicationPolicy
   private
 
     def owner_of_session?
-      user.eql?(record.question.interactive_session.owner)
+      record.question.interactive_session.owner?(user)
     end
 
     def question_policy

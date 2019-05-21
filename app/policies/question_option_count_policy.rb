@@ -8,7 +8,7 @@ class QuestionOptionCountPolicy < ApplicationPolicy
   private
 
     def owner_of_session?
-      user.eql?(record.poll.question.interactive_session.owner)
+      record.poll.question.interactive_session.owner?(user)
     end
 
     def poll_closed?
