@@ -63,7 +63,7 @@ class PollResultsChart extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.poll !== this.poll || prevProps.question !== this.question) {
       this.unsubscribe();
-      this.subscribe();
+      setTimeout(() => this.subscribe(), 0);
     }
   }
 

@@ -120,9 +120,11 @@ describe('PollResultsChart', () => {
         });
 
         it('subscribes for response events', () => {
+          jest.useFakeTimers();
           let newPoll = factories.poll.entity({ id: '101' });
           component.setPoll(newPoll);
 
+          jest.runAllTimers();
           expect(subscriptions.subscribeForResponseEvents).toBeCalledWith(
             '900', '101', expect.anything(),
           );
@@ -142,6 +144,7 @@ describe('PollResultsChart', () => {
         });
 
         it('subscribes for response events', () => {
+          jest.useFakeTimers();
           let newQuestion = factories.multipleChoiceQuestion.entity({
             relationships: {
               interactiveSession: factories.interactiveSession.identifier({
@@ -151,6 +154,7 @@ describe('PollResultsChart', () => {
           });
           component.setQuestion(newQuestion);
 
+          jest.runAllTimers();
           expect(subscriptions.subscribeForResponseEvents).toBeCalledWith(
             '901', '100', expect.anything(),
           );
