@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Form, Button, Radio, Checkbox, List } from 'antd';
 import isArray from 'lodash/isArray';
 import { MULTIPLE_CHOICE_QUESTION } from '../constants/entityTypes';
+import JobErrorAlert from './JobErrorAlert';
 import './RespondForm.css';
 
 class RespondForm extends Component {
@@ -31,6 +32,10 @@ class RespondForm extends Component {
     return this.props.options;
   }
 
+  get job() {
+    return this.props.respondJob;
+  }
+
   get processing() {
     return this.props.processing;
   }
@@ -51,6 +56,7 @@ class RespondForm extends Component {
     return (
       <div className="respond_form">
         <Card title={this.renderTitle()}>
+          <JobErrorAlert job={this.job} />
           <Form onSubmit={this.handleSubmit}>
             <Form.Item>
               { this.form.getFieldDecorator(`selection`, {

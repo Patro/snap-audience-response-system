@@ -4,9 +4,14 @@ import { Form, Button, Radio, Checkbox } from 'antd';
 import { mount } from 'enzyme';
 import factories from '../../__factories__';
 import AbstractTestWrapper from '../utils/AbstractTestWrapper';
+import JobErrorAlert from './JobErrorAlert';
 import RespondForm from './RespondForm';
 
 class TestWrapper extends AbstractTestWrapper {
+  get jobErrorAlert() {
+    return this.wrapper.find(JobErrorAlert).first();
+  }
+
   get form() {
     return this.wrapper.find(Form).first();
   }
@@ -100,6 +105,10 @@ describe('RespondForm', () => {
 
   it('renders submit button', () => {
     expect(component.submitButton).toHaveLength(1);
+  });
+
+  it('renders job error alert', () => {
+    expect(component.jobErrorAlert).toHaveLength(1);
   });
 
   describe('given multiple choice question', () => {
