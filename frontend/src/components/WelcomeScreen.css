@@ -2,10 +2,14 @@
   height: 100%;
 }
 
-.welcome_screen__row {
+.welcome_screen__session_list_row .session_list {
+  margin-bottom: 16px;
+}
+
+.welcome_screen__form_row {
   margin: -8px;
 }
 
-.welcome_screen__column {
+.welcome_screen__form_col {
   padding: 8px;
 }

@@ -4,19 +4,25 @@ import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 import StartSessionFormContainer
   from '../containers/StartSessionFormContainer';
 import Layout from './Layout';
+import SessionList from './SessionList';
 import './WelcomeScreen.css';
 
 class WelcomeScreen extends Component {
   render() {
-    const colConfig = { xs: 24, md: 12 };
+    const formColConfig = { xs: 24, md: 12 };
     return (
       <div className="welcome_screen">
         <Layout>
-          <Row className="welcome_screen__row">
-            <Col {...colConfig} className="welcome_screen__column">
+          <Row className="welcome_screen__session_list_row">
+            <Col>
+              <SessionList />
+            </Col>
+          </Row>
+          <Row className="welcome_screen__form_row">
+            <Col {...formColConfig} className="welcome_screen__form_col">
               <JoinSessionFormContainer />
             </Col>
-            <Col {...colConfig} className="welcome_screen__column">
+            <Col {...formColConfig} className="welcome_screen__form_col">
               <StartSessionFormContainer />
             </Col>
           </Row>
