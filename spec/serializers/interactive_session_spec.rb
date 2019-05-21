@@ -4,7 +4,8 @@ require 'rails_helper'
 
 RSpec.describe InteractiveSessionSerializer do
   let(:interactive_session) { create(:interactive_session) }
-  let(:params) { { current_user: create(:user) } }
+  let(:user) { create(:user) }
+  let(:params) { { current_user: user } }
   let(:serializer) { InteractiveSessionSerializer.new(interactive_session, params: params) }
   let(:data) { serializer.serializable_hash[:data] }
 
@@ -45,6 +46,29 @@ RSpec.describe InteractiveSessionSerializer do
 
           it { is_expected.not_to include(attendance_code: 'abcd') }
         end
+      end
+
+      context 'given interactive session with current user as owner' do
+        let(:interactive_session) { create(:interactive_session, owner: user) }
+
+        it { is_expected.to include(role: :owner) }
+      end
+
+      context 'given interactive session with current user as attendee' do
+        let(:interactive_session) { create(:interactive_session) }
+
+        before(:each) do
+          create(:attendance, attendee: user,
+                              interactive_session: interactive_session)
+        end
+
+        it { is_expected.to include(role: :attendee) }
+      end
+
+      context 'given interactive session with current user as unrelated user' do
+        let(:interactive_session) { create(:interactive_session) }
+
+        it { is_expected.to include(role: :none) }
       end
     end
 
