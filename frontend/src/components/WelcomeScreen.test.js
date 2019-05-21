@@ -4,7 +4,7 @@ import AbstractTestWrapper from '../utils/AbstractTestWrapper';
 import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 import StartSessionFormContainer
   from '../containers/StartSessionFormContainer';
-import SessionList from './SessionList';
+import SessionListContainer from '../containers/SessionListContainer';
 import WelcomeScreen from './WelcomeScreen';
 
 class TestWrapper extends AbstractTestWrapper {
@@ -16,8 +16,8 @@ class TestWrapper extends AbstractTestWrapper {
     return this.wrapper.find(StartSessionFormContainer);
   }
 
-  get sessionList() {
-    return this.wrapper.find(SessionList);
+  get sessionListContainer() {
+    return this.wrapper.find(SessionListContainer);
   }
 
   _render() {
@@ -40,7 +40,7 @@ describe('WelcomeScreen', () => {
     expect(component.startSessionFormContainer).toHaveLength(1);
   });
 
-  it('renders session list', () => {
-    expect(component.sessionList).toHaveLength(1);
+  it('renders session list container', () => {
+    expect(component.sessionListContainer).toHaveLength(1);
   });
 });

@@ -3,8 +3,8 @@ import { Row, Col } from 'antd';
 import JoinSessionFormContainer from '../containers/JoinSessionFormContainer';
 import StartSessionFormContainer
   from '../containers/StartSessionFormContainer';
+import SessionListContainer from '../containers/SessionListContainer';
 import Layout from './Layout';
-import SessionList from './SessionList';
 import './WelcomeScreen.css';
 
 class WelcomeScreen extends Component {
@@ -15,7 +15,7 @@ class WelcomeScreen extends Component {
         <Layout>
           <Row className="welcome_screen__session_list_row">
             <Col>
-              <SessionList />
+              <SessionListContainer />
             </Col>
           </Row>
           <Row className="welcome_screen__form_row">
