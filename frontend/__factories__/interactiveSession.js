@@ -17,6 +17,7 @@ export const entity = (obj) => (
     type: INTERACTIVE_SESSION,
     attributes: {
       label: 'My Session',
+      role: 'owner',
     },
   }).mergeDeep(Immutable.fromJS(obj))
 );
