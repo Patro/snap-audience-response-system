@@ -5,6 +5,8 @@ class Poll < ApplicationRecord
   has_many :responses, inverse_of: :poll, dependent: :destroy
   has_one :interactive_session, through: :question
 
+  default_scope { order(:id) }
+
   scope :responded_by, ->(user) do
     where(id: Response.select(:poll_id).where(respondent: user))
   end
