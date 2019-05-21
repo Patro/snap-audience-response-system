@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import upperFirst from 'lodash/upperFirst';
 import { Card, Table } from 'antd';
 
 class SessionList extends Component {
@@ -16,6 +17,12 @@ class SessionList extends Component {
       {
         title: 'Name',
         dataIndex: 'attributes.label',
+      },
+      {
+        title: 'Role',
+        dataIndex: 'attributes.role',
+        render: upperFirst,
+        width: '20%',
       },
     ];
 
