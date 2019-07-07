@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     end
     resources :responses, except: [:update, :destroy]
     resources :question_option_counts, only: [:index]
+    resources :users, only: [:index, :show]
   end
 
   match '*path', constraints: { path: /(?!api\/).*/ }, to: 'static#index', via: :all
