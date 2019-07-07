@@ -29,4 +29,30 @@ RSpec.describe 'Users API', type: :request do
 
     include_examples 'get resource', model_class: User
   end
+
+  describe 'PATCH /api/users/:id' do
+    let!(:record) { create(:user) }
+    let(:updated_record) { User.find(record.id) }
+    let(:query_params) { '' }
+
+    def fire_patch
+      params = { data: data }
+      patch "/api/users/#{id}", params: params
+    end
+
+    context 'given empty data object' do
+      let(:data) { {} }
+
+      include_examples 'update resource', model_class: User,
+                                          expect_changes: false
+    end
+
+    context 'given data object with name' do
+      let!(:record) { create(:user, name: 'John Doe') }
+      let(:data) { { attributes: { name: 'Jane Doe' } } }
+      let(:expected_record_attributes) { { name: 'Jane Doe' } }
+
+      include_examples 'update resource', model_class: User
+    end
+  end
 end
