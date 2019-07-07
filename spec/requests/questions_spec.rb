@@ -7,14 +7,21 @@ RSpec.describe 'Questions API', type: :request do
   include RequestHelpers
 
   describe 'GET /api/questions' do
-    let!(:records) { create_list(:dummy_question, 2) }
-
     def fire_get
       get '/api/questions'
     end
 
-    include_examples 'get collection of resources',
-                      model_class: Question
+    context 'without questions' do
+      include_examples 'get empty collection of resources',
+                        model_class: Question
+    end
+
+    context 'given two questions' do
+      let!(:records) { create_list(:dummy_question, 2) }
+
+      include_examples 'get collection of resources',
+                        model_class: Question
+    end
   end
 
   describe 'GET /api/questions?interactive_session_id=' do

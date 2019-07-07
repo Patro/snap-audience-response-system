@@ -7,14 +7,21 @@ RSpec.describe 'Responses API', type: :request do
   include RequestHelpers
 
   describe 'GET /api/responses' do
-    let!(:records) { create_list(:response, 2) }
-
     def fire_get
       get '/api/responses'
     end
 
-    include_examples 'get collection of resources',
-                      model_class: Response
+    context 'without responses' do
+      include_examples 'get empty collection of resources',
+                        model_class: Response
+    end
+
+    context 'given two responses' do
+      let!(:records) { create_list(:response, 2) }
+
+      include_examples 'get collection of resources',
+                        model_class: Response
+    end
   end
 
   describe 'GET /api/responses?poll_id=' do

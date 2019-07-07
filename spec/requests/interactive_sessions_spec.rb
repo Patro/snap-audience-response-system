@@ -7,14 +7,21 @@ RSpec.describe 'Interactive Sessions API', type: :request do
   include RequestHelpers
 
   describe 'GET /api/interactive_sessions' do
-    let!(:records) { create_list(:interactive_session, 2) }
-
     def fire_get
       get '/api/interactive_sessions'
     end
 
-    include_examples 'get collection of resources',
-                      model_class: InteractiveSession
+    context 'without sessions' do
+      include_examples 'get empty collection of resources',
+                        model_class: InteractiveSession
+    end
+
+    context 'given two sessions' do
+      let!(:records) { create_list(:interactive_session, 2) }
+
+      include_examples 'get collection of resources',
+                        model_class: InteractiveSession
+    end
   end
 
   describe 'POST /api/interactive_sessions' do

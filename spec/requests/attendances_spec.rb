@@ -7,14 +7,21 @@ RSpec.describe 'Attendances API', type: :request do
   include RequestHelpers
 
   describe 'GET /api/attendances' do
-    let!(:records) { create_list(:attendance, 2) }
-
     def fire_get
       get '/api/attendances'
     end
 
-    include_examples 'get collection of resources',
-                      model_class: Attendance
+    context 'without attendances' do
+      include_examples 'get empty collection of resources',
+                        model_class: Attendance
+    end
+
+    context 'given two attendances' do
+      let!(:records) { create_list(:attendance, 2) }
+
+      include_examples 'get collection of resources',
+                        model_class: Attendance
+    end
   end
 
   describe 'GET /api/attendances?interactive_session_id=' do

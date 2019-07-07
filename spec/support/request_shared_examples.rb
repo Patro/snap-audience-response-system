@@ -1,8 +1,59 @@
 # frozen_string_literal: true
 
+RSpec.shared_examples 'get empty collection of resources' do |model_class:|
+  before(:each) { fire_get }
+
+  describe 'response' do
+    subject { response }
+
+    it { is_expected.to have_http_status(:ok) }
+    it { is_expected.to have_json_api_content_type }
+
+    describe 'meta' do
+      subject { json['meta'] }
+
+      it { is_expected.to include('total' => 0) }
+    end
+
+    describe 'data' do
+      subject { json['data'] }
+
+      it { is_expected.to be_empty }
+    end
+  end
+end
+
 RSpec.shared_examples 'get collection of resources' do |model_class:, with_filter: false|
-  context 'given no records' do
-    let!(:records) { }
+  context 'given scope that permits access' do
+    unlock_scope(model_class)
+
+    before(:each) { fire_get }
+
+    describe 'response' do
+      subject { response }
+
+      it { is_expected.to have_http_status(:ok) }
+      it { is_expected.to have_json_api_content_type }
+
+      describe 'meta' do
+        subject { json['meta'] }
+
+        it { is_expected.to include('total' => records.length) }
+      end
+
+      describe 'data' do
+        subject { json['data'] }
+
+        it { is_expected.to include_identifier_of(records) }
+        if with_filter
+          it { is_expected.not_to include_identifier_of(non_matching_records) }
+        end
+      end
+    end
+  end
+
+  context 'given scope that denies access' do
+    block_scope(model_class)
 
     before(:each) { fire_get }
 
@@ -21,64 +72,9 @@ RSpec.shared_examples 'get collection of resources' do |model_class:, with_filte
       describe 'data' do
         subject { json['data'] }
 
-        it { is_expected.to be_empty }
-      end
-    end
-  end
-
-  context 'given records' do
-    context 'given scope that permits access' do
-      unlock_scope(model_class)
-
-      before(:each) { fire_get }
-
-      describe 'response' do
-        subject { response }
-
-        it { is_expected.to have_http_status(:ok) }
-        it { is_expected.to have_json_api_content_type }
-
-        describe 'meta' do
-          subject { json['meta'] }
-
-          it { is_expected.to include('total' => records.length) }
-        end
-
-        describe 'data' do
-          subject { json['data'] }
-
-          it { is_expected.to include_identifier_of(records) }
-          if with_filter
-            it { is_expected.not_to include_identifier_of(non_matching_records) }
-          end
-        end
-      end
-    end
-
-    context 'given scope that denies access' do
-      block_scope(model_class)
-
-      before(:each) { fire_get }
-
-      describe 'response' do
-        subject { response }
-
-        it { is_expected.to have_http_status(:ok) }
-        it { is_expected.to have_json_api_content_type }
-
-        describe 'meta' do
-          subject { json['meta'] }
-
-          it { is_expected.to include('total' => 0) }
-        end
-
-        describe 'data' do
-          subject { json['data'] }
-
-          it { is_expected.not_to include_identifier_of(records) }
-          if with_filter
-            it { is_expected.not_to include_identifier_of(non_matching_records) }
-          end
+        it { is_expected.not_to include_identifier_of(records) }
+        if with_filter
+          it { is_expected.not_to include_identifier_of(non_matching_records) }
         end
       end
     end

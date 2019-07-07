@@ -7,14 +7,21 @@ RSpec.describe 'Polls API', type: :request do
   include RequestHelpers
 
   describe 'GET /api/polls' do
-    let!(:records) { create_list(:poll, 2) }
-
     def fire_get
       get '/api/polls'
     end
 
-    include_examples 'get collection of resources',
-                      model_class: Poll
+    context 'without polls' do
+      include_examples 'get empty collection of resources',
+                        model_class: Poll
+    end
+
+    context 'given two polls' do
+      let!(:records) { create_list(:poll, 2) }
+
+      include_examples 'get collection of resources',
+                        model_class: Poll
+    end
   end
 
   describe 'GET /api/polls?interactive_session_id=' do

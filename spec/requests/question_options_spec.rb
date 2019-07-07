@@ -7,14 +7,21 @@ RSpec.describe 'Question Options API', type: :request do
   include RequestHelpers
 
   describe 'GET /api/question_options' do
-    let!(:records) { create_list(:question_option, 2) }
-
     def fire_get
       get '/api/question_options'
     end
 
-    include_examples 'get collection of resources',
-                      model_class: QuestionOption
+    context 'without question options' do
+      include_examples 'get empty collection of resources',
+                        model_class: QuestionOption
+    end
+
+    context 'given two question options' do
+      let!(:records) { create_list(:question_option, 2) }
+
+      include_examples 'get collection of resources',
+                        model_class: QuestionOption
+    end
   end
 
   describe 'GET /api/question_options?question=' do
