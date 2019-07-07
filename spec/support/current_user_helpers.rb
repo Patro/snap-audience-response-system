@@ -21,6 +21,9 @@ module CurrentUserHelpers
           .to receive(:current_user)
           .and_return(current_user)
 
+          allow_any_instance_of(ApplicationController)
+          .to receive(:initialize_session)
+
           allow_any_instance_of(ApplicationCable::Connection)
           .to receive(:find_current_user)
           .and_return(current_user)
