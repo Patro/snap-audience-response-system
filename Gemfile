@@ -7,7 +7,7 @@ ruby '2.6.1'
 
 gem 'rails', '~> 5.2.2'
 gem 'pg' # interface to PostgreSQL
-gem 'puma', '~> 3.11' # web server
+gem 'puma', '~> 3.12' # web server
 gem 'redis', '~> 4.0' # for Action Cable in production
 gem 'bootsnap', '>= 1.1.0', require: false # reduces boot time
 gem 'composite_primary_keys', '~> 11.0' # composite primary keys support for Active Record
