@@ -30,6 +30,6 @@ module SnapAudienceResponseSystem
     config.api_only = true
 
     middleware.use ::ActionDispatch::Cookies
-    middleware.use ::ActionDispatch::Session::CookieStore, key: 'ars_user_session'
+    middleware.use ::ActionDispatch::Session::CookieStore, key: 'ars_user_session', expire_after: 1.year
   end
 end
