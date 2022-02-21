@@ -27,7 +27,8 @@ class PollResultsChartItem extends Component {
   }
 
   get percent() {
-    return parseFloat(this.numberOfResponses) / this.numberOfRespondents * 100;
+    const raw = parseFloat(this.numberOfResponses) / this.numberOfRespondents * 100;
+    return Math.round(raw);
   }
 
   render() {
