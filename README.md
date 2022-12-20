@@ -8,8 +8,6 @@ invitation code that you can hand over to your audience to join it. As soon as
 everyone joined you can start live polls based on your questions and present
 the results on a second screen afterwards.
 
-Snap can be accessed at https://snap.patrickrompf.de.
-
 ## Deployment
 
 You can use the given docker-compose.yml file to deploy Snap locally.
