@@ -1,4 +1,4 @@
-# [Snap](https://snap.patrickrompf.de)
+# Snap
 
 Snap is an Audience Response System that allows its users to host live polls
 based on single and multiple choice questions.
